@@ -4,7 +4,7 @@
 // تم إضافة خيارات لـ fetch لضمان متابعة إعادة التوجيه وإضافة User-Agent
 // (Added options to fetch to ensure following redirects and add a User-Agent)
 
-const apiUrl = "https://script.google.com/macros/s/AKfycbwlrTdj9CIt_tdCEDNfnhJzeGMdT_g5rSvhgiy64KQ2bBIvo6y2Au6zvDb3fkYWfWb2/exec";
+const apiUrl = "https://script.google.com/macros/s/AKfycbwf7eC9xuMHqK35HdfFMNbvm0-iwrSdXmyVOfiwg4Pvj8soBdkk7hujTBm6KLn-2mx1/exec";
 
 exports.handler = async (event, context) => {
   try {
