@@ -1,20 +1,32 @@
 // netlify/functions/notification.js
-
-const apiUrl = "https://script.google.com/macros/s/AKfycbzN5pAPEAsiV50q7czW3fREchi8glqTtXJbPqXb0iPKVLgpy_sOJEJh6EJZDHNMwGFm/exec";
+// نسخة بسيطة جداً عشان نتأكد إن Netlify Functions شغّالة
 
 exports.handler = async (event, context) => {
   try {
-    const response = await fetch(apiUrl);
-    const text = await response.text(); // Apps Script بيرجع JSON كنص أصلاً
+    const demoData = [
+      {
+        name: "اختبار إشعار 1 - Level 000",
+        url: "https://example.com/file1",
+        mimeType: "application/pdf",
+        updatedTime: new Date().toISOString(),
+        level: "000"
+      },
+      {
+        name: "اختبار إشعار 2 - Level 100",
+        url: "https://example.com/file2",
+        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        updatedTime: new Date(Date.now() - 3600_000).toISOString(),
+        level: "100"
+      }
+    ];
 
     return {
-      statusCode: response.status,
+      statusCode: 200,
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        // ممكن تخليها "*" لو بتجرّب على Preview Domains
         "Access-Control-Allow-Origin": "https://znuassistant.netlify.app",
       },
-      body: text,
+      body: JSON.stringify(demoData),
     };
   } catch (error) {
     console.error("Error in Netlify notifications function:", error);
@@ -26,7 +38,7 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         error: true,
-        message: "Failed to fetch notifications from Apps Script",
+        message: "Failed to build demo notifications",
       }),
     };
   }
