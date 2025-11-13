@@ -1,6 +1,7 @@
 // netlify/functions/notification.js
 // Proxy بين Netlify و Google Apps Script عشان نتفادى CORS في المتصفح
 
+
 const apiUrl = "https://script.google.com/macros/s/AKfycbze63km1LuBbt9OZihVraf2pVKJF0PTlVTG71ifUseVECEMmKh7dUiwHhdLpue14-aG/exec";
 
 exports.handler = async (event, context) => {
