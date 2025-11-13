@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <title>Course Material</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom colors and fonts for a consistent, modern look */
+        :root {
+            --light-green: #bbf7d0;
+            --dark-green: #15803d;
+            --vibrant-green: #16a34a;
+            --link-green: #22c55e;
+            --subject-text-color: #0a460a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            background: linear-gradient(-45deg, var(--light-green), #d1fae5, var(--vibrant-green), #a7f3d0);
+            background-size: 400% 400%;
+            animation: energetic-gradient-animation 15s ease infinite;
+            color: var(--subject-text-color);
+            min-height: 100vh; /* Added from level200.html */
+            display: flex; /* Added from level200.html */
+            align-items: center; /* Added from level200.html */
+            justify-content: center; /* Added from level200.html */
+        }
+        
+        @keyframes energetic-gradient-animation {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 75% 25%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 25% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Styling for the main card and its wrapper */
+        .card-wrapper {
+            padding: 1rem;
+            display: block; /* Added from level200.html */
+            max-width: 800px; /* Adjusted from level200.html */
+            width: 100%; /* Added from level200.html */
+        }
+
+        .card-container {
+            max-width: 800px; /* Adjusted from 900px */
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); /* Adjusted shadow */
+            padding: 2rem;
+            /* Initial state for startup animation */
+            opacity: 0; /* Added for startup animation */
+            transform: translateY(20px); /* Added for startup animation */
+            animation: fadeInCard 1s ease-out forwards; /* Added for startup animation */
+            margin-top: 4rem; /* Added from level200.html */
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out; /* Added from level200.html */
+        }
+
+        /* New hover effect for the main card container */
+        .card-container:hover {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+            transform: translateY(-5px); /* Card lifts slightly on hover */
+            opacity: 1; /* Full opacity on hover */
+        }
+
+        /* Keyframe for startup animation */
+        @keyframes fadeInCard {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .term-selector button {
+            transition: all 0.3s ease;
+        }
+
+        .term-selector button.active-term-button {
+            border-bottom: 3px solid var(--vibrant-green);
+            transform: scale(1.05);
+        }
+        
+        .main-subject {
+            background-color: var(--vibrant-green); /* Changed from light-green */
+            color: #ffffff; /* Changed from subject-text-color */
+            transition: all 0.3s ease-in-out; /* Smoother transition */
+            cursor: pointer; /* Added from level200.html */
+        }
+
+        .main-subject.active {
+            background-color: var(--vibrant-green);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(22, 163, 74, 0.4);
+        }
+        
+        .main-subject:hover {
+            transform: translateY(-5px) scale(1.01); /* Lifts and scales slightly */
+            background-color: var(--dark-green); /* Faint to darker color on hover */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Nicer shadow on hover */
+        }
+        
+        .content-box {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .arrow-icon {
+            transition: transform 0.3s ease-in-out;
+            margin-left: auto;
+        }
+        
+        .arrow-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .term-selector {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .term-selector {
+                flex-direction: row;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="card-wrapper" class="card-wrapper">
+        <div id="card-container" class="card-container px-4 sm:px-8">
+            <!-- Logo Image positioned above the card -->
+            <div class="logo-container w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-lg">
+                <img src="logo.png" alt="Card Logo" class="w-full h-full rounded-full object-cover">
+                <!-- IMPORTANT: Replace the src attribute above with 'logo.png' -->
+            </div>
+
+            <h1 class="text-4xl font-bold text-center mb-8 pt-12">
+                Course Material
+            </h1>
+    
+                <!-- Term Selector Buttons Container -->
+                <div id="term-selector-container" class="term-selector flex justify-center mb-8">
+                    <button id="term1-button"
+                        class="px-6 py-3 rounded-t-lg font-bold text-lg focus:outline-none bg-gray-200"
+                        onclick="showTerm('term1-content', this)">
+                        Level 100 - Semester 3
+                    </button>
+                    <button id="term2-button"
+                        class="px-6 py-3 rounded-t-lg font-bold text-lg focus:outline-none bg-gray-200"
+                        onclick="showTerm('term2-content', this)">
+                        Level 100 - Semester 4
+                    </button>
+                </div>
+    
+                <!-- Term Content Container (Initially hidden) -->
+                <div id="term-content-container" style="display: none;">
+                    <!-- Back button to return to the semester selection screen -->
+                    <div class="mb-6 flex justify-center">
+                        <button onclick="showTermSelector()" class="bg-gray-800 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-gray-700 transition-colors duration-200">
+                            Back to Semesters
+                        </button>
+                    </div>
+
+                    <!-- Content for Term 1 (Semester 3) -->
+                    <div id="term1-content" class="content-box hidden space-y-6">
+                        <h2 class="text-2xl font-bold text-center mb-4">
+                            Level 100 - Semester 3 (Fall)
+                        </h2>
+                        
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('thermodynamics-table', this)">
+                            <span>Thermodynamics</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="thermodynamics-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Thermo</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://youtube.com/playlist?list=PL08ef9eJxtJau238LOkfAtvYIjVlg5PD4&si=snrukLxyENTLWMdn" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Thermo</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1rL-FvVcJLOVm33e65AGMzoxNLNmoGXmY?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Thermo</td><td class="p-3 border border-gray-400">Report</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1cTbjwGNp3MLcdO2xB6YYwsguUMwfl84z?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Thermo</td><td class="p-3 border border-gray-400">Quiz</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1zab_REpOuhGz0SnH25KwI1Q4-YqAtVQs?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Thermo</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/19OHp58keoS-z4SsjOoZLJMOefeHlJN3e?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Thermo</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1neDRRBUq8GXcLT-Ia-lF7aNEl40xkpHs?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Thermo</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/19M2Zsg_Ggl9q9gQS_OufAlMOi0jovL9J?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Thermo</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1zCxRv8Fhi_rOqyg_gTusJZ7BMNefoskf?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+    
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('math-3-table', this)">
+                            <span>Math 3</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="math-3-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Math 3</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://www.youtube.com/@thrwt75/featured" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Math 3</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1qWHoWuP2sBGKM4TmButbrCp6-AAV73b7?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Math 3</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1yPjFIhx2MYqUQxSqikwz7BqwYKV_m-oX?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Math 3</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1MmCU6GuGYJELszj43g1w6JoHK_Ya9XhN?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Math 3</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1avHfyq2z6S7aFwnmYYzRGNg3dbIOTxH5?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Math 3</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1aw169jupl839CAV-QkzydB4iG9wOZpNO?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('engineering-material-table', this)">
+                            <span>Engineering Material</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="engineering-material-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Material</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://www.youtube.com/@ahmeduosri1623" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Material</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/17ScVNlrYJD_horar74E1TJuM5F3zhuTN?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Material</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1WWTOXRFVW-MFhWt8BSyUDStcPiqQRnuD?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Material</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1MkaES7MfBaCjiUr8aLGAbm7JKQOyckWs?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Material</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1GlAdeUWCTfvWt7Fas24mGLJ_x1SiyTKE?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Material</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1Wru1yPqpjcwwkuhnhVvy2hWTvkgXXitC/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+    
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('machine-mechanics-table', this)">
+                            <span>Mechanics Of Machine</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="machine-mechanics-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://youtube.com/playlist?list=PLWSBml97d5usaUMOnlyftqN2keWNj6h8X&si=Be81-ThcPUhrTS_q" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1rFXTPZyls63KRZXa_OGKZxocxgMj7GG_?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1KwzHuae3aRwcmQUo_IEsz7WHU21jiG4C?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/11sXaq1pXM2LmlhimprkZ0wD3EwuBaUdf?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1bZ2WZSw6QjRh4y6kbOh2O7Kmni3V5cfX?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+    
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('cpp-table', this)">
+                            <span>C++</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="cpp-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">C++</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://youtube.com/playlist?list=PLvjKIL6x1re5UDtUpcIH5mwuMO1KpCiGJ&si=XqzkUv2BNH2xlP0g" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">C++</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1EZmwcGs1rua9FrIt-6gz5vQL2NitcEqC?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">C++</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1aqPj-tnN1RZClNCNuYJ3yfdVyTEo8qgH?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">C++</td><td class="p-3 border border-gray-400">Sheet Solution</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1arti5hGKncJCpN7VNldwiL6_IetSp6zY?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">C++</td><td class="p-3 border border-gray-400">Quiz</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1rBuOz0Lvo1lTyv-1D3cVwE5RwtcJofyl?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">C++</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1Mj_kbGimVSKDf3obu_uszWRResNnKVtE?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">C++</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1apiUdLY5XbPV40nxBXECwIxdqBk6rVtP?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">C++</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1aoRKFVL-_c9vTjvmOghHGXmeUvGkB5dx?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+    
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('circuit-theory-table', this)">
+                            <span>Circuit Theory</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="circuit-theory-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Circuit</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://youtube.com/playlist?list=PLm877Wx3hfJ37R7tf8KaLhYXBrKtCLjzy&si=nMgZvMxDMby-Z9On" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Circuit</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1EiP-QlJHaG9DWBgUguUDh-xWkKsBGPgS?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Circuit</td><td class="p-3 border border-gray-400">Lap</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1xsf4Rfa-H7X3twbgzdMvol3etSPAyoIE?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Circuit</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1ElLAGtMfTtVfzUng9tW_mq2BjiaTYQT2?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Circuit</td><td class="p-3 border border-gray-400">Sheet Solution</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1ElrQWJ6erE3DCGkuooTd9N8znq5xEUsP?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Circuit</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1MkL2Pdm5CHra_x2wIYd288gsCHNYHxCf?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Circuit</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1avDr7kC8gPi1qYeVguDZttVoJQ1vFH76?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Circuit</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1atHs965euk56XMgiJbPuzOtRWLXyf3B4?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+                    </div>
+    
+                    <!-- Content for Term 2 (Semester 4) -->
+                    <div id="term2-content" class="content-box hidden space-y-6">
+                        <h2 class="text-2xl font-bold text-center mb-4">
+                            Level 100 - Semester 4 (Spring)
+                        </h2>
+    
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('stress-analysis-table', this)">
+                            <span>Stress Analysis</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="stress-analysis-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Stress</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://youtu.be/RVYGrFL3aDY?si=-J60mKqVE79uwl9H" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Stress</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1VZlDjSaZlkCRtR450FDi0qvKiVgW4WDX?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Stress</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Stress</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1E-RYX83ngSqriY2KQ2MxNV5XSzd4HsNE?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Stress</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/11Q-uiFyqHRAELjKWfa8LWDuEdehuyvy6?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Stress</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </table></div>
+    
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('numerical-techniques-table', this)">
+                            <span>Numerical Techniques</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="numerical-techniques-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Numerical</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://youtube.com/@thrwt75?si=7H-vKeRVLQlbgz9-" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Numerical</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1VZ-ZVy-4G9TXRgBJlisoEoqoiZiXfyAN?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Numerical</td><td class="p-3 border border-gray-400">Quizzes</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1oinzKfq7umAPkKyw1b4IW30KOMNC6-3_?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Numerical</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1oinzKfq7umAPkKyw1b4IW30KOMNC6-3_?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Numerical</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1gx5UVxKGYqq02no97Um_c4OyxRzcZiOj?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Numerical</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1AkGHX5MxAi29jE_b-EjQuqLEWs42lBTX?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+                        
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('machine-drawing-table', this)">
+                            <span>Machine Drawing</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="machine-drawing-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Drawing</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://znueg-my.sharepoint.com/:f:/g/personal/29212023100207_meceng_znu_edu_eg/EmeDTytHfIJKuT7uKZj1SYEBI3bqdDOgPuugqTdU4rsJsA?e=ISjIbD" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Drawing</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1AJJABtT5wRHhhYcQ9Q9gXp2rCj335_5Q?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Drawing</td><td class="p-3 border border-gray-400">Drawings</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1PxeFWGDOS5rCQMe_Ky4BH32bz-CnDRa3/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Drawing</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1KLIevhyfWDe9dXkFMtWyk6Ta3HMToL5Z?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Drawing</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1B3rHHIfvSSnPh5XhYhIbIdNMarNNr2K2?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+                        
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('introduction-to-law-table', this)">
+                            <span>Introduction To Law</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="introduction-to-law-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Intro to Law</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1VNnCHv_tiOlhdV5j7ZwNzCDIVVsDGx_f?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Intro to Law</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1UjS321APVNMHd40ipWUJ7ZJFfjo06m5Q?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Intro to Law</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1I3rqmY0bEpL-jSX24WLnSGqJqcLn-W3T?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Intro to Law</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1ZYYdE4FgM1lZd3lr3c0vTe4JRxX0KeKx?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+                        
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('human-resource-table', this)">
+                            <span>Human Resource</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="human-resource-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Human Resource</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1VMarzl98y5mwaEwY7DPY1QHdenA5eCQU?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Human Resource</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1N93Pzu0h-XpHR7NAPCfuD9i1dmnW9mSZ/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+                        
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('electrical-systems-table', this)">
+                            <span>Electrical Systems</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="electrical-systems-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electrical Systems</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://youtube.com/playlist?list=PLtT3xTwhHVv1J8H1tqPXhQ8kFVKhmcsxb&si=we40i_q2A2UGGYOQ" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electrical Systems</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1V9huAHu8VSOs6iigP-nX8x78Z6FhMXmo?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electrical Systems</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1VBLCp5tLWlsS0Qvb4kG_gIjVByE3qXKM?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electrical Systems</td><td class="p-3 border border-gray-400">sheets solution</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1VLmprkwghZZ5F4Q7DsolFkUi1XXtbJwT?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electrical Systems</td><td class="p-3 border border-gray-400">DR Anany Link</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1OJM7kw_tIAsm4eswJhBaracuga5-WJam" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electrical Systems</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1v6MoCCL4CsWkMWZHWPEOFHxBDt_KGB17?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+
+                        <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('intro-to-mechatronics-table', this)">
+                            <span>Intro to Mechatronics</span>
+                            <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="overflow-x-auto"><table id="intro-to-mechatronics-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                            <thead>
+                                <tr class="bg-gray-300 text-lg">
+                                    <th class="p-3 border border-gray-400">Subject</th>
+                                    <th class="p-3 border border-gray-400">Type</th>
+                                    <th class="p-3 border border-gray-400">Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Intro to Mechatronics</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1GEvlldKpKR0Md4ear91Q6RMTzRSXW1Kl/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Intro to Mechatronics</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1VSiJV7BBEwwAmuZ3XCejSnQhaYxtCbEO?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Intro to Mechatronics</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1CEVx-PJ-57MjhQ_fpgFzTtoJzN-QRA8n/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Intro to Mechatronics</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1T_2-Do5zJw1l8IEGC1GqVKOUSZZPiXrS/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                                <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Intro to Mechatronics</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1FxrY-ipuAIoiRVB5dDadGAKy_EF0L_i6?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            </tbody>
+                        </table></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Back button below the card -->
+            <div class="mt-8 flex justify-center">
+                <a href="index.html" class="bg-gray-800 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-gray-700 transition-colors duration-200">
+                    Return to Main Page
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            showTermSelector();
+        });
+
+        // Function to show the main term selection page and center the card
+        function showTermSelector() {
+            document.getElementById('term-selector-container').style.display = 'flex';
+            document.getElementById('term-content-container').style.display = 'none';
+        
+            // Collapse all tables and reset arrows
+            const allTables = document.querySelectorAll('table');
+            allTables.forEach(table => {
+                table.style.display = 'none';
+            });
+            const allButtons = document.querySelectorAll('.main-subject');
+            allButtons.forEach(btn => {
+                btn.classList.remove('active');
+                const arrowIcon = btn.querySelector('.arrow-icon');
+                if (arrowIcon) {
+                    arrowIcon.classList.remove('rotated');
+                }
+            });
+            // Reset term selection buttons to their original state
+            const termButtons = document.querySelectorAll('.term-selector button');
+            termButtons.forEach(btn => {
+                btn.classList.remove('active-term-button');
+                btn.classList.remove('bg-vibrant-green');
+                btn.classList.add('bg-gray-200');
+            });
+        }
+        
+        // Function to toggle the visibility of the tables
+        function toggleTable(tableId, buttonElement) {
+            const table = document.getElementById(tableId);
+            const arrowIcon = buttonElement.querySelector('.arrow-icon');
+            
+            // Toggle the visibility of the table
+            if (table.style.display === 'none' || table.style.display === '') {
+                table.style.display = 'table';
+                buttonElement.classList.add('active');
+                arrowIcon.classList.add('rotated');
+            } else {
+                table.style.display = 'none';
+                buttonElement.classList.remove('active');
+                arrowIcon.classList.remove('rotated');
+            }
+        }
+
+        // Function to show the content for a specific term and move the card to the top
+        function showTerm(termId, buttonElement) {
+            // Hide the term selector and show the content
+            document.getElementById('term-selector-container').style.display = 'none';
+            document.getElementById('term-content-container').style.display = 'block';
+
+            // Hide all content boxes first
+            const contentBoxes = document.querySelectorAll('.content-box');
+            contentBoxes.forEach(box => {
+                box.classList.add('hidden');
+            });
+            // Show the selected content box
+            document.getElementById(termId).classList.remove('hidden');
+
+            // Reset all term buttons
+            const termButtons = document.querySelectorAll('.term-selector button');
+            termButtons.forEach(btn => {
+                btn.classList.remove('active-term-button');
+                btn.classList.remove('bg-vibrant-green');
+                btn.classList.add('bg-gray-200');
+            });
+            
+            // Highlight the active button
+            buttonElement.classList.add('active-term-button');
+            buttonElement.classList.remove('bg-gray-200');
+            buttonElement.classList.add('bg-vibrant-green');
+        }
+        window.addEventListener('load', () => {
+    const savedSubject = localStorage.getItem('openSubject');
+    if (!savedSubject) return;
+
+    // استخراج الترم من الـ URL (مثل #term1)
+    const hash = window.location.hash.substring(1); // يطلع "term1" أو "term2"
+    let termToOpen = null;
+    if (hash === 'term1' || hash === 'term2') {
+        termToOpen = hash;
+    }
+
+    // دالة لفتح الترم
+    function openTerm() {
+        if (termToOpen) {
+            const termButton = document.getElementById(termToOpen + '-button');
+            if (termButton && termButton.onclick) {
+                termButton.click(); // اضغط على زرار الترم
+            } else if (typeof showTerm === 'function') {
+                showTerm(termToOpen + '-content', termButton);
+            }
+        }
+    }
+
+    // دالة لفتح المادة
+    function openSubject() {
+        const lowerSaved = savedSubject.toLowerCase().trim();
+        const subjects = document.querySelectorAll('.main-subject');
+        
+        const target = Array.from(subjects).find(el => {
+            const text = el.textContent.toLowerCase().trim();
+            // يقبل أي تطابق جزئي (إنجليزي أو عربي أو الاثنين)
+            return text.includes(lowerSaved) || lowerSaved.includes(text);
+        });
+
+        if (target) {
+            // لو فيه أسهم (level100/200)
+            const arrow = target.querySelector('.arrow-icon');
+            if (arrow) {
+                arrow.classList.add('rotated');
+            }
+            
+            // اضغط على الـ div أو نفذ الـ onclick
+            if (typeof toggleTable === 'function') {
+                const tableId = target.getAttribute('onclick').match(/'([^']+)'/)[1];
+                toggleTable(tableId, target);
+            } else {
+                target.click(); // لـ level000
+            }
+            
+            // سكرول ناعم
+            setTimeout(() => {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    }
+
+    // نفذ بالترتيب: أول الترم، بعدين المادة
+    setTimeout(() => {
+        openTerm();
+        setTimeout(openSubject, 600); // تأخير إضافي عشان الترم يفتح الأول
+    }, 800);
+
+    // نظف الـ localStorage
+    localStorage.removeItem('openSubject');
+});
+    </script>
+</body>
+</html>

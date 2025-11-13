@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <title>Course Material</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom colors and fonts for a consistent, modern look */
+        :root {
+            --light-green: #bbf7d0;
+            --dark-green: #15803d;
+            --vibrant-green: #16a34a;
+            --link-green: #22c55e;
+            --subject-text-color: #0a460a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            background: linear-gradient(-45deg, var(--light-green), #d1fae5, var(--vibrant-green), #a7f3d0);
+            background-size: 400% 400%;
+            animation: energetic-gradient-animation 15s ease infinite;
+            color: var(--subject-text-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes energetic-gradient-animation {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 75% 25%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 25% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Styling for the main card and its wrapper */
+        .card-wrapper {
+            padding: 1rem;
+            display: block;
+            max-width: 800px; /* Adjusted for smaller width */
+            width: 100%;
+        }
+
+        .card-container {
+            max-width: 800px; /* Adjusted for smaller width */
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            /* Default darker shadow */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); 
+            padding: 2rem;
+            position: relative;
+            /* Initial state for startup animation */
+            opacity: 0.8; /* Faint opacity when not hovered */
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            margin-top: 4rem;
+        }
+
+        /* New hover effect for the main card container */
+        .card-container:hover {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+            transform: translateY(-5px); /* Card lifts slightly on hover */
+            opacity: 1; /* Full opacity on hover */
+        }
+        
+        .logo-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .term-selector button {
+            transition: all 0.3s ease;
+        }
+
+        .term-selector button.active-term-button {
+            border-bottom: 3px solid var(--vibrant-green);
+            transform: scale(1.05);
+        }
+        
+        .main-subject {
+            background-color: var(--vibrant-green); /* Default darker color */
+            color: #ffffff; /* White text for contrast */
+            transition: all 0.3s ease-in-out; /* Smoother transition */
+            cursor: pointer;
+        }
+
+        .main-subject.active {
+            background-color: var(--vibrant-green);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(22, 163, 74, 0.4);
+        }
+        
+        .main-subject:hover {
+            transform: translateY(-5px) scale(1.01); /* Lifts and scales slightly */
+            background-color: var(--dark-green); /* Faint to darker color on hover */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Nicer shadow on hover */
+        }
+        
+        .content-box {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .arrow-icon {
+            transition: transform 0.3s ease-in-out;
+            margin-left: auto;
+        }
+        
+        .arrow-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .term-selector {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .term-selector {
+                flex-direction: row;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="card-wrapper" class="card-wrapper">
+        <div id="card-container" class="card-container px-4 sm:px-8">
+            <div class="logo-container w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-lg">
+                <img src="logo.png" alt="Card Logo" class="w-full h-full rounded-full object-cover">
+                </div>
+            
+            <h1 class="text-4xl font-bold text-center mb-8 pt-12">
+                Course Material
+            </h1>
+    
+            <div id="term-selector-container" class="term-selector flex justify-center mb-8">
+                <button id="term1-button"
+                    class="px-6 py-3 rounded-t-lg font-bold text-lg focus:outline-none bg-gray-200"
+                    onclick="showTerm('term1-content', this)">
+                    Level 200 - Semester 5
+                </button>
+                <button id="term2-button"
+                    class="px-6 py-3 rounded-t-lg font-bold text-lg focus:outline-none bg-gray-200"
+                    onclick="showTerm('term2-content', this)">
+                    Level 200 - Semester 6
+                </button>
+            </div>
+    
+            <div id="term-content-container" style="display: none;">
+                <div class="mb-6 flex justify-center">
+                    <button onclick="showTermSelector()" class="bg-gray-800 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-gray-700 transition-colors duration-200">
+                        Back to Semesters
+                    </button>
+                </div>
+
+                <div id="term1-content" class="content-box hidden space-y-6">
+                    <h2 class="text-2xl font-bold text-center mb-4">
+                        Level 200 - Semester 5 (Fall)
+                    </h2>
+                    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('university-elective-1-table', this)">
+                        <span>Seminar</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="university-elective-1-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Seminar</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('production-and-manufacturing-table', this)">
+                        <span>Manufacturing Processes</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="production-and-manufacturing-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Manufacturing Processes</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1gD0wvqZ0S82C7JnZtUvj4g-wPE11m-sC/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Manufacturing Processes</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1Z_eLiAAslWFPqB11hZROq8qv5BW9l9AK/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Manufacturing Processes</td><td class="p-3 border border-gray-400">MID and FINAL</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1TAiVasgykYdeJ2T-Cmsk4p_0nZEBLt73/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Manufacturing Processes</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1HxkjLsJFCuvhRvYeW9RhYtTkVijO83Kg" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('mechanics-of-materials-table', this)">
+                        <span>Machine Theory</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="mechanics-of-materials-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Theory</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/14MrbhaX35ihDaGF_LWdBVVbAU5zesLKc?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Theory</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1NjuaOWqugC2Y9Q_rzcMmzWOozVcas95W/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Theory</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1jOE08JRtLaBWJPOVDe0Ykj7M3vLUu0Lb/view?usp=drivesdk#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Theory</td><td class="p-3 border border-gray-400">Midterm and final </td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1yBWYlLmQxwR2x6HsRtIB3SvfBWD_kR0V/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Theory</td><td class="p-3 border border-gray-400">Quizzes</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1aN9Yft8zUTE1tqQWKKOq1vmHuB9n5I7B/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Theory</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1735LbbTntvqo3M4PqUvjer2L3Nr47jew/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+                    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('management-table', this)">
+                        <span>Project Management</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="management-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Project Management</td><td class="p-3 border border-gray-400">Explanation </td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1B6PBikBoaYsGt1IpuGLLS6NaMQng1G6n" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Project Management</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1BvhdPt3AfRKkB6h6Eyvs3WH5lUV3Q7xv" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Project Management</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1SWRr9h_m3eGsIEk03IuJ69-83U3j58Kz/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Project Management</td><td class="p-3 border border-gray-400">Midterm and final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1Pnh6ZiZz3DwyEH2JKXKXDmftTjc7xu-1/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Project Management</td><td class="p-3 border border-gray-400">Quizzes</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/151PtPaSnkyfMNg7yG0E-ib-X8XYtIUa-/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Project Management</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/102aSd9n6HAKyAdwgto0kUabPgNui7wiE" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('Statistics-table', this)">
+                        <span>Statistics</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="Statistics-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Statistics</td><td class="p-3 border border-gray-400">Explanation</td><td class="p-3 border border-gray-400"><a href="https://youtube.com/@mostafaashour-easy.learning?si=dPFIxlAtrubXKc8b" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Statistics</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1nmi6EAaZIB7tlF0pqY0d_0Z2N0MAy3kt/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Statistics</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1N4klbLt39BUhw-_ECyFhYKV_Pd3zqqBw/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Statistics</td><td class="p-3 border border-gray-400">Midterm and Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1hc8g49NfGwv9EW6ohFLxdRxguSZ9heYT/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Statistics</td><td class="p-3 border border-gray-400">QUIZZES</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1KEChqylogWHiuxRrlm9Kh-He50WTPUkt/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Statistics</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1-pqbYPOZbrUpeTeddggRHWaAMr2x3FD-" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('fluid-mechanics-table', this)">
+                        <span>Fluid Mechanics</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="fluid-mechanics-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Fluid Mechanics</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1LS_RKfNxa9fOe0us7L1-FeihOdaNXYkE/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Fluid Mechanics</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1LfdLoW_xmjH-4YWPESGdbeKX2axvmoOD/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Fluid Mechanics</td><td class="p-3 border border-gray-400">Midterm & Final</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1QSNbpvFcG6TEJqO2ZEbBxQA0Vc1fi0yZ/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Fluid Mechanics</td><td class="p-3 border border-gray-400">LAB</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1GCerttXN3-TP1k4xuKBYwVEfs2B1UtMb/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Fluid Mechanics</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1OFk2Nca-h3Yakw2dnDx9gYd0AZpmqySp" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Fluid Mechanics</td><td class="p-3 border border-gray-400">Assignments</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1Am9mRtADcaMVwRNxbYVzn-IqxotaYSOz/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Fluid Mechanics</td><td class="p-3 border border-gray-400">QUIZZES</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1T-aTvYWHOq9WZ4vzB7nMEHvvsEXwu4ct/view?usp=drivesdk" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Fluid Mechanics</td><td class="p-3 border border-gray-400">REFERENCE</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1eRAtK5VE4slewcNAVZMLrmnSxEyNvcWS" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('microprocessors-table', this)">
+                        <span>Engineering Electronics</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="microprocessors-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Electronics</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1FM6sL3UXq_QNYCsmgGeSSWA0aDp76ept/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Electronics</td><td class="p-3 border border-gray-400">Midterm & FINAL</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1zid3L6GD0LkFlpMPjCHl1mVFIrsuCQiq/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Electronics</td><td class="p-3 border border-gray-400">QUIZZES</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1EkJnpg04GTZjaaZxRb4vGXOIV4joSyTK/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Electronics</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1RoN54mQm6cRHUqSZQeBISyEwdnQ4WoRv?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Electronics</td><td class="p-3 border border-gray-400">REFERENCE</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/drive/folders/1iIbnjq46QcRCXsSVzLJtZj9B2b2akNgZ?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Electronics</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="https://drive.google.com/file/d/1lOjVcAIgLrDCo98_zGsiNy8-KeJqGHxZ/view?usp=drive_link" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+                </div>
+
+                <div id="term2-content" class="content-box hidden space-y-6">
+                    <h2 class="text-2xl font-bold text-center mb-4">
+                        Level 200 - Semester 6 (Spring)
+                    </h2>
+    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('university-elective-2-table', this)">
+                        <span>University Elective (2)</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="university-elective-2-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">University Elective (2)</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">University Elective (2)</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">University Elective (2)</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">University Elective (2)</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">University Elective (2)</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('electronic-circuits-table', this)">
+                        <span>Electronic Circuits</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="electronic-circuits-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electronic Circuits</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electronic Circuits</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electronic Circuits</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electronic Circuits</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Electronic Circuits</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+                    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('engineering-economy-table', this)">
+                        <span>Engineering Economy</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="engineering-economy-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Economy</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Economy</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Economy</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Economy</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Engineering Economy</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+                    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('machine-elements-design-table', this)">
+                        <span>Machine Elements Design</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="machine-elements-design-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Elements Design</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Elements Design</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Elements Design</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Elements Design</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Machine Elements Design</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+                    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('mechanical-vibrations-table', this)">
+                        <span>Mechanical Vibrations</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="mechanical-vibrations-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Mechanical Vibrations</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Mechanical Vibrations</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Mechanical Vibrations</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Mechanical Vibrations</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Mechanical Vibrations</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('heat-and-mass-transfer-table', this)">
+                        <span>Heat and Mass Transfer</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="heat-and-mass-transfer-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Heat and Mass Transfer</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Heat and Mass Transfer</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Heat and Mass Transfer</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Heat and Mass Transfer</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Heat and Mass Transfer</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+    
+                    <div class="main-subject p-4 flex items-center text-xl rounded-lg shadow-md cursor-pointer transition-all duration-300 hover:bg-vibrant-green-light" onclick="toggleTable('digital-logic-design-table', this)">
+                        <span>Digital Logic Design</span>
+                        <svg class="arrow-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="overflow-x-auto"><table id="digital-logic-design-table" class="w-full mt-4 rounded-lg overflow-hidden shadow-lg border-collapse" style="display: none;">
+                        <thead>
+                            <tr class="bg-gray-300 text-lg">
+                                <th class="p-3 border border-gray-400">Subject</th>
+                                <th class="p-3 border border-gray-400">Type</th>
+                                <th class="p-3 border border-gray-400">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Digital Logic Design</td><td class="p-3 border border-gray-400">Lectures</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Digital Logic Design</td><td class="p-3 border border-gray-400">Sheets</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Digital Logic Design</td><td class="p-3 border border-gray-400">Midterm</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Digital Logic Design</td><td class="p-3 border border-gray-400">Final</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                            <tr class="bg-white hover:bg-gray-100 transition-colors duration-200"><td class="p-3 border border-gray-400">Digital Logic Design</td><td class="p-3 border border-gray-400">Revision</td><td class="p-3 border border-gray-400"><a href="#" class="text-link-green font-semibold hover:underline">View</a></td></tr>
+                        </tbody>
+                    </table></div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 flex justify-center">
+            <a href="index.html" class="bg-gray-800 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-gray-700 transition-colors duration-200">
+                Return to Main Page
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            showTermSelector();
+        });
+
+        // Function to show the main term selection page and center the card
+        function showTermSelector() {
+            document.getElementById('term-selector-container').style.display = 'flex';
+            document.getElementById('term-content-container').style.display = 'none';
+        
+            // Collapse all tables and reset arrows
+            const allTables = document.querySelectorAll('table');
+            allTables.forEach(table => {
+                table.style.display = 'none';
+            });
+            const allButtons = document.querySelectorAll('.main-subject');
+            allButtons.forEach(btn => {
+                btn.classList.remove('active');
+                const arrowIcon = btn.querySelector('.arrow-icon');
+                if (arrowIcon) {
+                    arrowIcon.classList.remove('rotated');
+                }
+            });
+            // Reset term selection buttons to their original state
+            const termButtons = document.querySelectorAll('.term-selector button');
+            termButtons.forEach(btn => {
+                btn.classList.remove('active-term-button');
+                btn.classList.remove('bg-vibrant-green');
+                btn.classList.add('bg-gray-200');
+            });
+        }
+        
+        // Function to toggle the visibility of the tables
+        function toggleTable(tableId, buttonElement) {
+            const table = document.getElementById(tableId);
+            const arrowIcon = buttonElement.querySelector('.arrow-icon');
+            
+            // Toggle the visibility of the table
+            if (table.style.display === 'none' || table.style.display === '') {
+                table.style.display = 'table';
+                buttonElement.classList.add('active');
+                arrowIcon.classList.add('rotated');
+            } else {
+                table.style.display = 'none';
+                buttonElement.classList.remove('active');
+                arrowIcon.classList.remove('rotated');
+            }
+        }
+
+        // Function to show the content for a specific term and move the card to the top
+        function showTerm(termId, buttonElement) {
+            // Hide the term selector and show the content
+            document.getElementById('term-selector-container').style.display = 'none';
+            document.getElementById('term-content-container').style.display = 'block';
+
+            // Hide all content boxes first
+            const contentBoxes = document.querySelectorAll('.content-box');
+            contentBoxes.forEach(box => {
+                box.classList.add('hidden');
+            });
+            // Show the selected content box
+            document.getElementById(termId).classList.remove('hidden');
+
+            // Reset all term buttons
+            const termButtons = document.querySelectorAll('.term-selector button');
+            termButtons.forEach(btn => {
+                btn.classList.remove('active-term-button');
+                btn.classList.remove('bg-vibrant-green');
+                btn.classList.add('bg-gray-200');
+            });
+            
+            // Highlight the active button
+            buttonElement.classList.add('active-term-button');
+            buttonElement.classList.remove('bg-gray-200');
+            buttonElement.classList.add('bg-vibrant-green');
+        }
+        window.addEventListener('load', () => {
+    const savedSubject = localStorage.getItem('openSubject');
+    if (!savedSubject) return;
+
+    // استخراج الترم من الـ URL (مثل #term1)
+    const hash = window.location.hash.substring(1); // يطلع "term1" أو "term2"
+    let termToOpen = null;
+    if (hash === 'term1' || hash === 'term2') {
+        termToOpen = hash;
+    }
+
+    // دالة لفتح الترم
+    function openTerm() {
+        if (termToOpen) {
+            const termButton = document.getElementById(termToOpen + '-button');
+            if (termButton && termButton.onclick) {
+                termButton.click(); // اضغط على زرار الترم
+            } else if (typeof showTerm === 'function') {
+                showTerm(termToOpen + '-content', termButton);
+            }
+        }
+    }
+
+    // دالة لفتح المادة
+    function openSubject() {
+        const lowerSaved = savedSubject.toLowerCase().trim();
+        const subjects = document.querySelectorAll('.main-subject');
+        
+        const target = Array.from(subjects).find(el => {
+            const text = el.textContent.toLowerCase().trim();
+            // يقبل أي تطابق جزئي (إنجليزي أو عربي أو الاثنين)
+            return text.includes(lowerSaved) || lowerSaved.includes(text);
+        });
+
+        if (target) {
+            // لو فيه أسهم (level100/200)
+            const arrow = target.querySelector('.arrow-icon');
+            if (arrow) {
+                arrow.classList.add('rotated');
+            }
+            
+            // اضغط على الـ div أو نفذ الـ onclick
+            if (typeof toggleTable === 'function') {
+                const tableId = target.getAttribute('onclick').match(/'([^']+)'/)[1];
+                toggleTable(tableId, target);
+            } else {
+                target.click(); // لـ level000
+            }
+            
+            // سكرول ناعم
+            setTimeout(() => {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    }
+
+    // نفذ بالترتيب: أول الترم، بعدين المادة
+    setTimeout(() => {
+        openTerm();
+        setTimeout(openSubject, 600); // تأخير إضافي عشان الترم يفتح الأول
+    }, 800);
+
+    // نظف الـ localStorage
+    localStorage.removeItem('openSubject');
+});
+    </script>
+</body>
+</html>

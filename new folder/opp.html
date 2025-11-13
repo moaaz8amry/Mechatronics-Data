@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل طلاب الميكاترونكس | جامعة الزقازيق الأهلية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Root Variables (Copied from index.html) --- */
+        :root {
+            --primary-color: #1A741A; /* Darker Forest Green for better contrast */
+            --secondary-color: #5A9367; /* Medium Forest Green */
+            --accent-color: #8CB48C; /* Light Forest Green */
+            --accent-gradient-start: #FFFFFF;
+            --accent-gradient-end: #1A741A;
+            --light-bg: #F8F9FA; /* Very light grey */
+            --white: #FFFFFF;
+            --dark-text: #1C1F23; /* Darker charcoal for better readability */
+            --medium-text: #4a5568; /* Darker grey for better readability */
+            --border-light: #DEE2E6; /* Lighter border color */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.25);
+            --border-radius-sm: 8px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 32px;
+            --spacing-xs: 0.75rem;
+            --spacing-sm: 1.25rem;
+            --spacing-md: 2rem;
+            --spacing-lg: 3rem;
+            --spacing-xl: 4.5rem;
+            --background-body: linear-gradient(to bottom right, var(--accent-gradient-start) 0%, var(--accent-gradient-end) 100%);
+            --background-body-scrolled: linear-gradient(to bottom right, var(--light-bg) 0%, var(--accent-color) 100%);
+            --section-bg: rgba(255, 255, 255, 0.5);
+            --section-border: 1px solid rgba(222, 226, 230, 0.5);
+            --hero-bg-overlay: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+            --mobile-header-bg: rgba(255, 255, 255, 0.7); /* UPDATED from 0.98 */
+            --desktop-header-bg: rgba(255, 255, 255, 0.98);
+            --nav-bg: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.7)); /* UPDATED */
+        }
+
+        /* --- Base Styles --- */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            background: var(--background-body);
+            background-size: 600% 600%;
+            animation: gradientBG 6s ease infinite;
+            background-attachment: fixed;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--dark-text);
+            line-height: 1.7;
+            padding-top: 70px; /* للموبايل عشان الهيدر الثابت */
+        }
+        main {
+            flex-grow: 1;
+            margin-top: 0; /* للموبايل */
+            transition: margin-top 0.3s ease;
+            will-change: filter, margin-top;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Layout Components --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-sm);
+            box-sizing: border-box;
+        }
+
+        /* --- NEW Mobile Header (from index.html) --- */
+        .mobile-header { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: var(--mobile-header-bg);
+            backdrop-filter: blur(12px) saturate(1.2); /* UPDATED */
+            -webkit-backdrop-filter: blur(12px) saturate(1.2); /* ADDED */
+            box-shadow: var(--shadow-md);
+            z-index: 1000;
+            display: flex;
+            justify-content: center; /* Center the content */
+            align-items: center;
+            padding: 0 var(--spacing-sm);
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease; /* UPDATED */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4); /* ADDED */
+        }
+
+        .mobile-header .header-logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mobile-header .header-logo-wrapper img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .mobile-header .header-logo-wrapper .header-title-text {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        /* --- Fixed Logo/Menu Toggle (for Scrolled Desktop) --- */
+        .fixed-logo-menu-toggle {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 1001;
+            cursor: pointer;
+            width: auto;
+            height: 70px;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+            background-color: var(--white);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            border: none;
+            padding: 0 var(--spacing-sm);
+            box-sizing: border-box;
+            will-change: transform, box-shadow, opacity;
+        }
+
+        .fixed-logo-menu-toggle img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .fixed-logo-menu-toggle:hover {
+            transform: none;
+            box-shadow: var(--shadow-md);
+            background-color: var(--white);
+            border-color: transparent;
+            width: auto;
+            padding: 0 15px;
+        }
+
+        .fixed-logo-menu-toggle .menu-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            line-height: 1;
+            padding: 5px;
+            transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+            cursor: pointer;
+            width: 50px;
+            text-align: center;
+            opacity: 1;
+        }
+        
+        .fixed-logo-menu-toggle .menu-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, width 0.3s ease;
+            white-space: nowrap;
+            padding: 5px 0;
+        }
+
+        .fixed-logo-menu-toggle:hover .menu-icon {
+            opacity: 0;
+            width: 0;
+            padding: 5px 0;
+        }
+
+        .fixed-logo-menu-toggle:hover .menu-text {
+            opacity: 1;
+            width: auto;
+            padding: 5px 10px;
+        }
+
+        .fixed-logo-menu-toggle .header-title-text-mobile {
+            display: none;
+        }
+
+
+        /* --- Desktop Main Header (Initial state on desktop) --- */
+        .desktop-main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background-color: rgba(255,255,255,0.98);
+            box-shadow: var(--shadow-md);
+            transition: height 0.3s ease, padding 0.3s ease, background-color 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 999;
+            padding: 0 40px;
+            display: none;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: auto;
+            max-width: none;
+            will-change: height, padding, background-color, opacity, visibility;
+        }
+
+        .desktop-main-header.scrolled {
+            height: 0;
+            padding: 0;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .desktop-main-header .header-content-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: gap 0.3s ease;
+            will-change: gap;
+        }
+
+        .desktop-main-header .header-logo-img {
+            height: 70px;
+            width: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: height 0.3s ease, width 0.3s ease;
+            will-change: height, width;
+        }
+
+        .desktop-main-header .header-title-text {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 0;
+            transition: font-size 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+            white-space: nowrap;
+            background: none;
+            background-size: auto;
+            animation: none;
+            backdrop-filter: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+            border: none;
+            margin-left: 1rem;
+            will-change: font-size, opacity, visibility;
+        }
+
+        /* --- Main Navigation (Mobile Slide-out / Desktop Overlay Menu) --- */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80vw;
+            max-width: 280px;
+            height: 100%;
+            background: var(--nav-bg);
+            background-size: 600% 600%;
+            animation: gradientBG 6s ease infinite;
+            backdrop-filter: blur(10px) saturate(1.5);
+            box-shadow: var(--shadow-lg);
+            transition: right 0.3s ease, transform 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+            z-index: 999;
+            padding: var(--spacing-lg) var(--spacing-md);
+            padding-top: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            border-top-left-radius: var(--border-radius-lg);
+            border-bottom-left-radius: var(--border-radius-lg);
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            box-sizing: border-box;
+            will-change: right, transform, backdrop-filter, box-shadow;
+            border-top: 1px solid rgba(255, 255, 255, 0.4); /* ADDED */
+        }
+
+        .main-nav.active {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .main-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .main-nav-list li a {
+            display: block;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--dark-text);
+            border-radius: var(--border-radius-md);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: transparent;
+            box-shadow: none;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            text-align: right;
+            will-change: background-color, color, transform, box-shadow;
+        }
+
+        .main-nav-list li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-out;
+            will-change: transform;
+        }
+
+        .main-nav-list li a:hover {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .main-nav-list li a:hover::after {
+            transform: translateX(0);
+        }
+
+        /* Overlay for when menu is active */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+            z-index: 998;
+            will-change: background-color, backdrop-filter;
+        }
+        .overlay.active {
+            display: block;
+        }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            color: var(--white);
+            padding: 6rem 1rem; /* Adjusted padding */
+            margin-top: 0;
+            min-height: 100vh; /* Make it fullscreen height */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%; /* Ensure it's full width */
+            box-sizing: border-box; /* Include padding in height/width */
+            animation: fadeIn 1s ease-in-out; /* Kept original animation */
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: var(--hero-bg-overlay), url('bg-1.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            filter: blur(5px);
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px; /* Max width from index.html */
+            margin: 0 auto;
+            padding: 0; /* Container will handle padding */
+        }
+
+        .hero-text {
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px) saturate(1.5);
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.3;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .highlight-text {
+            color: var(--primary-color);
+            text-shadow: none;
+            font-weight: 700;
+        }
+
+        .hero-intro {
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .hero-cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        /* --- Buttons --- */
+        .general-button {
+            display: inline-block;
+            padding: 1.1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--white);
+            background: var(--primary-color);
+            min-width: 200px;
+            margin: 0.5rem;
+        }
+
+        .general-button:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+        }
+
+        .general-button:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* NEW: Style for the mobile-only home button */
+        .mobile-only-home-button {
+            /* background: var(--secondary-color); /* Set a different background to distinguish it */ /* REMOVED */
+        }
+
+        .mobile-only-home-button:hover {
+            /* background: var(--accent-color); */ /* REMOVED */
+            /* box-shadow: var(--shadow-lg); */ /* REMOVED */
+            /* transform: translateY(-5px) scale(1.02); */ /* REMOVED */
+        }
+
+
+        /* --- Remove Button in Favorites --- */
+        .remove-button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            color: var(--white);
+            background: #FF4444; /* لون أحمر للإزالة */
+            margin-top: 10px;
+        }
+
+        .remove-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background: #CC0000;
+        }
+
+        .remove-button:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Cards Section */
+        .section-heading {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .card-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            flex: 1 1 280px;
+            background-color: white;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-height: 250px;
+            max-width: 320px;
+            position: relative;
+            border-right: 4px solid var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card .icon,
+        .card .mech-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        .card:hover .mech-icon {
+            color: var(--secondary-color);
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            color: var(--dark-text);
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: var(--medium-text);
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        /* Content Box for Advice */
+        .wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .content-box {
+            background-color: #d9fdd3;
+            border: 2px solid #b5e7b1;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            max-width: 1400px;
+            width: 100%;
+            padding: var(--spacing-lg);
+        }
+
+        @media (min-width: 768px) {
+            .content-box {
+                flex-direction: row;
+            }
+        }
+
+        .image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        @media (min-width: 768px) {
+            .image-container {
+                margin-bottom: 0;
+                margin-right: var(--spacing-md);
+                margin-left: 0;
+            }
+        }
+
+        .image-container img {
+            max-width: 400px;
+            width: 100%;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .text-container {
+            flex: 2;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .text-container h2 {
+            color: #059669;
+            font-size: 2rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .text-container h3 {
+            color: #059669;
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .text-container p {
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .text-container a {
+            align-self: flex-start;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: var(--border-radius-sm);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 15px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .text-container a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* --- Footer --- */
+        .site-footer {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: var(--spacing-xl) var(--spacing-sm);
+            margin-top: auto;
+            text-align: center;
+            border-top-left-radius: var(--border-radius-lg);
+            border-top-right-radius: var(--border-radius-lg);
+        }
+
+        .footer-content p {
+            font-size: 1rem;
+            margin: 0.8rem 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .footer-content .highlight {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        /* --- تنسيق زر القلب --- */
+        .favorite-icon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease;
+            z-index: 10;
+        }
+        .favorite-icon:hover {
+            transform: scale(1.2);
+        }
+        .card.favorited .favorite-icon {
+            color: #FF69B4; /* لون وردي جميل للقلب */
+        }
+
+        /* ستايل جديد لقسم المفضلة */
+        .favorite-section {
+            display: none; /* إخفاء القسم في البداية */
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .favorite-section .card-group {
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+        }
+
+        /* --- Media Queries --- */
+        @media (min-width: 768px) {
+            .mobile-header { 
+                display: none;
+            }
+
+            /* NEW: Hide the mobile-only home button on desktop */
+            .mobile-only-home-button {
+                display: none;
+            }
+
+            /* --- FIX 1: Hide mobile bottom nav on desktop --- */
+            .bottom-nav {
+                display: none !important;
+            }
+            /* --- END FIX 1 --- */
+
+            .fixed-logo-menu-toggle {
+                display: none;
+                opacity: 0;
+                visibility: hidden;
+            }
+            .fixed-logo-menu-toggle.scrolled-active {
+                display: flex;
+                opacity: 1;
+                visibility: visible;
+                bottom: 20px;
+                right: 20px;
+                top: auto;
+                width: auto;
+                height: 70px;
+                border-radius: 35px;
+                padding: 0 15px;
+                justify-content: flex-end;
+                border: 2px solid var(--primary-color);
+                flex-direction: row;
+                gap: 10px;
+            }
+            .fixed-logo-menu-toggle.scrolled-active img {
+                width: 50px;
+                height: 50px;
+                margin: 0;
+            }
+            .fixed-logo-menu-toggle.scrolled-active .header-title-text-mobile {
+                display: none;
+            }
+            .fixed-logo-menu-toggle.scrolled-active .menu-icon {
+                display: block;
+                width: auto;
+                opacity: 1;
+            }
+            .fixed-logo-menu-toggle.scrolled-active:hover .menu-icon {
+                opacity: 0;
+                width: 0;
+            }
+            .fixed-logo-menu-toggle.scrolled-active:hover .menu-text {
+                opacity: 1;
+                width: auto;
+            }
+            .fixed-logo-menu-toggle.menu-active {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+
+
+            .desktop-main-header {
+                display: flex;
+            }
+
+            .main-nav {
+                width: 300px;
+                padding-top: var(--spacing-lg);
+                right: -300px;
+                background: var(--nav-bg);
+                background-size: 600% 600%;
+                animation: gradientBG 6s ease infinite;
+                backdrop-filter: blur(10px) saturate(1.5);
+                box-shadow: var(--shadow-lg);
+                transition: right 0.3s ease, transform 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+            }
+            .main-nav.active {
+                right: 0;
+                transform: translateX(0);
+            }
+
+            .main-nav-list {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+                align-items: flex-start;
+            }
+
+            .main-nav-list li a {
+                padding: 1rem 1.5rem;
+                font-size: 1.1rem;
+                text-align: right;
+                border-radius: var(--border-radius-md);
+            }
+
+            .main-nav-list li a:hover {
+                background-color: var(--light-bg);
+                box-shadow: var(--shadow-sm);
+            }
+
+            .overlay {
+                display: none;
+            }
+            .overlay.active {
+                display: block;
+            }
+
+            body {
+                padding-top: 0;
+            }
+
+            main {
+                margin-top: 100px;
+                transition: margin-top 0.3s ease;
+            }
+            main.scrolled {
+                margin-top: 0;
+            }
+
+            .hero-section {
+                padding: 5.5rem var(--spacing-xl);
+                min-height: calc(100vh - 100px); /* Adjust for desktop header */
+            }
+
+            .hero-text h1 {
+                font-size: 3.2rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .desktop-main-header {
+                max-width: 1500px;
+                margin: 0 auto;
+            }
+
+            .hero-section {
+                padding: 5.5rem var(--spacing-xl);
+            }
+            .hero-text h1 {
+                font-size: 3.2rem;
+            }
+        }
+
+        /* NEW MEDIA QUERY FOR VERY SMALL MOBILE DEVICES */
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 4rem 0.5rem;
+                min-height: calc(100vh - 70px); /* Adjust for mobile header */
+            }
+            .hero-text {
+                padding: var(--spacing-sm) 0.5rem;
+            }
+            .hero-text h1 {
+                font-size: 1.8rem;
+                margin-bottom: 1rem;
+            }
+            .hero-intro {
+                font-size: 0.95rem;
+                margin-bottom: var(--spacing-sm);
+            }
+            .hero-cta-buttons .general-button {
+                padding: 1rem 2rem;
+                font-size: 1.05rem;
+                /* FIX: Changed from 100% to 92% to allow centering */
+                width: 92%;
+                min-width: unset;
+            }
+        }
+
+        /* New CSS for blurring main content */
+        /* FIX: Expanded selector to blur footer and home button as well */
+        main.blurred,
+        .site-footer.blurred,
+        .floating-home-button.blurred {
+            filter: blur(5px);
+            transition: filter 0.3s ease;
+            pointer-events: none;
+        }
+
+        .floating-home-button {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 999;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .floating-home-button:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-color);
+        }
+
+        .home-icon {
+            width: 30px;
+            height: 30px;
+            fill: currentColor;
+        }
+
+        /* --- Animations from index.html --- */
+        
+        /* FIX 1: Removed conflicting slideInRight/slideOutRight animations. 
+        The .main-nav element already uses a 'transition' on the 'right' property, 
+        which is cleaner and was being interfered with by these animations.
+        */
+        
+        .main-nav-list li {
+            opacity: 0;
+            transform: translateX(20px);
+            animation: fadeInListItem 0.3s ease-out forwards;
+        }
+
+        .main-nav.active .main-nav-list li:nth-child(1) { animation-delay: 0.1s; }
+        .main-nav.active .main-nav-list li:nth-child(2) { animation-delay: 0.15s; }
+        .main-nav.active .main-nav-list li:nth-child(3) { animation-delay: 0.2s; }
+        .main-nav.active .main-nav-list li:nth-child(4) { animation-delay: 0.25s; }
+        .main-nav.active .main-nav-list li:nth-child(5) { animation-delay: 0.3s; }
+        .main-nav.active .main-nav-list li:nth-child(6) { animation-delay: 0.35s; }
+
+        @keyframes fadeInListItem {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* --- NEW MOBILE STYLES (Copied from index.html) --- */
+        @media (max-width: 767px) {
+            .mobile-header {
+                display: flex;
+            }
+            .desktop-main-header,
+            .fixed-logo-menu-toggle {
+                display: none !important;
+            }
+            body {
+                padding-top: 70px;
+            }
+            main {
+                margin-top: 0; 
+            }
+            .main-nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80vw;
+                max-width: 280px;
+                height: 100%;
+                background: var(--nav-bg);
+                background-size: 600% 600%;
+                animation: gradientBG 6s ease infinite;
+                backdrop-filter: blur(10px) saturate(1.5);
+                box-shadow: var(--shadow-lg);
+                transition: right 0.3s ease, transform 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+                z-index: 999;
+                padding: var(--spacing-lg) var(--spacing-md);
+                padding-top: 120px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                border-top-left-radius: var(--border-radius-lg);
+                border-bottom-left-radius: var(--border-radius-lg);
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                box-sizing: border-box;
+                will-change: right, transform, backdrop-filter, box-shadow;
+            }
+
+            .main-nav.active {
+                right: 0;
+                transform: translateX(0);
+            }
+
+            .main-nav-list {
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
+                width: 100%;
+            }
+
+            .main-nav-list li a {
+                width: 100%;
+                text-align: right;
+                background: transparent;
+                box-shadow: none;
+                padding: 1rem 1.5rem;
+            }
+            
+            .overlay {
+                display: none;
+            }
+            .overlay.active {
+                display: block;
+            }
+            
+            body.blurred {
+                filter: none !important;
+                overflow: hidden; 
+            }
+        }
+        
+        @media (max-width: 767px) {
+
+            body {
+                font-size: 0.95rem;
+                padding-bottom: 92px;
+                overflow-x: hidden;
+                -webkit-font-smoothing: antialiased;
+            }
+            
+            .container {
+                padding: 0 0.9rem;
+            }
+            
+            section {
+                padding: 1.2rem 0.9rem !important;
+            }
+
+            .mobile-header { 
+                height: 64px;
+                padding: 0 12px;
+            }
+            .mobile-header .header-logo-wrapper img {
+                width: 40px;
+                height: 40px;
+            }
+            .mobile-header .header-logo-wrapper .header-title-text {
+                font-size: 1.05rem;
+            }
+            
+            .header-hidden { opacity: 0 !important; pointer-events: none; transition: opacity 0.28s ease; }
+            
+            .general-button {
+                width: 92%;
+                display: block;
+                margin: 0.5rem auto !important;
+                border-radius: 9999px !important;
+                padding: 0.9rem 1rem !important;
+                font-size: 1rem !important;
+                min-width: 0 !important;
+            }
+            
+            .hero-cta-buttons { gap: 0.6rem; flex-direction: column; align-items: center; }
+            .hero-cta-button { width: 92%; min-width: unset; padding: 0.9rem 1rem; }
+            
+            img, video, iframe { max-width: 100%; height: auto; }
+            
+            input, select, textarea, button { -webkit-tap-highlight-color: transparent; }
+            
+            /* FIX: Student Life Mobile Styles */
+            .wrapper {
+                padding: var(--spacing-sm); /* Reduced padding */
+                margin-top: var(--spacing-md);
+                margin-bottom: var(--spacing-md);
+            }
+            .content-box {
+                padding: var(--spacing-md); /* Reduced padding */
+            }
+            .text-container h2 {
+                font-size: 1.5rem; /* Reduced font size */
+            }
+            .text-container h3 {
+                font-size: 1.2rem; /* Reduced font size */
+            }
+            .text-container p {
+                font-size: 1rem; /* Reduced font size */
+                line-height: 1.7; /* Adjusted line height */
+            }
+
+
+            .main-nav {
+                right: 0 !important;
+                left: 0;
+                bottom: -100%;
+                top: auto;
+                width: 100%;
+                max-width: none;
+                height: 60vh;
+                padding: 1.25rem;
+                border-top-left-radius: 16px;
+                border-top-right-radius: 16px;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                transform: translateY(100%);
+                transition: transform 360ms cubic-bezier(.2,.9,.25,1), box-shadow 200ms ease;
+                box-shadow: 0 -12px 30px rgba(0,0,0,0.18);
+                will-change: transform;
+                z-index: 1400; /* Increased z-index */
+                align-items: flex-start;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                background: var(--nav-bg);
+            }
+            .main-nav.active {
+                transform: translateY(0);
+                bottom: 0;
+            }
+
+            /* --- NEW 2x2 GRID LAYOUT FOR MOBILE MENU (from index.html) --- */
+            .main-nav-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-sm);
+                width: 100%;
+                padding: 0;
+                list-style: none;
+                align-items: stretch;
+            }
+
+            .main-nav-list li {
+                width: 100%;
+            }
+
+            .main-nav-list li a {
+                padding: 0.9rem 1rem;
+                font-size: 1rem;
+                border-radius: 12px;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                box-sizing: border-box;
+            }
+            
+            .overlay {
+                display: none;
+            }
+            .overlay.active {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.45);
+                backdrop-filter: blur(4px);
+                z-index: 1399; /* Below the menu, above everything else */
+            }
+            
+            .bottom-nav {
+                position: fixed;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 12px;
+                width: calc(100% - 28px);
+                max-width: 720px;
+                height: 66px;
+                border-radius: 16px;
+                display: flex;
+                gap: 6px;
+                z-index: 1500;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 12px;
+                box-sizing: border-box;
+                backdrop-filter: blur(12px) saturate(1.2); /* UPDATED */
+                -webkit-backdrop-filter: blur(12px) saturate(1.2); /* UPDATED */
+                /* FIX: Made background more opaque to prevent "touch through" */
+                background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.6)); /* UPDATED */
+                /* FIX: Made fallback background more opaque */
+                background-color: rgba(255, 255, 255, 0.7); /* UPDATED */
+                box-shadow: 0 8px 32px rgba(0,0,0,0.22); /* UPDATED */
+                border-top: 1px solid rgba(255, 255, 255, 0.4); /* ADDED */
+                transition: transform 0.36s cubic-bezier(.2,.9,.2,1), opacity 0.28s ease;
+                will-change: transform, opacity;
+                pointer-events: auto;
+            }
+
+            .bottom-nav.hidden { transform: translateX(-50%) translateY(120%); opacity: 0; pointer-events: none; }
+
+            .bottom-nav .nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3px;
+                flex: 1 1 0;
+                min-width: 0;
+                text-decoration: none;
+                color: var(--dark-text);
+                font-weight: 600;
+                font-size: 12px;
+                padding: 6px 6px;
+                border-radius: 12px;
+                transition: transform 0.18s ease;
+            }
+
+            .bottom-nav .nav-item svg { width: 22px; height: 22px; fill: var(--primary-color); }
+
+            .bottom-nav .nav-item:active { transform: scale(0.96); }
+
+            .bottom-nav .nav-item.active svg,
+            .bottom-nav .nav-item.active .label { fill: #096a09; color: #096a09; transform: translateY(-2px); }
+
+            @keyframes bottomBounceIn {
+                0% { transform: translateX(-50%) translateY(140%); opacity: 0; }
+                60% { transform: translateX(-50%) translateY(-6%); opacity: 1; }
+                100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+            }
+            .bottom-nav.bounce-in { animation: bottomBounceIn 520ms cubic-bezier(.2,.9,.3,1) both; }
+
+            @media (max-width: 360px) {
+                .bottom-nav { height: 72px; padding: 10px; border-radius: 18px; }
+                .bottom-nav .nav-item svg { width: 24px; height: 24px; }
+                .bottom-nav .nav-item .label { font-size: 13px; }
+            }
+            
+            /* Make nav 'more' button blend in */
+            .bottom-nav button.nav-item {
+                background: transparent;
+                border: none;
+                cursor: pointer;
+            }
+            
+            /* FIX 3: Disable desktop hover effects on mobile menu items */
+            .main-nav-list li a:hover {
+                background-color: transparent;
+                color: var(--dark-text);
+                transform: none;
+                box-shadow: none;
+            }
+
+            .main-nav-list li a:hover::after {
+                transform: translateX(-100%); /* Keep underline hidden */
+            }
+            
+            /* Added a tap/active state for mobile for better UX */
+            .main-nav-list li a:active {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+
+            /* Hide floating home button on mobile */
+            .floating-home-button {
+                display: none;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- NEW Mobile Header (from index.html) -->
+    <header class="mobile-header" id="mobile-header">
+        <div class="header-logo-wrapper">
+            <!-- Updated src to match opp.html's logo -->
+            <img src="android-chrome-512x512.png" alt="شعار القسم">
+            <h1 class="header-title-text">Mechatronics Data</h1>
+        </div>
+    </header>
+
+    <!-- NEW Fixed Logo/Menu Toggle (for Scrolled Desktop) -->
+    <div class="fixed-logo-menu-toggle" id="fixed-logo-menu-toggle">
+        <img src="android-chrome-512x512.png" alt="شعار القسم">
+        <span class="menu-icon">&#9776;</span>
+        <span class="menu-text">Menu</span>
+    </div>
+
+    <!-- Desktop Header (visible initially on desktop, disappears on scroll) -->
+    <header class="desktop-main-header" id="desktop-main-header">
+        <div class="header-content-wrapper">
+            <img src="android-chrome-512x512.png" alt="شعار القسم" class="header-logo-img">
+            <h1 class="header-title-text">Mechatronics Data</h1>
+        </div>
+    </header>
+
+    <!-- Main Navigation (styling will be applied by new CSS) -->
+    <nav class="main-nav" id="main-nav">
+        <ul class="main-nav-list">
+            <li><a href="#home" class="nav-link active">الرئيسية</a></li> <!-- Added Home link -->
+            <li><a href="#academic-info" class="nav-link">المعلومات الأكاديمية</a></li>
+            <li><a href="#student-life-section" class="nav-link">الحياة الجامعية</a></li>
+            <li><a href="#resources-tools" class="nav-link">المصادر والأدوات</a></li>
+            <li><a href="#contact-faq" class="nav-link">تواصل & أسئلة</a></li>
+        </ul>
+    </nav>
+
+    <!-- Overlay for menu -->
+    <div class="overlay" id="overlay"></div>
+
+    <main>
+        <section class="hero-section" id="home"> <!-- Removed container, added id -->
+            <div class="hero-bg"></div> <!-- Added hero-bg div -->
+            <div class="container"> <!-- Added container inside -->
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>مرحباً بكم في <span class="highlight-text">دليل الميكاترونكس</span><br>جامعة <span class="highlight-text">الزقازيق الأهلية</span></h1>
+                        <!-- FIX 2: Removed stray </p> tag that was here -->
+                    </div>
+                    <div class="hero-cta-buttons">
+                        <a href="#student-life-section" class="general-button">تعرف على الحياة الجامعية</a>
+                        <!-- NEW: Mobile-only home button -->
+                        <a href="../index.html" class="general-button mobile-only-home-button">الصفحة الرئيسية</a>
+                    </div>
+                </div>
+            </div> <!-- Closed inner container -->
+        </section>
+
+        <section id="favorite-section" class="container">
+            <h2 class="section-heading">المفضلة</h2>
+            <div class="card-group" id="favorite-cards-container">
+            </div>
+        </section>
+        <section id="academic-info" class="container">
+            <h2 class="section-heading">المعلومات الأكاديمية الأساسية</h2>
+            <div class="card-group">
+                <a href="../Section.html" class="card" data-card-id="academic-1">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">📄</div>
+                    <h3>اللائحة الدراسية</h3>
+                    <p>تفاصيل المواد والنظام الدراسي للقسم</p>
+                </a>
+                <a href="subjects.html" class="card" data-card-id="academic-2">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">📚</div>
+                    <h3>المواد الدراسية</h3>
+                    <p>قائمة بجميع المقررات المطلوبة لكل مستوى</p>
+                </a>
+                <a href="time.html" class="card" data-card-id="academic-3">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">💡</div>
+                    <h3>نظام الدراسة</h3>
+                    <p>شرح لنظام الساعات المعتمدة وكيف يعمل</p>
+                </a>
+                <a href="faq.html" class="card" data-card-id="academic-4">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">📝</div>
+                    <h3>تسجيل المواد</h3>
+                    <p>خطوات تسجيل المواد إلكترونيًا و نصائح هامة</p>
+                </a>
+                <a href="events.html" class="card" data-card-id="academic-5">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">📅</div>
+                    <h3>جدول الدراسة</h3>
+                    <p>كيفية ترتيب الجدول الأسبوعي حسب المواد</p>
+                </a>
+                <a href="events.html" class="card" data-card-id="academic-6">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">📘</div>
+                    <h3>مصطلحات هندسية</h3>
+                    <p>اهم المصطلحات الهندسية حول القسم</p>
+                </a>
+            </div>
+        </section>
+
+        <section id="student-life-section" class="container">
+            <h2 class="section-heading">نصائح وموارد للحياة الجامعية</h2>
+            <div class="wrapper">
+                <div class="content-box">
+                    <div class="image-container">
+                        <img src="Study-architecture-in-Austria3.jpg" alt="طلاب يدرسون في مكتبة">
+                    </div>
+                    <div class="text-container">
+                        <h2>نصائح عن المواد</h2>
+                        <h3>رياضة 1</h3>
+                        <p>
+                            خذها قاعدة في كل ترم: الرياضة غالبًا ما تكون المادة الأسهل والأكثر متعة مقارنة بباقي المواد. نعم، حتى لو كانت رياضة 2 معقدة بسبب التكامل، فهناك مواد أخرى أصعب بكثير! رياضة 1 سهلة حقًا، خاصة أنك ستدرس العديد من المفاهيم التي تعرفها من الثانوية العامة. ركز على الفهم والتطبيق وستجدها ممتعة.
+                        </p>
+                        <a href="advice.html">اعرف المزيد عن المواد</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-group">
+                <a href="#" class="card" data-card-id="life-1">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">🏫</div>
+                    <h3>دليل الحرم الجامعي</h3>
+                    <p>خريطة وأماكن مهمة في الجامعة والقسم</p>
+                </a>
+                <a href="#" class="card" data-card-id="life-2">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">🤝</div>
+                    <h3>الأندية والأنشطة الطلابية</h3>
+                    <p>كيفية الانضمام للنوادي والفرق الطلابية</p>
+                </a>
+                <a href="time-management.html" class="card" data-card-id="life-3">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">⚖️</div>
+                    <h3>إدارة الوقت والتوازن</h3>
+                    <p>نصائح للتوفيق بين الدراسة والحياة الشخصية</p>
+                </a>
+            </div>
+        </section>
+
+        <section id="resources-tools" class="container">
+            <h2 class="section-heading">أدوات ومصادر تعليمية</h2>
+            <div class="card-group">
+                <a href="tools.html" class="card" data-card-id="resources-1">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">🧰</div>
+                    <h3>الأدوات المطلوبة</h3>
+                    <p>المعدات والأدوات التي ستحتاجها في دراستك</p>
+                </a>
+                <a href="basic-software.html" class="card" data-card-id="resources-2">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">💻</div>
+                    <h3>برامج أساسية</h3>
+                    <p>برامج الكمبيوتر الهندسية ومصادرها</p>
+                </a>
+                <a href="online-courses.html" class="card" data-card-id="resources-3">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">🌐</div>
+                    <h3>كورسات وموارد أونلاين</h3>
+                    <p>منصات تعليمية وقنوات يوتيوب مفيدة</p>
+                </a>
+            </div>
+        </section>
+
+        <section id="contact-faq" class="container">
+            <h2 class="section-heading">تواصل وأسئلة شائعة</h2>
+            <div class="card-group">
+                <a href="#" class="card" data-card-id="contact-1">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">❓</div>
+                    <h3>أسئلة متكررة</h3>
+                    <p>إجابات لأكثر الأسئلة شيوعًا بين الطلاب الجدد</p>
+                </a>
+                <a href="#" class="card" data-card-id="contact-2">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">👨‍🏫</div>
+                    <h3>المرشد الأكاديمي</h3>
+                    <p>كيفية التواصل مع مرشدك ودوره في مساعدتك</p>
+                </a>
+                <a href="questions.html" class="card" data-card-id="contact-3">
+                    <span class="favorite-icon">🤍</span>
+                    <div class="icon mech-icon">📞</div>
+                    <h3>تواصل معنا</h3>
+                    <p>طرق التواصل مع إدارة القسم والجامعة</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <p><span class="highlight">قسم الميكاترونكس</span> - جامعة الزقازيق الأهلية</p>
+            <p>© 2024 جميع الحقوق محفوظة لطلاب قسم الميكاترونكس</p>
+        </div>
+    </footer>
+    <a href="../index.html" class="floating-home-button" title="العودة إلى الصفحة الرئيسية">
+        <svg class="home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 2L3 10v11h6v-7h6v7h6V10L12 2z"/>
+        </svg>
+    </a>
+
+    <!-- NEW BOTTOM NAV (from index.html) -->
+    <nav id="bottom-nav" class="bottom-nav" aria-label="تنقل أسفل الشاشة" style="display:none;">
+      <!-- Updated links to match opp.html sections -->
+      <a class="nav-item" href="#academic-info" data-target="#academic-info" id="bn-materials" aria-label="أكاديمي">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2L2 7v13h20V7L12 2zm0 2.18L18.53 7H5.47L12 4.18zM11 12h2v6h-2z"/>
+        </svg>
+        <span class="label">أكاديمي</span>
+      </a>
+
+      <a class="nav-item" href="#resources-tools" data-target="#resources-tools" id="bn-gpa" aria-label="موارد">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 14h-2v-2h2v2zm0-4h-2V6h2v6z"/>
+        </svg>
+        <span class="label">موارد</span>
+      </a>
+
+      <a class="nav-item" href="#favorite-section" data-target="#favorite-section" id="bn-fav" aria-label="المفضلة">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41.81 4.5 2.09C12.09 4.81 13.76 4 15.5 4 18 4 20 6 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <span class="label">مفضلة</span>
+      </a>
+
+      <button class="nav-item" id="bn-menu" aria-label="المزيد" type="button">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+        <span class="label">المزيد</span>
+      </button>
+    </nav>
+
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- NEW DESKTOP NAV/HEADER LOGIC (from index.html) ---
+            const mainNav = document.getElementById('main-nav');
+            const overlay = document.getElementById('overlay');
+            const body = document.body;
+            const fixedLogoToggle = document.getElementById('fixed-logo-menu-toggle');
+            const desktopHeader = document.getElementById('desktop-main-header');
+            const mainContent = document.querySelector('main'); // Keep this for margin adjustment
+            /* FIX: Get references to footer and home button for blur effect */
+            const footer = document.querySelector('.site-footer');
+            const floatingHomeButton = document.querySelector('.floating-home-button');
+
+            const closeMenu = () => {
+                mainNav.classList.remove('active');
+                overlay.classList.remove('active');
+                /* FIX: Changed body.classList to mainContent.classList for blur */
+                if (mainContent) mainContent.classList.remove('blurred');
+                /* FIX: Also remove blur from footer and home button */
+                if (footer) footer.classList.remove('blurred');
+                if (floatingHomeButton) floatingHomeButton.classList.remove('blurred');
+
+                if (fixedLogoToggle) {
+                    fixedLogoToggle.classList.remove('menu-active');
+                }
+            };
+
+            const openMenu = () => {
+                mainNav.classList.add('active');
+                overlay.classList.add('active');
+                 /* FIX: Changed body.classList to mainContent.classList for blur */
+                if (mainContent) mainContent.classList.add('blurred');
+                /* FIX: Also add blur to footer and home button */
+                if (footer) footer.classList.add('blurred');
+                if (floatingHomeButton) floatingHomeButton.classList.add('blurred');
+
+                if (window.innerWidth > 767 && fixedLogoToggle) {
+                    fixedLogoToggle.classList.add('menu-active');
+                }
+            };
+
+            // Event listener for desktop floating menu button
+            if (fixedLogoToggle) {
+                fixedLogoToggle.addEventListener('click', () => {
+                    if (mainNav.classList.contains('active')) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', closeMenu);
+            }
+
+            // Smooth scrolling for anchor links (Desktop)
+            document.querySelectorAll('.main-nav-list a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId.startsWith('#')) {
+                        const targetElement = document.getElementById(targetId.substring(1));
+                        if (targetElement) {
+                             e.preventDefault();
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                    
+                    updateActiveNavLink(this); // Added this line
+
+                    if (window.innerWidth > 767) {
+                       closeMenu();
+                    }
+                });
+            });
+
+            // Added this function from index.html
+            function updateActiveNavLink(activeLink) {
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+
+            // Desktop header scroll behavior
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (window.innerWidth > 767) {
+                    if (scrollTop > 100) {
+                        if(desktopHeader) desktopHeader.classList.add('scrolled');
+                        if (fixedLogoToggle && !mainNav.classList.contains('active')) {
+                            fixedLogoToggle.classList.add('scrolled-active');
+                        }
+                        if(mainContent) mainContent.classList.add('scrolled');
+                        body.classList.add('scrolled-lighter'); // From index.html
+                    } else {
+                        if(desktopHeader) desktopHeader.classList.remove('scrolled');
+                        if(fixedLogoToggle) fixedLogoToggle.classList.remove('scrolled-active');
+                        if(mainContent) mainContent.classList.remove('scrolled');
+                        body.classList.remove('scrolled-lighter'); // From index.html
+                    }
+                    updateMainContentMargin(); // Call margin update
+                }
+            });
+
+            function updateMainContentMargin() {
+                if (window.innerWidth >= 768 && mainContent && desktopHeader) {
+                    if (!desktopHeader.classList.contains('scrolled')) {
+                        mainContent.style.marginTop = `${desktopHeader.offsetHeight}px`;
+                    } else {
+                        mainContent.style.marginTop = '0px';
+                    }
+                } else if (mainContent) {
+                    mainContent.style.marginTop = '0px';
+                }
+            }
+            
+            // Initial margin check
+            updateMainContentMargin();
+            
+            window.addEventListener('resize', () => {
+                 updateMainContentMargin();
+                 if (window.innerWidth >= 768) {
+                    closeMenu(); // Close menu on resize to desktop
+                 }
+            });
+
+
+            // --- FAVORITES LOGIC (from opp.html) ---
+            const allCards = document.querySelectorAll('.card');
+            const favoriteSection = document.getElementById('favorite-section');
+            const favoriteCardsContainer = document.getElementById('favorite-cards-container');
+
+            function updateFavoritesSection() {
+                if (!favoriteCardsContainer || !favoriteSection) return;
+                
+                favoriteCardsContainer.innerHTML = '';
+                const favoritedCards = document.querySelectorAll('.card.favorited');
+                
+                if (favoritedCards.length > 0) {
+                    favoriteSection.style.display = 'block';
+                    favoritedCards.forEach(card => {
+                        const clonedCard = card.cloneNode(true);
+                        const clonedIcon = clonedCard.querySelector('.favorite-icon');
+                        if (clonedIcon) {
+                            clonedIcon.remove();
+                        }
+                        const removeButton = document.createElement('button');
+                        removeButton.className = 'remove-button';
+                        removeButton.innerText = 'إزالة من المفضلة';
+                        removeButton.setAttribute('data-card-id', card.getAttribute('data-card-id'));
+                        const cardParagraph = clonedCard.querySelector('p');
+                        if (cardParagraph) {
+                            cardParagraph.insertAdjacentElement('afterend', removeButton);
+                        } else {
+                            clonedCard.appendChild(removeButton);
+                        }
+                        favoriteCardsContainer.appendChild(clonedCard);
+                    });
+
+                    document.querySelectorAll('.remove-button').forEach(removeButton => {
+                        removeButton.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            const cardId = this.getAttribute('data-card-id');
+                            const originalCard = document.querySelector(`.card[data-card-id="${cardId}"]`);
+                            if (originalCard) {
+                                originalCard.classList.remove('favorited');
+                                const favoriteIcon = originalCard.querySelector('.favorite-icon');
+                                if (favoriteIcon) {
+                                    favoriteIcon.innerHTML = '🤍';
+                                }
+                                let currentLikedItems = JSON.parse(localStorage.getItem('likedItems')) || [];
+                                currentLikedItems = currentLikedItems.filter(item => item !== cardId);
+                                localStorage.setItem('likedItems', JSON.stringify(currentLikedItems));
+                                updateFavoritesSection();
+                            }
+                        });
+                    });
+                } else {
+                    favoriteSection.style.display = 'none';
+                }
+            }
+
+            const likedItems = JSON.parse(localStorage.getItem('likedItems')) || [];
+            allCards.forEach(card => {
+                const cardId = card.getAttribute('data-card-id');
+                if (likedItems.includes(cardId)) {
+                    card.classList.add('favorited');
+                    const icon = card.querySelector('.favorite-icon');
+                    if(icon) icon.innerHTML = '❤️';
+                }
+            });
+
+            updateFavoritesSection();
+
+            allCards.forEach(card => {
+                const favoriteIcon = card.querySelector('.favorite-icon');
+                if (favoriteIcon) {
+                    favoriteIcon.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        const cardId = card.getAttribute('data-card-id');
+                        let currentLikedItems = JSON.parse(localStorage.getItem('likedItems')) || [];
+
+                        if (card.classList.contains('favorited')) {
+                            card.classList.remove('favorited');
+                            favoriteIcon.innerHTML = '🤍';
+                            currentLikedItems = currentLikedItems.filter(item => item !== cardId);
+                        } else {
+                            card.classList.add('favorited');
+                            favoriteIcon.innerHTML = '❤️';
+                            if (!currentLikedItems.includes(cardId)) {
+                                currentLikedItems.push(cardId);
+                            }
+                        }
+
+                        localStorage.setItem('likedItems', JSON.stringify(currentLikedItems));
+                        updateFavoritesSection();
+                    });
+                }
+            });
+        });
+
+        // --- NEW MOBILE NAVIGATION SCRIPT (from index.html) ---
+        (function(){
+            const bottomNav = document.getElementById('bottom-nav');
+            const mainNav = document.getElementById('main-nav');
+            const overlay = document.getElementById('overlay');
+            const bnMenu = document.getElementById('bn-menu');
+            const body = document.body;
+            const header = document.querySelector('.mobile-header');
+            let manualScroll = false; // Flag to detect clicks on nav items
+
+            function showBottomNav(bounce=true){
+                if(!bottomNav) return;
+                bottomNav.style.display = 'flex';
+                bottomNav.classList.remove('hidden');
+                if(bounce){ bottomNav.classList.remove('bounce-in'); void bottomNav.offsetWidth; bottomNav.classList.add('bounce-in'); }
+            }
+            function hideBottomNav(){ if(!bottomNav) return; bottomNav.classList.add('hidden'); }
+
+            if(bottomNav){
+                bottomNav.querySelectorAll('.nav-item[data-target]').forEach(item=>{
+                    item.addEventListener('click', function(e){
+                        const target = item.getAttribute('data-target');
+                        if(target && document.querySelector(target)){
+                            e.preventDefault();
+                            manualScroll = true;
+                            document.querySelector(target).scrollIntoView({behavior:'smooth', block:'start'});
+                            bottomNav.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+                            item.classList.add('active');
+                            setTimeout(() => { manualScroll = false; }, 1000); // Reset flag after scroll duration
+                        }
+                    });
+                });
+            }
+            
+            function openMainNav(){
+                if(!mainNav) return;
+                mainNav.classList.add('active');
+                if(overlay) overlay.classList.add('active');
+                hideBottomNav(); 
+                body.classList.add('no-scroll');
+            }
+            function closeMainNav(){
+                if(!mainNav) return;
+                mainNav.classList.remove('active');
+                if(overlay) overlay.classList.remove('active');
+                showBottomNav(false); 
+                body.classList.remove('no-scroll');
+            }
+
+            if(mainNav) {
+                mainNav.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', closeMainNav);
+                });
+            }
+
+            if(bnMenu){
+                bnMenu.addEventListener('click', function(e){
+                    e.preventDefault();
+                    if(mainNav && mainNav.classList.contains('active')) closeMainNav();
+                    else openMainNav();
+                });
+                bnMenu.addEventListener('keyup', function(e){ if(e.key==='Enter') bnMenu.click(); });
+            }
+            
+            if(overlay) {
+                overlay.addEventListener('click', closeMainNav);
+            }
+
+            const css = '.no-scroll{overflow:hidden!important;height:100%!important}';
+            const st = document.createElement('style'); st.appendChild(document.createTextNode(css)); document.head.appendChild(st);
+
+            (function(){
+                if(!bottomNav && !header) return;
+                let lastY = window.pageYOffset || document.documentElement.scrollTop;
+                let ticking = false;
+                window.addEventListener('scroll', function(){
+                    if (manualScroll) return; // Prevent hiding nav during manual scroll
+                    const y = window.pageYOffset || document.documentElement.scrollTop;
+                    if(!ticking){
+                        window.requestAnimationFrame(function(){
+                            // --- FIX 2: Check if we are on mobile before showing/hiding bottom nav ---
+                            const isMobile = window.innerWidth <= 767;
+                            const dy = y - lastY;
+                            
+                            if(Math.abs(dy) > 8){
+                                if(mainNav && mainNav.classList.contains('active')) return;
+
+                                if(dy > 0){
+                                    if(bottomNav && isMobile) hideBottomNav(); // Added isMobile check
+                                    if(header) header.classList.add('header-hidden');
+                                } else {
+                                    if(bottomNav && isMobile) showBottomNav(true); // Added isMobile check
+                                    if(header) header.classList.remove('header-hidden');
+                                }
+                            }
+                            
+                            /* FIX: Show nav/header reliably when at top of page */
+                            if (y <= 0) { 
+                                 if(bottomNav && isMobile) showBottomNav(false); // Added isMobile check
+                                 if(header) header.classList.remove('header-hidden');
+                            }
+                            
+                            lastY = y <= 0 ? 0 : y;
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                }, {passive:true});
+                if(window.innerWidth <= 767){ setTimeout(()=>showBottomNav(true), 350); }
+            })();
+
+            (function(){
+                if(!('IntersectionObserver' in window) || !bottomNav) return;
+                const items = Array.from(bottomNav.querySelectorAll('.nav-item[data-target]'));
+                const targets = items.map(it=>document.querySelector(it.getAttribute('data-target'))).filter(Boolean);
+                const io = new IntersectionObserver((entries)=>{
+                    entries.forEach(en=>{
+                        if(en.isIntersecting){
+                            bottomNav.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+                            const selector = '#bottom-nav .nav-item[data-target="#'+en.target.id+'"]';
+                            const navItem = document.querySelector(selector);
+                            if(navItem) navItem.classList.add('active');
+                        }
+                    });
+                }, {threshold:0.45});
+                targets.forEach(t=>io.observe(t));
+            })();
+
+        })();
+    </script>
+</body>
+</html>
+
+
+

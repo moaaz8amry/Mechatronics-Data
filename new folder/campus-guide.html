@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل الحرم الجامعي | جامعة الزقازيق الأهلية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* أنماط خاصة بهذه الصفحة */
+        .page-content-section {
+            background-color: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-md) auto var(--spacing-xl) auto;
+            animation: fadeIn 0.8s ease-out;
+            text-align: right;
+        }
+        .page-content-section h2 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+        .campus-map-container {
+            width: 100%;
+            max-width: 1000px; /* تم تعديل العرض ليتناسب مع الصورة */
+            margin: var(--spacing-md) auto;
+            text-align: center;
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-sm);
+            box-shadow: var(--shadow-sm);
+        }
+        .campus-map-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--shadow-xs);
+        }
+        .campus-map-container p {
+            color: var(--medium-text);
+            font-size: 0.95rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .location-category {
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .location-category:last-child {
+            border-bottom: none;
+        }
+        .location-category h3 {
+            color: var(--dark-text);
+            font-size: 1.8rem;
+            margin-bottom: var(--spacing-sm);
+            border-right: 4px solid var(--primary-color);
+            padding-right: 10px;
+            display: inline-block;
+        }
+        .location-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        .location-item {
+            background-color: var(--light-bg);
+            border-right: 3px solid var(--secondary-color);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .location-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .location-item strong {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        .location-item p {
+            font-size: 0.95rem;
+            color: var(--medium-text);
+            margin: 0;
+            line-height: 1.6;
+        }
+         .but button {
+  font-size: 18px;
+  width: 80px;
+  height: 50px;
+  cursor: pointer;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.but button:hover {
+  transform: scale(1.1);
+  background-color:green; 
+}
+.but {
+  position: absolute;
+  left: 50%;
+  right: 0px;
+  /* top: 20px; */
+}
+    </style>
+</head>
+<body>
+    <header class="main-header container">
+        <div class="header-title">دليل الحرم الجامعي</div>
+        <div class="header-logo">
+            <img src="android-chrome-512x512.png" alt="شعار قسم الميكاترونيكس">
+        </div>
+        <nav class="main-nav">
+            <ul class="main-nav-list">
+                <li><a href="index.html#academic-info">الرئيسية</a></li>
+                <li><a href="subjects.html">المواد الدراسية</a></li>
+                <li><a href="#top">دليل الحرم</a></li>
+                <li><a href="faq.html">أسئلة شائعة</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="top" class="page-content-section container">
+            <h2>استكشف حرم جامعة الزقازيق الأهلية</h2>
+            <p style="text-align: center; color: var(--medium-text); margin-bottom: var(--spacing-md);">
+                تعرف على أهم المباني والمرافق في الحرم الجامعي وقسم الميكاترونيكس من خلال الخريطة التفصيلية أدناه.
+            </p>
+
+            <div class="campus-map-container">
+                <img src="WhatsApp Image 2025-07-30 at 21.24.51_fcd5723e.jpg" alt="صورة جوية لدليل الحرم الجامعي لجامعة الزقازيق الأهلية">
+                <p>
+                    **ملاحظة هامة:** يرجى إضافة أرقام أو علامات على الصورة أعلاه (باستخدام برنامج تعديل صور) لتتوافق مع الأماكن المشروحة أدناه.
+                </p>
+            </div>
+
+            <div class="location-category">
+                <h3>1. المباني الأكاديمية الرئيسية</h3>
+                <p>
+                    هذه المباني هي قلب العملية التعليمية، حيث تُعقد المحاضرات والسكاشن والمعامل المتخصصة.
+                </p>
+                <ul class="location-list">
+                    <li class="location-item">
+                        <strong>المبنى الإداري الرئيسي (المنطقة المركزية في الصورة)</strong>
+                        <p>يحتمل أنه يضم مكاتب إدارة الجامعة، شؤون الطلاب، القبول والتسجيل، وبعض القاعات الإدارية الكبرى.</p>
+                    </li>
+                    <li class="location-item">
+                        <strong>مباني الكليات الهندسية (المباني المربعة الكبيرة)</strong>
+                        <p>توزيع هذه المباني يشير إلى أنها قد تكون مخصصة للكليات المختلفة، مثل كلية الهندسة. ستضم قاعات المحاضرات، ومكاتب أعضاء هيئة التدريس، ومعامل الحاسوب والتصميم.</p>
+                    </li>
+                    <li class="location-item">
+                        <strong>المباني الأكاديمية المتخصصة / الورش (المباني المتقاربة)</strong>
+                        <p>بناءً على التوزيع، قد تكون بعض المباني مخصصة لأقسام معينة مثل قسم الميكاترونيكس، وتضم المعامل المتخصصة (روبوتات، تحكم آلي، إلكترونيات)، وورش العمل العملية.</p>
+                    </li>
+                    <li class="location-item">
+                        <strong>مبنى العلوم الأساسية (قد يكون أحد المباني الأقل تعقيدًا)</strong>
+                        <p>تُعقد فيه محاضرات المواد الأساسية مثل الرياضيات، الفيزياء، والكيمياء المشتركة بين الكليات.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="location-category">
+                <h3>2. المرافق الخدمية والطلابية</h3>
+                <p>
+                    مرافق حيوية لدعم حياة الطلاب اليومية وتوفير بيئة جامعية متكاملة.
+                </p>
+                <ul class="location-list">
+                    <li class="location-item">
+                        <strong>المكتبة المركزية (قد تكون المبنى المميز بقبة أو شكل مختلف)</strong>
+                        <p>عادة ما تكون المكتبة مبنى مميزًا. مجهزة بآلاف الكتب والمراجع العلمية، ومناطق هادئة للدراسة الفردية والجماعية.</p>
+                    </li>
+                    <li class="location-item">
+                        <strong>المطاعم والكافتيريات (غالباً بالقرب من مناطق تجمع الطلاب)</strong>
+                        <p>أماكن مخصصة لتقديم مجموعة متنوعة من الوجبات والمشروبات للطلاب والعاملين بالجامعة.</p>
+                    </li>
+                    <li class="location-item">
+                        <strong>العيادة الطبية (قد تكون جزءًا من مبنى إداري أو مبنى صغير مستقل)</strong>
+                        <p>لتقديم الرعاية الصحية الأولية والإسعافات للطلاب والعاملين.</p>
+                    </li>
+                    <li class="location-item">
+                        <strong>القرطاسية ومستلزمات الطلاب (قد تكون ضمن المباني الخدمية)</strong>
+                        <p>متجر لتوفير الأدوات المكتبية، الكتب، ومستلزمات الدراسة الأخرى.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="location-category">
+                <h3>3. المناطق الرياضية والترفيهية</h3>
+                <p>
+                    مساحات مخصصة للنشاط البدني والترفيه، لدعم التوازن بين الدراسة والحياة.
+                </p>
+                <ul class="location-list">
+                    <li class="location-item">
+                        <strong>الملاعب الرياضية (تظهر بوضوح في أعلى يمين الصورة)</strong>
+                        <p>تضم ملاعب كرة القدم، السلة، الطائرة، وغيرها من الأنشطة الرياضية في المنطقة العلوية اليمنى من الحرم.</p>
+                    </li>
+                    <li class="location-item">
+                        <strong>الصالات الرياضية المغلقة (قد تكون بجوار الملاعب)</strong>
+                        <p>مجهزة لممارسة التمارين الرياضية واللياقة البدنية في جميع الأوقات.</p>
+                    </li>
+                    <li class="location-item">
+                        <strong>الحدائق والمساحات الخضراء (الساحات المفتوحة بين المباني)</strong>
+                        <p>أماكن للاسترخاء، الدراسة في الهواء الطلق، واللقاءات الاجتماعية، وهي منتشرة بين المباني في الصورة.</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <div class="but">
+    <button onclick="history.back()">Back</button>
+  </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <p><span class="highlight">قسم الميكاترونيكس</span> - جامعة الزقازيق الأهلية</p>
+            <p>© 2024 جميع الحقوق محفوظة لطلاب قسم الميكاترونيكس</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

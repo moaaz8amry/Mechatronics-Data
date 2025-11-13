@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الوقت والتوازن | جامعة الزقازيق الأهلية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #004d40;
+            --secondary-color: #00796b;
+            --white: #ffffff;
+            --light-bg: #f9f9f9;
+            --dark-text: #212121;
+            --medium-text: #555;
+            --border-light: #ccc;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --spacing-sm: 10px;
+            --spacing-md: 20px;
+            --spacing-lg: 30px;
+            --spacing-xl: 50px;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 20px;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #8CB48C;
+            color: var(--dark-text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 20px;
+            padding: 15px;
+            background-color: green;
+            color: white;
+            flex-wrap: wrap;
+            margin: var(--spacing-md) auto;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header-logo img {
+            width: 60px;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .header-title {
+                font-size: 1.5rem;
+            }
+
+            .header-logo img {
+                width: 50px;
+            }
+        }
+
+        .page-content-section {
+            background-color:#d9fdd3;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-md) auto var(--spacing-xl) auto;
+            animation: fadeIn 0.8s ease-out;
+            text-align: right;
+        }
+
+        .page-content-section h2 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+
+        .page-content-section .intro-paragraph {
+            text-align: center;
+            color: var(--medium-text);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .management-section {
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .management-section:last-child {
+            border-bottom: none;
+        }
+
+        .management-section h3 {
+            color: var(--dark-text);
+            font-size: 1.8rem;
+            margin-bottom: var(--spacing-sm);
+            border-right: 4px solid var(--primary-color);
+            padding-right: 10px;
+            display: inline-block;
+        }
+
+        .management-section p {
+            color: var(--medium-text);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .tips-list li {
+            background-color: var(--light-bg);
+            border-right: 3px solid var(--secondary-color);
+            border-radius: var(--border-radius-sm);
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+
+        .tips-list li strong {
+            color: var(--primary-color);
+        }
+
+        .resource-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .resource-card {
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid var(--border-light);
+        }
+
+        .resource-card strong {
+            color: green;
+            font-size: 1.1rem;
+        }
+
+        .resource-card p {
+            font-size: 0.95rem;
+            color: var(--medium-text);
+            margin: 0;
+        }
+
+        .resource-card a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .resource-card a:hover {
+            text-decoration: underline;
+        }
+
+        .youtube-embed {
+            margin-top: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+            display: block;
+        }
+
+        .youtube-embed iframe {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 16 / 9; /* استخدام aspect-ratio للحفاظ على النسبة */
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-md);
+            border: none;
+        }
+
+        .youtube-embed p {
+            font-size: 0.9rem;
+            color: var(--medium-text);
+            margin-top: 10px;
+        }
+
+        .back-button-container {
+            text-align: center;
+            margin: 40px 0 20px;
+        }
+
+        .back-button-container button {
+            font-size: 24px;
+            min-width: 170px;
+            padding: 12px 30px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .back-button-container button:hover {
+            background-color: #137d13;
+            transform: scale(1.05);
+        }
+
+        .site-footer {
+            background-color: #004d40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .highlight {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header container">
+        <div class="header-title">إدارة الوقت والتوازن</div>
+        <div class="header-logo">
+            <img src="android-chrome-512x512.png" alt="شعار قسم الميكاترونيكس">
+        </div>
+    </header>
+
+    <main>
+        <section id="top" class="page-content-section container">
+            <h2>إدارة وقتك بفاعلية وتحقيق التوازن في الحياة الجامعية</h2>
+            <p class="intro-paragraph">
+                تعلم استراتيجيات عملية لتنظيم يومك الدراسي والشخصي، وتجنب الإرهاق الأكاديمي، واستمتع بتجربة جامعية متوازنة ومثمرة.
+            </p>
+        </section>
+        <section id="top" class="page-content-section container">
+            <div class="management-section">
+                <h3>1. لماذا إدارة الوقت مهمة لطلاب الهندسة؟</h3>
+                <p>
+                    الحياة الجامعية، وخاصة في تخصص مثل الميكاترونيكس، تتطلب جهدًا كبيرًا وتعددًا في المهام بين المحاضرات، السكاشن، المعامل، والمشاريع. بدون <strong>إدارة وقت فعالة</strong>، قد تشعر بالضغط، تتأخر في إنجاز المهام، أو تفقد الدافع. تنظيم وقتك يساعدك على:
+                </p>
+                <ul class="tips-list">
+                    <li>**زيادة الإنتاجية:** إنجاز المزيد في وقت أقل.</li>
+                    <li>**تقليل التوتر:** الشعور بالتحكم في مهامك يقلل القلق.</li>
+                    <li>**تحقيق التوازن:** تخصيص وقت للدراسة، الهوايات، والراحة.</li>
+                    <li>**تحسين الأداء الأكاديمي:** التركيز والتنظيم يؤديان إلى درجات أفضل.</li>
+                </ul>
+            </div>
+        </section>
+        <section id="top" class="page-content-section container">
+            <div class="management-section">
+                <h3>2. استراتيجيات عملية لتنظيم وقتك</h3>
+                <p>
+                    هنا بعض الاستراتيجيات المجربة التي يمكن أن تساعدك في تنظيم جدولك اليومي والأسبوعي:
+                </p>
+                <div class="resource-cards-grid">
+                    <div class="resource-card">
+                        <strong>أ. مصفوفة آيزنهاور لتحديد الأولويات</strong>
+                        <p>
+                            طريقة لترتيب المهام بناءً على أهميتها وعجلتها، مما يساعدك على التركيز على ما يهم حقًا وتجنب تضييع الوقت.
+                        </p>
+                        <a href="https://ar.wikipedia.org/wiki/%D9%85%D8%B5%D9%81%D9%88%D9%81%D8%A9_%D8%A3%D9%8A%D8%B2%D9%86%D9%87%D8%A7%D9%88%D8%B1" target="_blank">تعرف على مصفوفة آيزنهاور (ويكيبيديا)</a>
+                        <a href="https://youtu.be/dK5GNlSHs8A?si=2X11dwTKOttH04Hs" target="_blank">شرح مصفوفة آيزنهاور (فيديو يوتيوب من قناة "دروس اونلاين")</a>
+                    </div>
+                    <div class="resource-card">
+                        <strong>ب. تقنية بومودورو (Pomodoro Technique)</strong>
+                        <p>
+                            طريقة بسيطة وفعالة للتركيز العميق. اعمل لمدة 25 دقيقة بتركيز كامل، ثم خذ استراحة 5 دقائق. بعد 4 دورات، خذ استراحة أطول.
+                        </p>
+                        <a href="https://ar.wikipedia.org/wiki/%D8%AA%D9%82%D9%86%D9%8A%D8%A9_%D8%A8%D9%88%D9%85%D9%88%D8%AF%D9%88%D8%B1%D9%88" target="_blank">تعرف على تقنية بومودورو (ويكيبيديا)</a>
+                        <a href="https://youtu.be/qiYDYsPslrc?si=9axJALo27mJBlaL0" target="_blank">كيف تعمل تقنية بومودورو؟ (فيديو يوتيوب من قناة "دروس اونلاين")</a>
+                    </div>
+                    <div class="resource-card">
+                        <strong>ج. تطبيقات تنظيم المهام والملاحظات</strong>
+                        <p>
+                            استخدم الأدوات الرقمية لتتبع مهامك وجداولك الدراسية:
+                        </p>
+                        <ul class="tips-list" style="margin-top: 5px;">
+                            <li>**Todoist:** لتنظيم المهام وإنشاء قوائم. <a href="https://todoist.com/" target="_blank">زيارة Todoist</a></li>
+                            <li>**Google Calendar:** لتخطيط جدولك الدراسي والاجتماعي. <a href="https://calendar.google.com/" target="_blank">زيارة تقويم جوجل</a></li>
+                            <li>**Notion / Evernote:** لتدوين الملاحظات وتنظيم المعلومات. <a href="https://www.notion.so/" target="_blank">زيارة Notion</a></li>
+                            <li>**Forest (تطبيق للتركيز):** يساعدك على الابتعاد عن هاتفك أثناء الدراسة. <a href="https://www.forestapp.cc/" target="_blank">زيارة Forest App</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="top" class="page-content-section container">
+            <div class="management-section">
+                <h3>3. تحقيق التوازن بين الدراسة والحياة الشخصية</h3>
+                <p>
+                    للحفاظ على صحتك العقلية والجسدية، يجب أن يكون هناك توازن بين التزاماتك الأكاديمية وحياتك الشخصية.
+                </p>
+                <ul class="tips-list">
+                    <li>**النوم الكافي:** <strong>لا تقلل من أهمية النوم.</strong> 7-8 ساعات من النوم الجيد ليلاً تزيد من تركيزك وإنتاجيتك.</li>
+                    <li>**التغذية السليمة:** حافظ على نظام غذائي متوازن لتزويد جسمك وعقلك بالطاقة اللازمة.</li>
+                    <li>**النشاط البدني:** خصص وقتًا لممارسة الرياضة بانتظام. المشي، الجري، أو أي نشاط بدني يقلل التوتر ويحسن المزاج.</li>
+                    <li>**الهوايات والأنشطة الاجتماعية:** لا تتخلَ عن هواياتك أو وقتك مع الأصدقاء والعائلة. هذه الأنشطة تجدد طاقتك وتساعدك على الاسترخاء.</li>
+                    <li>**وقت "افصل عن كل شيء":** خصص بعض الوقت يومياً بعيدًا عن الشاشات والدراسة، لتصفية ذهنك والاسترخاء.</li>
+                </ul>
+                <div class="youtube-embed">
+                    <iframe src="https://www.youtube.com/embed/QJ7dY4t-1kY" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <p>
+                        <a href="https://youtu.be/nncVRXEQxE8?si=Hl4EM7vUWj5r71rr" target="_blank">فيديو: نصائح لتنظيم الوقت وتعديل روتينك الدراسي (قناة دوباميكافين)</a>
+                    </p>
+                </div>
+                <div class="youtube-embed">
+                    <iframe src="https://www.youtube.com/embed/zHkF_02VqV4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <p>
+                        <a href="https://youtu.be/bJ6kfrEQJuM?si=G1ymu6JogzgZvZvq" target="_blank">فيديو: تنظيم الوقت والمهام (قناة "دروس اونلاين")</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <div class="back-button-container">
+            <button onclick="history.back()">Back</button>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <p><span class="highlight">قسم الميكاترونيكس</span> - جامعة الزقازيق الأهلية</p>
+            <p>© 2024 جميع الحقوق محفوظة لطلاب قسم الميكاترونيكس</p>
+        </div>
+    </footer>
+</body>
+</html>

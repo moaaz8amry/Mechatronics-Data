@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برامج أساسية | جامعة الزقازيق الأهلية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #004d40;
+            --secondary-color: #00796b;
+            --white: #ffffff;
+            --light-bg: #f9f9f9;
+            --dark-text: #212121;
+            --medium-text: #555;
+            --border-light: #ccc;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --spacing-sm: 10px;
+            --spacing-md: 20px;
+            --spacing-lg: 30px;
+            --spacing-xl: 50px;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 20px;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #8CB48C;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 20px;
+            padding: 15px;
+            background-color: green;
+            color: white;
+            flex-wrap: wrap;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header-logo img {
+            width: 60px;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .header-title {
+                font-size: 1.5rem;
+            }
+
+            .header-logo img {
+                width: 50px;
+            }
+        }
+
+        .page-content-section {
+            background-color: #d9fdd3;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-md) auto var(--spacing-xl) auto;
+            animation: fadeIn 0.8s ease-out;
+            text-align: right;
+        }
+
+        .page-content-section h2 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+
+        .software-category {
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .software-category:last-child {
+            border-bottom: none;
+        }
+
+        .software-category h3 {
+            color: var(--dark-text);
+            font-size: 1.8rem;
+            margin-bottom: var(--spacing-sm);
+            border-right: 4px solid var(--primary-color);
+            padding-right: 10px;
+            display: inline-block;
+        }
+
+        .software-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .software-item {
+            background-color: var(--light-bg);
+            border-right: 3px solid var(--secondary-color);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .software-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .software-item strong {
+            display: block;
+            font-size: 1.2rem;
+            color: green;
+            margin-bottom: 8px;
+        }
+
+        .software-item p {
+            font-size: 0.95rem;
+            color: var(--medium-text);
+            margin-bottom: 10px;
+        }
+
+        .software-item a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .software-item a:hover {
+            text-decoration: underline;
+        }
+
+        .back-button-container {
+            text-align: center;
+            margin: 40px 0 20px;
+        }
+
+        .back-button-container button {
+            font-size: 24px;
+            min-width: 170px;
+            padding: 12px 30px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .back-button-container button:hover {
+            background-color: #137d13;
+            transform: scale(1.05);
+        }
+
+        .site-footer {
+            background-color: #004d40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .highlight {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header container">
+        <div class="header-title">برامج أساسية</div>
+        <div class="header-logo">
+            <img src="cropped logo.png" alt="شعار قسم الميكاترونيكس">
+        </div>
+    </header>
+
+    <main>
+        <section id="top" class="page-content-section container">
+            <h2>البرامج الأساسية لطلاب الميكاترونيكس</h2>
+            <p style="text-align: center; color: var(--medium-text); margin-bottom: var(--spacing-md);">
+                قائمة بالبرامج والتطبيقات الهندسية التي ستحتاجها خلال دراستك.
+            </p>
+        </section>
+        
+        <section class="page-content-section container">
+            <div class="software-category">
+                <h3>1. برامج التصميم والمحاكاة</h3>
+                <p>
+                    تعتبر هذه البرامج أساسية لتصميم واختبار النظم الميكانيكية والإلكترونية قبل تطبيقها عمليًا.
+                </p>
+                <ul class="software-list">
+                    <li class="software-item">
+                        <strong>SolidWorks / AutoCAD (تصميم ميكانيكي)</strong>
+                        <p>برامج رائدة لتصميم الأجزاء الميكانيكية، التجميعات، والرسومات الهندسية.</p>
+                        <a href="https://www.solidworks.com/" target="_blank">الموقع الرسمي لـ SolidWorks</a><br>
+                        <a href="https://www.autodesk.com/autocad" target="_blank">الموقع الرسمي لـ AutoCAD</a>
+                    </li>
+                    <li class="software-item">
+                        <strong>Proteus / Multisim (محاكاة دوائر إلكترونية)</strong>
+                        <p>لإنشاء ومحاكاة الدوائر الإلكترونية واختبار أدائها.</p>
+                        <a href="https://www.labcenter.com/" target="_blank">الموقع الرسمي لـ Proteus</a><br>
+                        <a href="https://www.ni.com/en-eg/shop/electronic-test-instrumentation/application-software/what-is-multisim.html" target="_blank">الموقع الرسمي لـ Multisim</a>
+                    </li>
+                    <li class="software-item">
+                        <strong>MATLAB / Simulink</strong>
+                        <p>بيئة قوية للحسابات العددية، التحليل، والمحاكاة لأنظمة التحكم والإشارات.</p>
+                        <a href="https://www.mathworks.com/products/matlab.html" target="_blank">الموقع الرسمي لـ MATLAB</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="page-content-section container">
+            <div class="software-category">
+                <h3>2. بيئات التطوير والبرمجة (IDE)</h3>
+                <p>
+                    أساسية لكتابة وتصحيح الأكواد الخاصة بالمتحكمات الدقيقة والأنظمة المدمجة.
+                </p>
+                <ul class="software-list">
+                    <li class="software-item">
+                        <strong>Arduino IDE</strong>
+                        <p>البيئة الرسمية لكتابة وبرمجة لوحات الأردوينو.</p>
+                        <a href="https://www.arduino.cc/en/software" target="_blank">رابط التحميل</a>
+                    </li>
+                    <li class="software-item">
+                        <strong>Visual Studio Code (VS Code)</strong>
+                        <p>محرر أكواد متعدد الاستخدامات يدعم العديد من لغات البرمجة والإضافات.</p>
+                        <a href="https://code.visualstudio.com/" target="_blank">رابط التحميل</a>
+                    </li>
+                    <li class="software-item">
+                        <strong>MPLAB X IDE (لـ PIC Microcontrollers)</strong>
+                        <p>بيئة تطوير لبرمجة متحكمات PIC.</p>
+                        <a href="https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide" target="_blank">رابط التحميل</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="page-content-section container">
+            <div class="software-category">
+                <h3>3. برامج عامة ومكتبية</h3>
+                <ul class="software-list">
+                    <li class="software-item">
+                        <strong>Microsoft Office Suite (Word, Excel, PowerPoint)</strong>
+                        <p>لإعداد التقارير، تحليل البيانات، وإنشاء العروض التقديمية.</p>
+                        <a href="https://www.microsoft.com/en-us/microsoft-365/buy/compare-all-microsoft-365-products" target="_blank">معلومات عن Office 365</a>
+                    </li>
+                    <li class="software-item">
+                        <strong>Adobe Acrobat Reader</strong>
+                        <p>لقراءة وتصفح ملفات الـ PDF.</p>
+                        <a href="https://get.adobe.com/reader/" target="_blank">رابط التحميل</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="back-button-container">
+            <button onclick="history.back()">Back</button>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <p><span class="highlight">قسم الميكاترونيكس</span> - جامعة الزقازيق الأهلية</p>
+            <p>© 2024 جميع الحقوق محفوظة لطلاب قسم الميكاترونيكس</p>
+        </div>
+    </footer>
+</body>
+</html>

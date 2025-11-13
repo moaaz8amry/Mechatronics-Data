@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بحث سريع للمادة - ميكاترونيكس</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #228C22;
+            --secondary-color: #5A9367;
+            --accent-color: #8CB48C;
+            --light-green-bg: #E8F5E9;     /* أخضر فاتح جدًا للخلفية */
+            --hover-green: #1e7b1e;        /* أخضر غامق للهوفر */
+            --white: #FFFFFF;
+            --dark-text: #212529;
+            --medium-text: #495057;
+            --border-light: #DEE2E6;
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.25);
+            --border-radius-sm: 8px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 32px;
+            --spacing-xs: 0.75rem;
+            --spacing-sm: 1.25rem;
+            --spacing-md: 2rem;
+            --spacing-lg: 3rem;
+            --spacing-xl: 4.5rem;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--light-green-bg), #d0e8d3);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+            color: var(--dark-text);
+        }
+
+        .container {
+            background: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            border: 3px solid var(--accent-color);
+        }
+
+        .logo-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+    padding: 8px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 8px 25px rgba(34,140,34,0.2);
+    border: 4px solid var(--primary);
+    overflow: hidden;
+    animation: float 6s ease-in-out infinite;
+}
+
+.logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.logo-container:hover .logo {
+    transform: scale(1.08);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* Dark Mode لللوجو */
+[data-theme="dark"] .logo-container {
+    background: #1e3a1e;
+    border-color: #4CAF50;
+    box-shadow: 0 8px 25px rgba(76,175,80,0.3);
+}
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            color: var(--medium-text);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        label {
+            display: block;
+            text-align: right;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        select {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--border-light);
+            border-radius: var(--border-radius-md);
+            background: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--hover-green);
+            box-shadow: 0 0 0 4px rgba(34,140,34,0.2);
+        }
+
+        /* لون الهوفر للـ options */
+        select:hover {
+            border-color: var(--secondary-color);
+        }
+
+        .search-btn {
+            margin-top: var(--spacing-lg);
+            padding: 1.1rem 2.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius-lg);
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, var(--hover-green), #1e7b1e);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .search-btn:active {
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .container { padding: var(--spacing-lg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+ <div class="logo-container">
+    <img src="logo.png" alt="شعار ميكاترونيكس" class="logo">
+</div>
+    
+    <h1>بحث سريع للمادة</h1>
+    <p class="subtitle">اختر الليفل والترم والمادة في ثواني</p>
+
+    <div class="form-group">
+        <label for="levelSelect">المستوى الدراسي</label>
+        <select id="levelSelect">
+            <option value="">اختر الليفل</option>
+            <option value="0">ليفل 000</option>
+            <option value="1">ليفل 100</option>
+            <option value="2">ليفل 200</option>
+            <option value="3">ليفل 300</option>
+            <option value="4">ليفل 400</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="termSelect">الترم</label>
+        <select id="termSelect">
+            <option value="">اختر الترم</option>
+            <option value="1">ترم أول</option>
+            <option value="2">ترم ثاني</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="subjectSelect">المادة</label>
+        <select id="subjectSelect">
+            <option value="">اختر الليفل والترم أولاً</option>
+        </select>
+    </div>
+
+    <button class="search-btn" onclick="goToSubject()">ابحث بسرعة</button>
+</div>
+
+<script>
+const subjectsData = {
+    "0": {
+        "1": [
+            "Physics - فيزياء",
+            "Mechanics - ميكانيكا",
+            "Math 1 - رياضيات 1",
+            "Drawing - رسم هندسي",
+            "English - الإنجليزية",
+            "Chemistry - كيمياء"
+        ],
+        "2": [
+            "Physics 2 - فيزياء 2",
+            "Production Technology - تكنولوجيا الإنتاج",
+            "Mechanics 2 - ميكانيكا 2",
+            "Program - برمجة",
+            "Math 2 - رياضيات 2",
+            "Drawing - رسم هندسي",
+            "Engineering History - تاريخ الهندسة"
+        ]
+    },
+    "1": {
+        "1": [
+            "Circuit Theory - نظرية الدوائر",
+            "C++ - برمجة سي بلس بلس",
+            "Mechanics Of Machine - ميكانيكا الآلات",
+            "Engineering Material - مواد هندسية",
+            "Math 3 - رياضيات 3",
+            "Thermodynamics - ترموديناميكا"
+        ],
+        "2": [
+            "Intro to Mechatronics - مدخل إلى الميكاترونكس",
+            "Electrical Systems - الأنظمة الكهربية",
+            "Human Resource - الموارد البشرية",
+            "Introduction To Law - مدخل إلى القانون",
+            "Machine Drawing - رسم الآلات",
+            "Stress Analysis - تحليل الإجهاد",
+            "Numerical Techniques - الطرق العددية"
+        ]
+    },
+    "2": {
+        "1": [
+            "Engineering Electronics - إلكترونيات هندسية",
+            "Fluid Mechanics - ميكانيكا الموائع",
+            "Statistics - إحصاء",
+            "Project Management - إدارة المشروعات",
+            "Machine Theory - نظرية الآلات",
+            "Manufacturing Processes - عمليات التصنيع",
+            "Seminar - سمنار"
+        ],
+        "2": [
+            "Digital Logic Design - تصميم المنطق الرقمي",
+            "Heat and Mass Transfer - انتقال الحرارة والكتلة",
+            "Mechanical Vibrations - الاهتزازات الميكانيكية",
+            "Machine Elements Design - تصميم عناصر الآلات",
+            "Engineering Economy - اقتصاديات الهندسة",
+            "Electronic Circuits - الدوائر الإلكترونية",
+            "University Elective (2) - مواد اختيارية جامعة (2)"
+        ]
+    },
+    "3": {
+        "1": ["سيتم إضافتها قريباً"],
+        "2": ["سيتم إضافتها قريباً"]
+    },
+    "4": {
+        "1": ["Summer Training - تدريب صيفي", "Graduation Project Part 1 - مشروع تخرج جزء أول"],
+        "2": ["Graduation Project Part 2 - مشروع تخرج جزء ثاني"]
+    }
+};
+
+document.getElementById('levelSelect').addEventListener('change', updateSubjects);
+document.getElementById('termSelect').addEventListener('change', updateSubjects);
+
+function updateSubjects() {
+    const level = document.getElementById('levelSelect').value;
+    const term  = document.getElementById('termSelect').value;
+    const subjectSelect = document.getElementById('subjectSelect');
+
+    subjectSelect.innerHTML = '<option value="">اختر المادة</option>';
+
+    if (level && term && subjectsData[level] && subjectsData[level][term]) {
+        subjectsData[level][term].forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = s;
+            subjectSelect.appendChild(opt);
+        });
+    } else {
+        subjectSelect.innerHTML = '<option value="">اختر الليفل والترم أولاً</option>';
+    }
+}
+
+function goToSubject() {
+    const level = document.getElementById('levelSelect').value;
+    const term  = document.getElementById('termSelect').value;
+    const subject = document.getElementById('subjectSelect').value;
+
+    if (!level || !term || !subject) {
+        alert('من فضلك اختر الليفل والترم والمادة كاملة');
+        return;
+    }
+
+    localStorage.setItem('openSubject', subject);
+
+    // الحل السحري: نغيّر اسم الملف حسب الليفل
+    let fileName = '';
+    switch(level) {
+        case '0': fileName = 'level000.html'; break;
+        case '1': fileName = 'level100.html'; break;
+        case '2': fileName = 'level200.html'; break;
+        case '3': fileName = 'level300.html'; break;
+        case '4': fileName = 'level400.html'; break;
+        default: fileName = 'index.html';
+    }
+
+    window.location.href = fileName + '#term' + term;
+}
+
+// دعم Enter
+document.addEventListener('keypress', e => {
+    if (e.key === 'Enter') goToSubject();
+});
+</script>
+</script>
+
+</body>
+</html>

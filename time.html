@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>نظام الساعات المعتمدة و GPA</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+  font-family: 'Cairo', sans-serif;
+  background: #f9f9f9;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  line-height: 1.8;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px 20px;
+  background-color: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+
+h1 {
+  text-align: center;
+  color: #1c3c72;
+  margin-bottom: 30px;
+}
+
+h2 {
+  color: #2c5282;
+  margin-top: 25px;
+  border-right: 5px solid #4299e1;
+  padding-right: 10px;
+  font-size: 1.3em;
+}
+
+p, li {
+  font-size: 1.05em;
+}
+
+ul {
+  list-style-type: '✅ ';
+  padding-right: 20px;
+}
+
+table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+  background-color: #f9f9f9;
+}
+
+table, th, td {
+  border: 1px solid #ccc;
+}
+
+th {
+  background-color: #1c3c72;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+pre {
+  background-color: #edf2f7;
+  padding: 10px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: monospace;
+}
+
+.card {
+  background: #e9f5f5;
+  border-right: 6px solid #3aa17e;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* .hover-box {
+  transition: transform 0.3s ease;
+} */
+
+/* .hover-box:hover {
+  transform: scale(1.03);
+} */
+
+.example-box {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+.mid-title {
+  text-align: center;
+  color: #205072;
+  font-size: 1.7em;
+  margin: 40px 0 20px;
+}
+
+.section-divider {
+  border: none;
+  height: 2px;
+  background-color: #ccc;
+  margin: 20px 0;
+}
+ .but button {
+  font-size: 18px;
+  width: 80px;
+  height: 50px;
+  cursor: pointer;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.but button:hover {
+  transform: scale(1.1);
+  background-color: #1c3c72; 
+}
+.but {
+  position: absolute;
+  left: 20px;
+  /* top: 20px; */
+}
+.btn-green {
+  display: inline-block;
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.btn-green:hover {
+  background-color: #218838;
+  transform: scale(1.1);
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎓 نظام الساعات المعتمدة - شرح بسيط</h1>
+
+    <section class="hover-box">
+      <h2>✅ ما هو نظام الساعات المعتمدة؟</h2>
+      <p>نظام دراسي مرن، بيسمح لك تختار المواد اللي تدرسها كل ترم حسب الخطة، وكل مادة ليها عدد ساعات معتمد بتأثر على التقدير العام.</p>
+    </section>
+
+    <section class="hover-box">
+      <h2>⏳ يعني إيه "ساعة معتمدة"؟</h2>
+      <p>الساعة المعتمدة = ساعة محاضرة في الأسبوع. يعني مادة 3 ساعات = 3 محاضرات أسبوعياً أو محاضرة 3 ساعات مرة واحدة.</p>
+    </section>
+
+    <section class="hover-box">
+      <h2>📘 مثال على عدد الساعات:</h2>
+      <table>
+        <tr><th>المادة</th><th>عدد الساعات</th></tr>
+        <tr><td>رياضيات 1</td><td>3 ساعات</td></tr>
+        <tr><td>فيزياء</td><td>3 ساعات</td></tr>
+        <tr><td>رسم هندسي</td><td>2 ساعات</td></tr>
+        <tr><td>كيمياء</td><td>3 ساعات</td></tr>
+        <tr><td>لغة إنجليزية</td><td>2 ساعات</td></tr>
+      </table>
+    </section>
+
+    <section class="hover-box">
+      <h2>🎯 الفرق بين النظام التقليدي ونظام الساعات المعتمدة:</h2>
+      <table>
+        <tr><th>النظام التقليدي</th><th>نظام الساعات المعتمدة</th></tr>
+        <tr><td>جدول موحد لكل الطلاب</td><td>كل طالب بيختار جدوله</td></tr>
+        <tr><td>لو رسبت تعيد السنة</td><td>لو رسبت تعيد المادة بس</td></tr>
+        <tr><td>صعب تزود مواد</td><td>ممكن تزود مواد وتسرّع التخرج</td></tr>
+        <tr><td>مرونة قليلة</td><td>مرونة كبيرة في التسجيل</td></tr>
+      </table>
+    </section>
+    <section class="hover-box">
+      <h2>🧭 نظام الدراسة:</h2>
+      <ul>
+        <li>تقدر تسجل من 12 لـ 18 ساعة كل ترم.</li>
+        <li>فيه مواد ليها متطلبات، لازم تخلص مادة قبل تبدأ التانية.</li>
+        <li>لو رسبت، تقدر تعيد المادة بدون ما تعيد السنة.</li>
+        <li>تقدر تسرّع تخرجك أو تمشي على مهلك.</li>
+      </ul>
+    </section>
+
+    <section class="hover-box">
+      <h2>🎓 التخرج:</h2>
+      <p>عشان تتخرج، لازم تخلص عدد معين من الساعات (مثلاً 144 ساعة)، وده بيتقسم على سنين حسب خطتك. كل ما تمشي صح، تتخرج في ميعادك أو أسرع.</p>
+    </section>
+
+    <section class="card hover-box">
+      <h2>💡 نصيحة سريعة:</h2>
+      <p>حاول تركز أكتر في المواد اللي عدد ساعاتها كبير لأنها بتفرق جامد في GPA.</p>
+    </section>
+
+
+    <hr class="section-divider">
+    <h2 class="mid-title">📊 شرح كامل لنظام GPA</h2>
+    <hr class="section-divider">
+
+    <section class="card hover-box">
+      <h2>📈 يعني إيه GPA؟</h2>
+      <p>الـ GPA هو التقدير العام بتاعك، وبيتحسب بناءً على درجاتك في كل مادة وعدد ساعاتها.</p>
+      <p>مثال توضيحي:</p>
+      <div class="example-box">
+        <p>مادة A (3 ساعات) - جبت فيها A = 4.0</p>
+        <p>مادة B (2 ساعات) - جبت فيها B = 3.0</p>
+        <p>مادة C (1 ساعة) - جبت فيها C = 2.0</p>
+        <hr>
+        <p><strong>المجموع = (3×4) + (2×3) + (1×2) = 20</strong></p>
+        <p><strong>عدد الساعات = 6</strong></p>
+        <p><strong>GPA = 20 ÷ 6 = 3.33</strong></p>
+      </div>
+    </section>
+
+    <section class="hover-box">
+      <h2>🧠 مثال عملي لحساب المعدل (GPA):</h2>
+      <p>لو خدت مادتين:</p>
+      <ul>
+        <li>رياضيات (3 ساعات) وجبت A+ = 4.0</li>
+        <li>رسم (2 ساعات) وجبت C = 2.0</li>
+      </ul>
+      <p>تحسب المعدل كده:</p>
+      <pre>(3×4 + 2×2) ÷ (3+2) = 3.2</pre>
+      <p>يعني المادة اللي ليها ساعات أكتر بتأثر أكتر على المعدل.</p>
+        <p>ده لإنها داخلة بحسبة أكبر، فتقديرك فيها بيرجح الميزان في النتيجة الكلية.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>المادة</th>
+            <th>عدد الساعات</th>
+            <th>التقدير</th>
+            <th>الناتج</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>رياضيات</td>
+            <td>3</td>
+            <td>D (1.0)</td>
+            <td>3 × 1 = 3</td>
+          </tr>
+          <tr>
+            <td>لغة إنجليزية</td>
+            <td>1</td>
+            <td>A+ (4.0)</td>
+            <td>1 × 4 = 4</td>
+          </tr>
+          <tr>
+            <td colspan="3"><strong>المجموع</strong></td>
+            <td><strong>7</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>GPA = 7 ÷ 4 = 1.75</strong></p>
+    <p>رغم إنك جبت A+، لكن بسبب المادة التانية عدد ساعاتها أكتر والتقدير فيها أقل، أثرت على المعدل.</p>
+
+    <p><strong>الخلاصة:</strong> ركّز أكتر في المواد اللي عدد ساعاتها كبير، لأنها المفتاح الحقيقي للمعدل العالي.</p>
+     <hr class="section-divider">
+    <h2 class="mid-title">🔒 المواد اللي بتقفل على مواد تانية</h2>
+    <hr class="section-divider">
+
+  <p>في مواد ما ينفعش تسجلها غير لما تخلص مادة قبلها، ودي بنسميها <strong>متطلب سابق</strong>.</p>
+  <p>يعني لازم تنجح في المادة الأولى علشان تقدر تاخد اللي بعدها.</p>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>المادة الأولى (المتطلب)</th>
+          <th>المادة المرتبطة</th>
+          <th>هل ينفع تسجلهم مع بعض؟</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>رسم هندسي واسقاط 1</td>
+          <td>رسم هندسي واسقاط 2</td>
+          <td>❌ لأ، لازم تنجح في الأولى</td>
+        </tr>
+        <tr>
+          <td>ماث 2</td>
+          <td>ماث 3</td>
+          <td>❌ لأ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>ليه ده مهم؟</strong></p>
+  <p>علشان لو سقطت في مادة بتقفل على غيرها، هتتأخر في تسجيل المادة التانية وممكن الجدول يتلخبط.</p>
+  <p><strong>نصيحة:</strong> خلّي بالك من المواد اللي بتقفل، وخلّصها بدري علشان ترتاح في السنين اللي بعد كده.</p>
+
+  <div class="text-center mt-4">
+    <a href="prerequisites.html" class="btn-green">شوف كل المواد اللي بتقفل</a>
+  </div>
+</section>
+
+</div>
+    </section>
+    
+    
+  </div>
+  <div class="but">
+    <button onclick="history.back()">Back</button>
+  </div>
+</body>
+</html>
