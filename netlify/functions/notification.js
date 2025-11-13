@@ -1,7 +1,7 @@
 // netlify/functions/notification.js
 // Proxy بين Netlify و Google Apps Script عشان نتفادى CORS في المتصفح
 
-const apiUrl = "https://script.google.com/macros/s/AKfycbzN5pAPEAsiV50q7czW3fREchi8glqTtXJbPqXb0iPKVLgpy_sOJEJh6EJZDHNMwGFm/exec";
+const apiUrl = "https://script.google.com/macros/s/AKfycbze63km1LuBbt9OZihVraf2pVKJF0PTlVTG71ifUseVECEMmKh7dUiwHhdLpue14-aG/exec";
 
 exports.handler = async (event, context) => {
   // نعمل timeout بسيط عشان ما نوصلش لحد 504 من Netlify
