@@ -1,44 +1,59 @@
 // netlify/functions/notification.js
-// نسخة بسيطة جداً عشان نتأكد إن Netlify Functions شغّالة
+// Proxy بين Netlify و Google Apps Script عشان نتفادى CORS في المتصفح
+
+const apiUrl = "https://script.google.com/macros/s/AKfycbzN5pAPEAsiV50q7czW3fREchi8glqTtXJbPqXb0iPKVLgpy_sOJEJh6EJZDHNMwGFm/exec";
 
 exports.handler = async (event, context) => {
+  // نعمل timeout بسيط عشان ما نوصلش لحد 504 من Netlify
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000); // 8 ثواني
+
   try {
-    const demoData = [
-      {
-        name: "اختبار إشعار 1 - Level 000",
-        url: "https://example.com/file1",
-        mimeType: "application/pdf",
-        updatedTime: new Date().toISOString(),
-        level: "000"
-      },
-      {
-        name: "اختبار إشعار 2 - Level 100",
-        url: "https://example.com/file2",
-        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        updatedTime: new Date(Date.now() - 3600_000).toISOString(),
-        level: "100"
-      }
-    ];
+    const response = await fetch(apiUrl, { signal: controller.signal });
+
+    clearTimeout(timeout);
+
+    const text = await response.text(); // Apps Script بيرجع JSON كنص أصلاً
+
+    // لو Apps Script رجع كود غير 200، نرجّعه برضه عشان نعرف المشكلة
+    if (!response.ok) {
+      return {
+        statusCode: response.status,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: text,
+      };
+    }
 
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        "Access-Control-Allow-Origin": "https://znuassistant.netlify.app",
+        // نسمح لأي origin (أبسط وأريح مع previews)
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify(demoData),
+      body: text,
     };
   } catch (error) {
+    clearTimeout(timeout);
     console.error("Error in Netlify notifications function:", error);
+
+    const isTimeout = error.name === "AbortError";
+
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        "Access-Control-Allow-Origin": "https://znuassistant.netlify.app",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         error: true,
-        message: "Failed to build demo notifications",
+        timeout: isTimeout,
+        message: isTimeout
+          ? "Timed out while contacting Google Apps Script"
+          : "Failed to fetch notifications from Apps Script",
       }),
     };
   }
