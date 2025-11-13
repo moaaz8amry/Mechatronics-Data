@@ -3475,7 +3475,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    const NOTIFICATIONS_API_URL = "https://script.google.com/macros/s/AKfycbzN5pAPEAsiV50q7czW3fREchi8glqTtXJbPqXb0iPKVLgpy_sOJEJh6EJZDHNMwGFm/exec";
+    const NOTIFICATIONS_API_URL = "/.netlify/functions/notification";
     const container = document.getElementById("notifications-list");
     const filterButtons = document.querySelectorAll('.notif-filter');
     if (!container) return;
