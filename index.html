@@ -3250,6 +3250,7 @@ html { scroll-behavior: smooth; }
     <li><a href="home">الرئيسية</a></li>
     <li><a href="#cards-section">الخطط</a></li>
     <li><a href="#extras-section">الموارد</a></li>
+    <li><a href="#notifications-section">الإشعارات</a></li>
     <li><a href="#gpa-calculator">الحاسبة</a></li>
     <li><a href="#aboutus-section">من نحن</a></li>
     <li><a href="#aboutus-section">تواصل</a></li>
@@ -3258,6 +3259,7 @@ html { scroll-behavior: smooth; }
 <div class="bottom-nav" id="bottomNav">
   <a href="#home" class="nav-item active"><svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9H6v-9H3z"/></svg><span>الرئيسية</span></a>
   <a href="#cards-section" class="nav-item"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg><span>القسم</span></a>
+  <a href="#notifications-section" class="nav-item"><svg viewBox="0 0 24 24"><path d="M12 22a2 2 0 002-2H10a2 2 0 002 2zm6-6V11a6 6 0 10-12 0v5l-2 2v1h18v-1l-2-2z"/></svg><span>الإشعارات</span></a>
   <button class="nav-item" id="menuButton"><svg viewBox="0 0 24 24"><path d="M12 7a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z"/></svg><span>القائمة</span></button>
   <a href="#info-cards-section" class="nav-item"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zM11 10h2v6h-2zm0-4h2v2h-2z"/></svg><span>معلومات</span></a>
   <a href="#aboutus-section" class="nav-item"><svg viewBox="0 0 24 24"><path d="M21 8V7l-3 2-2-2-3 3 2 2-2 2 3 3 2-2 3 2v-1l-2-2 2-2z"/></svg><span>تواصل</span></a>
@@ -3487,19 +3489,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!name) return 'other';
         const n = name.toLowerCase();
 
-        if (n.includes('000') || n.includes('تحضيري') || n.includes('prep') || n.includes('level 000') || n.includes('l000')) {
+        const has = (...keys) => keys.some(k => n.includes(k));
+
+        // مستوى 000 / Preparatory
+        if (/(^|\D)(000)(\D|$)/.test(n) || has('تحضيري', 'prep', 'prep.', 'prep ', 'prep-', 'level 0', 'level0', 'lvl0', 'lvl 0', ' l0', ' l00')) {
             return '000';
         }
-        if (n.includes('100') || n.includes('level 100') || n.includes('l100')) {
+        // مستوى 100
+        if (/(^|\D)(100)(\D|$)/.test(n) || has('level 1', 'level1', 'l100', 'lvl1', 'lvl 1')) {
             return '100';
         }
-        if (n.includes('200') || n.includes('level 200') || n.includes('l200')) {
+        // مستوى 200
+        if (/(^|\D)(200)(\D|$)/.test(n) || has('level 2', 'level2', 'l200', 'lvl2', 'lvl 2')) {
             return '200';
         }
-        if (n.includes('300') || n.includes('level 300') || n.includes('l300')) {
+        // مستوى 300
+        if (/(^|\D)(300)(\D|$)/.test(n) || has('level 3', 'level3', 'l300', 'lvl3', 'lvl 3')) {
             return '300';
         }
-        if (n.includes('400') || n.includes('level 400') || n.includes('l400')) {
+        // مستوى 400
+        if (/(^|\D)(400)(\D|$)/.test(n) || has('level 4', 'level4', 'l400', 'lvl4', 'lvl 4')) {
             return '400';
         }
         return 'other';
@@ -3607,7 +3616,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // --- Badge في الـ bottom nav لو فيه ملفات ---
         const notifCount = notifications.length;
-        const infoNavLink = document.querySelector('.bottom-nav .nav-item[href="#info-cards-section"]');
+        const infoNavLink = document.querySelector('.bottom-nav .nav-item[href="#notifications-section"]');
         if (infoNavLink && notifCount > 0) {
             let badge = infoNavLink.querySelector('.notif-badge');
             if (!badge) {
