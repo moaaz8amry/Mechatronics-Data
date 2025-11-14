@@ -3481,7 +3481,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-
+<!-- ================================== -->
+<!-- START: UPDATED NOTIFICATION SCRIPT -->
+<!-- ================================== -->
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
     const NOTIFICATIONS_API_URL = "/.netlify/functions/notification";
@@ -3489,37 +3491,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const filterButtons = document.querySelectorAll('.notif-filter');
     if (!container) return;
 
-    let notifications = [];
+    let notifications = []; // This will store the data from the API
     let activeLevel = 'all';
 
-    const detectLevel = (name) => {
-        if (!name) return 'other';
-        const n = name.toLowerCase();
-
-        const has = (...keys) => keys.some(k => n.includes(k));
-
-        // مستوى 000 / Preparatory
-        if (/(^|\D)(000)(\D|$)/.test(n) || has('تحضيري', 'prep', 'prep.', 'prep ', 'prep-', 'level 0', 'level0', 'lvl0', 'lvl 0', ' l0', ' l00')) {
-            return '000';
-        }
-        // مستوى 100
-        if (/(^|\D)(100)(\D|$)/.test(n) || has('level 1', 'level1', 'l100', 'lvl1', 'lvl 1')) {
-            return '100';
-        }
-        // مستوى 200
-        if (/(^|\D)(200)(\D|$)/.test(n) || has('level 2', 'level2', 'l200', 'lvl2', 'lvl 2')) {
-            return '200';
-        }
-        // مستوى 300
-        if (/(^|\D)(300)(\D|$)/.test(n) || has('level 3', 'level3', 'l300', 'lvl3', 'lvl 3')) {
-            return '300';
-        }
-        // مستوى 400
-        if (/(^|\D)(400)(\D|$)/.test(n) || has('level 4', 'level4', 'l400', 'lvl4', 'lvl 4')) {
-            return '400';
-        }
-        return 'other';
-    };
+    // --- The detectLevel function is now REMOVED ---
+    // The 'level' property will come directly from the API.
 
     const renderNotifications = () => {
         if (!notifications || notifications.length === 0) {
@@ -3535,7 +3511,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const filtered = activeLevel === 'all'
             ? notifications
-            : notifications.filter(item => item.level === activeLevel);
+            : notifications.filter(item => item.level === activeLevel); // This logic remains the same
 
         if (filtered.length === 0) {
             container.classList.add("single-notification");
@@ -3565,6 +3541,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             card.className = "info-card notification-card";
 
             let levelLabel = '';
+            // The file.level property now comes directly from the API
             if (file.level && file.level !== 'other') {
                 levelLabel = `مستوى ${file.level}`;
             } else {
@@ -3588,7 +3565,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
-    // ربط أزرار الفلتر
+    // Link filter buttons
     if (filterButtons && filterButtons.length) {
         filterButtons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -3604,27 +3581,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // Fetch data
     try {
         const res = await fetch(NOTIFICATIONS_API_URL);
         if (!res.ok) throw new Error("HTTP " + res.status);
 
         const data = await res.json();
 
+        // --- MODIFIED: Data now includes the 'level' property ---
         if (Array.isArray(data)) {
-            notifications = data.map(file => ({
-                name: file.name,
-                url: file.url,
-                mimeType: file.mimeType,
-                updatedTime: file.updatedTime,
-                level: detectLevel(file.name)
-            }));
+            notifications = data; // Simply assign the data
         } else {
             notifications = [];
         }
+        // --- END MODIFICATION ---
 
         renderNotifications();
 
-        // --- Badge في الـ bottom nav لو فيه ملفات ---
+        // --- Badge logic remains the same ---
         const notifCount = notifications.length;
         const infoNavLink = document.querySelector('.bottom-nav .nav-item[href="#notifications-section"]');
         if (infoNavLink && notifCount > 0) {
@@ -3645,7 +3619,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `;
     }
-});</script>
+});
+</script>
+<!-- ================================== -->
+<!--  END: UPDATED NOTIFICATION SCRIPT  -->
+<!-- ================================== -->
 
 <script>
   // Fix 100vh issues on mobile browsers (Android + iOS)
