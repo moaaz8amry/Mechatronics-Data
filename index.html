@@ -2456,46 +2456,7 @@ body {
           }
         }
 
-    
-/* Mobile performance & smoothness tweaks */
-@media (max-width: 767px) {
-  /* Disable background gradient animation on low-width devices for smoother scrolling */
-  body,
-  body.scrolled-lighter {
-    animation: none !important;
-    background-size: auto !important;
-  }
-
-  /* Avoid overly heavy shadows on small screens */
-  .card,
-  .info-card,
-  .notification-card,
-  .gpa-card,
-  .hero-content {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-  }
-
-  /* Make transitions shorter on mobile to feel more snappy */
-  .mobile-header,
-  .bottom-navbar,
-  .main-nav,
-  .notification-card,
-  .info-card {
-    transition-duration: 0.25s !important;
-  }
-}
-
-/* Respect reduced-motion preference globally */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-</style>
+    </style>
     
     <!-- START: NEW NAVIGATION OVERRIDE RULES -->
     <style id="nav-overrides">
@@ -2582,15 +2543,15 @@ body {
     flex-direction: column; 
     align-items: center;
     gap: 0.75rem;
-    padding: 0.9rem 0.85rem;
-    width: 80px;
+    padding: 0.85rem 0.75rem;
+    width: 76px;
     height: auto;
-    background: radial-gradient(circle at top left, rgba(255,255,255,0.92), rgba(255,255,255,0.78));
-    backdrop-filter: blur(22px) saturate(1.7);
-    -webkit-backdrop-filter: blur(22px) saturate(1.7);
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(18px) saturate(1.5);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
     border-radius: 24px;
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
-    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.26);
+    border: 1px solid rgba(255, 255, 255, 0.75);
     z-index: 1600;
     transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, width 0.35s ease, padding 0.35s ease;
     opacity: 0;
@@ -2610,10 +2571,25 @@ body {
 }
 
 /* Small arrow pointing towards the page (to the left) */
-/* arrow removed for cleaner glossy menu */
-/* .bottom-navbar::before { removed } */
+.bottom-navbar::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent rgba(255, 255, 255, 0.85) transparent transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
 
-/* arrow hover/active states removed */
+.bottom-navbar:hover::before,
+.bottom-navbar.active::before {
+    opacity: 1;
+    transform: translate(-2px, -50%);
+}
 /* --- MODIFICATION: Styles for "Menu" text (Always Visible) --- */
         .bottom-navbar .nav-logo-text {
             color: #1A741A;
