@@ -330,8 +330,6 @@
             }
             .new-main-header {
                 padding: 0.6rem 1rem;
-                border-bottom-left-radius: 18px;
-                border-bottom-right-radius: 18px;
             }
             .new-main-header h1 {
                 font-size: 1.2rem;
@@ -853,17 +851,41 @@
         }
 
         .notifications-list {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-md);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: 22px;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(18px) saturate(1.5);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
+    max-height: 340px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+
+
+        .notifications-list {
+            scroll-snap-type: y proximity;
         }
 
-        .notification-card {
-            text-align: right;
+        .notifications-list .notification-card {
+            scroll-snap-align: start;
         }
 
-        .notification-card h3 {
+.notifications-list.single-notification {
+    max-height: none;
+    overflow: visible;
+}
+
+.notification-card {
+    text-align: right;
+}
+.notification-card h3 {
             font-size: 1.05rem;
             margin-bottom: 0.35rem;
         }
@@ -2545,6 +2567,7 @@ body {
     height: auto;
     background: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(18px) saturate(1.5);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
     border-radius: 999px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.26);
     border: 1px solid rgba(255, 255, 255, 0.75);
@@ -2552,6 +2575,14 @@ body {
     transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, width 0.35s ease, padding 0.35s ease;
     opacity: 0;
 }
+
+.bottom-navbar:hover,
+.bottom-navbar.active {
+    width: 230px;
+    align-items: flex-start;
+    padding: 0.85rem 1rem 1rem;
+}
+
 
 .bottom-navbar.visible {
     transform: translateY(0);
@@ -3359,6 +3390,14 @@ html { scroll-behavior: smooth; }
   cursor: pointer; z-index: 1600; transition: transform .4s cubic-bezier(.2,.9,.3,1), box-shadow .3s ease, right 0.3s ease, bottom 0.3s ease; /* MOD: Added transitions */
 }
 #backToTop.visible { transform: scale(1); }
+
+@media (max-width: 767px) {
+  #backToTop {
+    display: none !important;
+  }
+}
+
+
 #backToTop svg { width: 24px; height: 24px; fill: var(--primary-color); }
 
 /* MOD: Added desktop styles for Back-to-Top arrow */
