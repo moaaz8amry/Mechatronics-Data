@@ -7,8 +7,28 @@
     <link rel="manifest" href="site.webmanifest">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    
     <!-- META DESCRIPTION ADDED FOR SEO -->
     <meta name="description" content="موقع لمساعدة طلاب قسم الميكاترونكس في جامعة الزقازيق الأهلية، يوفر موارد دراسية، خطط، حاسبة معدل تراكمي، والمزيد لتسهيل الرحلة التعليمية.">
+    
+    <!-- 
+      *** START: EDITS FOR PWA / FULL-SCREEN APP MODE ***
+    -->
+    
+    <!-- iOS (iPhone/Safari) Meta Tags -->
+    <!-- This makes the app launch in full-screen (no Safari UI) *when added to the Home Screen*. -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- This sets the status bar style. 'black-translucent' lets content flow under it. 'default' or 'black' are other options. -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Android (Chrome) Meta Tags -->
+    <!-- This also enables the "Add to Home Screen" app-like experience. -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- This colors the browser's top bar (and status bar on Android) to match your site's theme. -->
+    <meta name="theme-color" content="#1A741A"> 
+    
+    <!-- *** END: EDITS FOR PWA / FULL-SCREEN APP MODE *** -->
+
     <title>Mechatronics Data</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2545,7 +2565,8 @@ body {
     <style>
         /* Desktop nav bar modifications */
         
-/* Desktop glossy bottom navbar turned into right-side floating nav */
+/* *** START: EDITS FOR CIRCULAR DESKTOP NAV ***
+*/
 .bottom-navbar {
     position: fixed;
     right: 24px;
@@ -2556,27 +2577,42 @@ body {
     /* MODIFICATION: Changed direction */
     flex-direction: column; 
     align-items: center;
+    /* *** MODIFICATION: Added justify-content *** */
+    justify-content: center;
     gap: 0.75rem;
     padding: 0.85rem 0.75rem;
+    /* *** MODIFICATION: Set width and height to be equal for a circle *** */
     width: 76px;
-    height: auto;
+    height: 76px; 
     background: rgba(255, 255, 255, 0.75); /* MOD: Made more opaque */
     backdrop-filter: blur(22px) saturate(1.5); /* MOD: Increased blur */
     -webkit-backdrop-filter: blur(22px) saturate(1.5); /* MOD: Increased blur */
-    border-radius: 24px;
+    /* *** MODIFICATION: Set border-radius to 50% for a circle *** */
+    border-radius: 50%;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.26);
     border: 1px solid rgba(255, 255, 255, 0.8); /* MOD: More opaque border */
     z-index: 1600;
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, width 0.35s ease, padding 0.35s ease;
+    /* *** MODIFICATION: Added height and border-radius to the transition for fluid morphing *** */
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), 
+                opacity 0.3s ease, 
+                width 0.35s ease, 
+                padding 0.35s ease,
+                height 0.35s ease,
+                border-radius 0.35s ease;
     opacity: 0;
 }
 
 .bottom-navbar:hover,
 .bottom-navbar.active {
     width: 230px;
+    /* *** MODIFICATION: Set height to auto and border-radius back to pill shape on hover *** */
+    height: auto;
+    border-radius: 24px;
     align-items: flex-start;
     padding: 0.85rem 1rem 1rem;
 }
+/* *** END: EDITS FOR CIRCULAR DESKTOP NAV ***
+*/
 
 
 .bottom-navbar.visible {
