@@ -634,18 +634,18 @@
 
 
         .hero-section {
-            position: relative;
-            overflow: hidden;
-            color: var(--white);
-            padding: 6rem 1rem;
-            margin-top: 0;
-            min-height: 100vh;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+             position: relative;
+             overflow: hidden;
+             color: var(--white);
+             padding: 6rem 1rem;
+             margin-top: 0;
+             min-height: calc(var(--vh, 1vh) * 100);
+             text-align: center;
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
+         }
         .hero-bg {
             position: absolute;
             top: 0;
@@ -2130,7 +2130,7 @@ nimation properties added via .animated-section .section-header */
   body {
     font-size: 0.95rem;
     /* MODIFICATION: Reduced bottom padding */
-    padding-bottom: 80px; 
+    padding-bottom: 40px; 
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
@@ -2456,7 +2456,26 @@ body {
           }
         }
 
-    </style>
+    
+@media (max-width: 767px) {
+  /* Make notifications section animations lighter and smoother on mobile */
+  #notifications-section.animated-section {
+    opacity: 1;
+    transform: none;
+  }
+  #notifications-section .info-card,
+  #notifications-section .notification-card {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+  }
+  .notifications-list {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+</style>
     
     <!-- START: NEW NAVIGATION OVERRIDE RULES -->
     <style id="nav-overrides">
@@ -2628,7 +2647,23 @@ body {
         }
     </style>
 
-    </head>
+    <style>
+/* Extra glossy treatment for desktop floating menu and its icon */
+@media (min-width: 768px) {
+  .bottom-navbar {
+    background: radial-gradient(circle at top left, rgba(255,255,255,0.95), rgba(255,255,255,0.70));
+    backdrop-filter: blur(22px) saturate(1.8);
+    -webkit-backdrop-filter: blur(22px) saturate(1.8);
+  }
+  .bottom-navbar img#navLogo {
+    background: radial-gradient(circle at top, rgba(255,255,255,0.85), rgba(255,255,255,0.55));
+    backdrop-filter: blur(18px) saturate(1.7);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    border: 1px solid rgba(255,255,255,0.9);
+  }
+}
+
+</style></head>
     <body>
         <div id="loading-screen">
             <img src="logo.png" alt="Loading Logo"> <!-- MOD: logo.png -->
@@ -3505,6 +3540,7 @@ if(backToTop){ // Add check
     <a href="#home">الرئيسية</a>
     <a href="#about-section">عن القسم</a>
     <a href="#extras-section">الموارد</a>
+    <a href="#notifications-section">الإشعارات</a>
     <a href="#gpa-calculator">حاسبة المعدل</a>
     <a href="#aboutus-section">تواصل</a>
   </nav>
