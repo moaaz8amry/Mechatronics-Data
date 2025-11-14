@@ -3674,7 +3674,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- ================================== -->
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    const NOTIFICATIONS_API_URL = "/.netlify/functions/visitor-counter";
+    const NOTIFICATIONS_API_URL = "/.netlify/functions/visitor-counter?type=notifications";
     const container = document.getElementById("notifications-list");
     const filterButtons = document.querySelectorAll('.notif-filter');
     if (!container) return;
@@ -3832,7 +3832,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <!-- ================================== -->
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    const VISITOR_COUNTER_API_URL = "/.netlify/functions/visitor-counter";
+    const VISITOR_COUNTER_API_URL = "/.netlify/functions/visitor-counter?type=visitor";
     const counterElement = document.getElementById('visitor-count');
     if (!counterElement) return;
 
