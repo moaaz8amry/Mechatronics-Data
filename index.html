@@ -7,28 +7,11 @@
     <link rel="manifest" href="site.webmanifest">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0F6B2B">
     <!-- META DESCRIPTION ADDED FOR SEO -->
     <meta name="description" content="موقع لمساعدة طلاب قسم الميكاترونكس في جامعة الزقازيق الأهلية، يوفر موارد دراسية، خطط، حاسبة معدل تراكمي، والمزيد لتسهيل الرحلة التعليمية.">
-    
-    <!-- 
-      *** START: EDITS FOR PWA / FULL-SCREEN APP MODE ***
-    -->
-    
-    <!-- iOS (iPhone/Safari) Meta Tags -->
-    <!-- This makes the app launch in full-screen (no Safari UI) *when added to the Home Screen*. -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- This sets the status bar style. 'black-translucent' lets content flow under it. 'default' or 'black' are other options. -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- Android (Chrome) Meta Tags -->
-    <!-- This also enables the "Add to Home Screen" app-like experience. -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <!-- This colors the browser's top bar (and status bar on Android) to match your site's theme. -->
-    <meta name="theme-color" content="#1A741A"> 
-    
-    <!-- *** END: EDITS FOR PWA / FULL-SCREEN APP MODE *** -->
-
     <title>Mechatronics Data</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,7 +67,7 @@
             padding-bottom: 0;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
             /* MODIFICATION: Added padding-top for new fixed header */
             padding-top: 77px;
             transition: background 0.5s ease, color 0.5s ease;
@@ -659,7 +642,7 @@
             color: var(--white);
             padding: 6rem 1rem;
             margin-top: 0;
-            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -2565,8 +2548,7 @@ body {
     <style>
         /* Desktop nav bar modifications */
         
-/* *** START: EDITS FOR CIRCULAR DESKTOP NAV ***
-*/
+/* Desktop glossy bottom navbar turned into right-side floating nav */
 .bottom-navbar {
     position: fixed;
     right: 24px;
@@ -2574,47 +2556,38 @@ body {
     left: auto;
     transform: translateY(150%);
     display: flex;
-    /* MODIFICATION: Changed direction */
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
-    /* *** MODIFICATION: Added justify-content *** */
     justify-content: center;
-    gap: 0.75rem;
-    padding: 0.85rem 0.75rem;
-    /* *** MODIFICATION: Set width and height to be equal for a circle *** */
-    width: 76px;
-    height: 76px; 
-    background: rgba(255, 255, 255, 0.75); /* MOD: Made more opaque */
-    backdrop-filter: blur(22px) saturate(1.5); /* MOD: Increased blur */
-    -webkit-backdrop-filter: blur(22px) saturate(1.5); /* MOD: Increased blur */
-    /* *** MODIFICATION: Set border-radius to 50% for a circle *** */
-    border-radius: 50%;
+    gap: 0.4rem;
+    padding: 0.6rem;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(22px) saturate(1.5);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    border-radius: 999px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.26);
-    border: 1px solid rgba(255, 255, 255, 0.8); /* MOD: More opaque border */
+    border: 1px solid rgba(255, 255, 255, 0.8);
     z-index: 1600;
-    /* *** MODIFICATION: Added height and border-radius to the transition for fluid morphing *** */
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), 
-                opacity 0.3s ease, 
-                width 0.35s ease, 
-                padding 0.35s ease,
-                height 0.35s ease,
-                border-radius 0.35s ease;
+    transition:
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease,
+      width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      padding 0.35s ease,
+      border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     opacity: 0;
 }
 
 .bottom-navbar:hover,
 .bottom-navbar.active {
-    width: 230px;
-    /* *** MODIFICATION: Set height to auto and border-radius back to pill shape on hover *** */
+    width: 260px;
     height: auto;
-    border-radius: 24px;
     align-items: flex-start;
     padding: 0.85rem 1rem 1rem;
+    border-radius: 32px;
 }
-/* *** END: EDITS FOR CIRCULAR DESKTOP NAV ***
-*/
-
-
 .bottom-navbar.visible {
     transform: translateY(0);
     opacity: 1;
@@ -3577,12 +3550,24 @@ if(backToTop){ // Add check
 }
 
 .bottom-navbar .nav-logo-text {
-  /* MODIFICATION: Styled menu text */
   font-size: 1rem;
   color: var(--primary-color);
   font-weight: 600;
+  opacity: 0;
+  max-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-right: 0.5rem;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, max-width 0.35s ease, transform 0.35s ease;
 }
 
+.bottom-navbar:hover .nav-logo-text,
+.bottom-navbar.active .nav-logo-text {
+  opacity: 1;
+  max-width: 140px;
+  transform: translateY(0);
+}
 .bottom-navbar nav {
   display: flex;
   flex-direction: column;
