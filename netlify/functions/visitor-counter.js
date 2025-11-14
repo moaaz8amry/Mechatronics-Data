@@ -9,7 +9,7 @@
 //   /.netlify/functions/znu-api?type=visitor
 //   /.netlify/functions/znu-api?type=notifications
 
-const GAS_BASE_URL = "https://script.google.com/macros/s/AKfycby_-d8jTAAQP8k9joGhJWTIue-0V9iDXsBT9SHDC9nLXhjeNHQKsf0gkoNbxlDRhzhD0Q/exec";
+const GAS_BASE_URL = "https://script.google.com/macros/s/AKfycby5xpBme6NRZ6lAUyxkOgpqYurl3HbAJnmTnM48zE7cydN9N7rEz38JdE7T6oYG6s-n6g/exec";
 
 // --- Utility: common CORS headers ---
 const commonHeaders = {
