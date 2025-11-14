@@ -483,8 +483,8 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            border-top-left-radius: var(--border-radius-lg);
-            border-bottom-left-radius: var(--border-radius-lg);
+            border-top-left-radius: 18px;
+            border-bottom-left-radius: 18px;
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
             box-sizing: border-box;
@@ -815,7 +815,7 @@
             justify-content: center;
             width: 40px;
             height: 40px;
-            border-radius: 999px;
+            border-radius: 24px;
             background: rgba(255, 255, 255, 0.1);
             box-shadow: var(--shadow-sm);
             font-size: 1.3rem;
@@ -833,7 +833,7 @@
             outline: none;
             cursor: pointer;
             padding: 0.35rem 0.8rem;
-            border-radius: 999px;
+            border-radius: 24px;
             background: rgba(255, 255, 255, 0.12);
             color: var(--primary-color);
             font-size: 0.85rem;
@@ -2079,8 +2079,8 @@ nimation properties added via .animated-section .section-header */
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            border-top-left-radius: var(--border-radius-lg);
-            border-bottom-left-radius: var(--border-radius-lg);
+            border-top-left-radius: 18px;
+            border-bottom-left-radius: 18px;
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
             box-sizing: border-box;
@@ -2292,7 +2292,7 @@ nimation properties added via .animated-section .section-header */
     min-width: 18px;
     height: 18px;
     padding: 0 4px;
-    border-radius: 999px;
+    border-radius: 24px;
     background: #e53935;
     color: #fff;
     font-size: 10px;
@@ -2430,7 +2430,7 @@ body {
 
         .notification-level-badge {
             padding: 0.15rem 0.55rem;
-            border-radius: 999px;
+            border-radius: 24px;
             font-weight: 600;
             font-size: 0.72rem;
             background: rgba(26,116,26,0.09);
@@ -2444,7 +2444,19 @@ body {
                 min-height: 160px;
             }
         }
-</style>
+
+        /* Mobile nav smoothness override: remove slideInRight/slideOutRight on phones */
+        @media (max-width: 767px) {
+          .main-nav {
+            animation: none !important;
+          }
+          .main-nav.active,
+          .main-nav:not(.active) {
+            animation: none !important;
+          }
+        }
+
+    </style>
     
     <!-- START: NEW NAVIGATION OVERRIDE RULES -->
     <style id="nav-overrides">
@@ -2537,7 +2549,7 @@ body {
     background: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(18px) saturate(1.5);
     -webkit-backdrop-filter: blur(18px) saturate(1.5);
-    border-radius: 999px;
+    border-radius: 24px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.26);
     border: 1px solid rgba(255, 255, 255, 0.75);
     z-index: 1600;
@@ -3549,7 +3561,7 @@ if(backToTop){ // Add check
   font-size: 1.1rem;
   position: relative;
   padding: 0.5rem 1.2rem;
-  border-radius: 999px;
+  border-radius: 24px;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
   white-space: nowrap;
