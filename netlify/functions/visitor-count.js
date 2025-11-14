@@ -1,15 +1,13 @@
-// netlify/functions/visitor-count.js
-// Simple persistent visitor counter using Netlify Blobs API.
-// Each POST request will increment the counter and return the new value as JSON.
+// netlify/functions/visitor-counter.js
+// This function is called by your index.html.
+// It forwards the request to a Google Apps Script Web App
+// which actually increments and stores the visitor count.
 
-const { getStore } = require("@netlify/blobs");
+const GAS_VISITOR_URL = "https://script.google.com/macros/s/AKfycbwciullVXbcU3tuwgGgiY-PCOhe0eCeQrCPejMouX_ryzKrebaZtJObTXlQkcbgb9zrEQ/exec";
 
 exports.handler = async (event, context) => {
-  const store = getStore("visitor-counter");
-  const key = "total-visitors";
-
   try {
-    // Handle CORS preflight if ever needed
+    // Optional: handle CORS preflight
     if (event.httpMethod === "OPTIONS") {
       return {
         statusCode: 204,
@@ -22,28 +20,19 @@ exports.handler = async (event, context) => {
       };
     }
 
-    if (event.httpMethod === "POST") {
-      // Get current value (if exists)
-      const { value } = await store.getWithMetadata(key);
-      const current = value ? Number(value) : 0;
-      const next = current + 1;
+    // Call the Google Apps Script Web App
+    const response = await fetch(GAS_VISITOR_URL);
 
-      // Save new value as string
-      await store.set(key, String(next));
-
-      return {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify({ count: next }),
-      };
+    if (!response.ok) {
+      throw new Error("GAS HTTP " + response.status);
     }
 
-    // For GET requests, just return the current count without incrementing
-    const value = await store.get(key);
-    const count = value ? Number(value) : 0;
+    const data = await response.json();
+
+    // Normalise the property name just in case
+    const count = typeof data.count === "number"
+      ? data.count
+      : (typeof data.visits === "number" ? data.visits : 0);
 
     return {
       statusCode: 200,
@@ -54,7 +43,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ count }),
     };
   } catch (error) {
-    console.error("Visitor counter error:", error);
+    console.error("Visitor counter Netlify function error:", error);
     return {
       statusCode: 500,
       headers: {
