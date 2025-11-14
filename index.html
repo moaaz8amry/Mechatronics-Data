@@ -634,18 +634,18 @@
 
 
         .hero-section {
-             position: relative;
-             overflow: hidden;
-             color: var(--white);
-             padding: 6rem 1rem;
-             margin-top: 0;
-             min-height: calc(var(--vh, 1vh) * 100);
-             text-align: center;
-             display: flex;
-             flex-direction: column;
-             justify-content: center;
-             align-items: center;
-         }
+            position: relative;
+            overflow: hidden;
+            color: var(--white);
+            padding: 6rem 1rem;
+            margin-top: 0;
+            min-height: 100vh;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
         .hero-bg {
             position: absolute;
             top: 0;
@@ -2059,6 +2059,8 @@ nimation properties added via .animated-section .section-header */
         } */ /* Handled by new header style */
         main {
             margin-top: 0;
+            /* MODIFICATION: Added padding to avoid bottom nav overlap */
+            padding-bottom: 80px;
         }
         .main-nav {
             position: fixed;
@@ -2129,10 +2131,15 @@ nimation properties added via .animated-section .section-header */
 
   body {
     font-size: 0.95rem;
-    /* MODIFICATION: Reduced bottom padding */
-    padding-bottom: 40px; 
+    /* MODIFICATION: Removed bottom padding, moved to main */
+    padding-bottom: 0; 
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+  }
+  
+  main {
+    /* MODIFICATION: Added padding to avoid bottom nav overlap */
+    padding-bottom: 80px;
   }
 
   section {
@@ -2363,6 +2370,11 @@ nimation properties added via .animated-section .section-header */
 }
 
 
+/* MOD: Added animation for notification cards */
+@keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 /* Fix full-screen height on mobile (Android + iOS) */
 :root {
@@ -2401,6 +2413,8 @@ body {
             backdrop-filter: blur(16px) saturate(1.35);
             -webkit-backdrop-filter: blur(16px) saturate(1.35);
             text-align: right;
+            /* MODIFICATION: Added smooth fade-in animation */
+            animation: cardFadeIn 0.4s ease-out forwards;
         }
 
         .notification-card-header {
@@ -2456,26 +2470,7 @@ body {
           }
         }
 
-    
-@media (max-width: 767px) {
-  /* Make notifications section animations lighter and smoother on mobile */
-  #notifications-section.animated-section {
-    opacity: 1;
-    transform: none;
-  }
-  #notifications-section .info-card,
-  #notifications-section .notification-card {
-    opacity: 1;
-    transform: none;
-    transition: opacity 0.25s ease-out, transform 0.25s ease-out;
-  }
-  .notifications-list {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-  }
-}
-</style>
+    </style>
     
     <!-- START: NEW NAVIGATION OVERRIDE RULES -->
     <style id="nav-overrides">
@@ -2565,12 +2560,12 @@ body {
     padding: 0.85rem 0.75rem;
     width: 76px;
     height: auto;
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(18px) saturate(1.5);
-    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    background: rgba(255, 255, 255, 0.75); /* MOD: Made more opaque */
+    backdrop-filter: blur(22px) saturate(1.5); /* MOD: Increased blur */
+    -webkit-backdrop-filter: blur(22px) saturate(1.5); /* MOD: Increased blur */
     border-radius: 24px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.26);
-    border: 1px solid rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.8); /* MOD: More opaque border */
     z-index: 1600;
     transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, width 0.35s ease, padding 0.35s ease;
     opacity: 0;
@@ -2647,23 +2642,7 @@ body {
         }
     </style>
 
-    <style>
-/* Extra glossy treatment for desktop floating menu and its icon */
-@media (min-width: 768px) {
-  .bottom-navbar {
-    background: radial-gradient(circle at top left, rgba(255,255,255,0.95), rgba(255,255,255,0.70));
-    backdrop-filter: blur(22px) saturate(1.8);
-    -webkit-backdrop-filter: blur(22px) saturate(1.8);
-  }
-  .bottom-navbar img#navLogo {
-    background: radial-gradient(circle at top, rgba(255,255,255,0.85), rgba(255,255,255,0.55));
-    backdrop-filter: blur(18px) saturate(1.7);
-    -webkit-backdrop-filter: blur(18px) saturate(1.7);
-    border: 1px solid rgba(255,255,255,0.9);
-  }
-}
-
-</style></head>
+    </head>
     <body>
         <div id="loading-screen">
             <img src="logo.png" alt="Loading Logo"> <!-- MOD: logo.png -->
@@ -3540,7 +3519,7 @@ if(backToTop){ // Add check
     <a href="#home">الرئيسية</a>
     <a href="#about-section">عن القسم</a>
     <a href="#extras-section">الموارد</a>
-    <a href="#notifications-section">الإشعارات</a>
+    <a href="#notifications-section">الإشعارات</a> <!-- MOD: Added notification link -->
     <a href="#gpa-calculator">حاسبة المعدل</a>
     <a href="#aboutus-section">تواصل</a>
   </nav>
