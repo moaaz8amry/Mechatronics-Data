@@ -276,6 +276,7 @@
         /* New Header (Request 1) */
         
         /* New glassy top header */
+        /* MODIFICATION: This is the primary (and only) style for the new header now */
         .new-main-header {
             position: fixed;
             top: 0;
@@ -288,8 +289,8 @@
             align-items: center;
             background: linear-gradient(
                 135deg,
-                rgba(255,255,255,0.16),
-                rgba(255,255,255,0.04)
+                rgba(255,255,255,0.65), /* MOD: Made less transparent */
+                rgba(255,255,255,0.3)  /* MOD: Made less transparent */
             );
             backdrop-filter: blur(18px) saturate(1.6);
             -webkit-backdrop-filter: blur(18px) saturate(1.6);
@@ -1392,8 +1393,9 @@ nimation properties added via .animated-section .section-header */
             padding: var(--spacing-xl) var(--spacing-sm);
             margin-top: auto;
             text-align: center;
-            border-top-left-radius: var(--border-radius-lg);
-            border-top-right-radius: var(--border-radius-lg);
+            /* MODIFICATION: Removed border-radius */
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
             transition: background-color 0.5s ease;
         }
 
@@ -1426,8 +1428,9 @@ nimation properties added via .animated-section .section-header */
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.35rem 1rem;
-    border-radius: 999px;
+    /* MODIFICATION: Adjusted padding and border-radius */
+    padding: 0.5rem 1.2rem;
+    border-radius: 12px; 
     background: rgba(0, 0, 0, 0.18);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
     font-size: 1rem;
@@ -2126,7 +2129,8 @@ nimation properties added via .animated-section .section-header */
 
   body {
     font-size: 0.95rem;
-    padding-bottom: 92px;
+    /* MODIFICATION: Reduced bottom padding */
+    padding-bottom: 80px; 
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
@@ -2511,44 +2515,8 @@ body {
     </style>
     <!-- END: NEW NAVIGATION OVERRIDE RULES -->
 
-    <!-- MODIFICATION: Added styles for new header and nav bar -->
+    <!-- MODIFICATION: DELETED redundant solid-white header styles -->
     <style>
-        .new-main-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: var(--white);
-            box-shadow: var(--shadow-md);
-            z-index: 1100; /* Above content, below mobile menus */
-            transition: transform 0.3s ease-out;
-            padding: 0.75rem 1rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .new-main-header.hidden {
-            transform: translateY(-100%);
-        }
-        .new-main-header .new-header-logo-link {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            text-decoration: none;
-            color: var(--primary-color);
-        }
-        .new-main-header img {
-            height: 50px;
-            width: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .new-main-header h1 {
-            font-size: 1.5rem;
-            margin: 0;
-            font-weight: 700;
-        }
-
         /* Desktop nav bar modifications */
         
 /* Desktop glossy bottom navbar turned into right-side floating nav */
@@ -2559,7 +2527,8 @@ body {
     left: auto;
     transform: translateY(150%);
     display: flex;
-    flex-direction: column-reverse;
+    /* MODIFICATION: Changed direction */
+    flex-direction: column; 
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 0.75rem;
@@ -3393,6 +3362,7 @@ html { scroll-behavior: smooth; }
 
 @media (max-width: 767px) {
   #backToTop {
+    /* MODIFICATION: Hide on mobile */
     display: none !important;
   }
 }
@@ -3404,8 +3374,9 @@ html { scroll-behavior: smooth; }
 @media (min-width: 768px) {
     #backToTop {
         bottom: 30px; /* Align with bottom nav */
-        left: auto;
-        right: 30px;
+        /* MODIFICATION: Changed position to bottom-left */
+        left: 30px;
+        right: auto;
         transform: scale(0); /* Reset transform */
     }
     #backToTop.visible {
@@ -3543,17 +3514,19 @@ if(backToTop){ // Add check
 }
 
 .bottom-navbar .nav-logo-text {
-  font-size: 0.75rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.55);
+  /* MODIFICATION: Styled menu text */
+  font-size: 1rem;
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 .bottom-navbar nav {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.55rem;
+  /* MODIFICATION: Align links to start */
+  align-items: flex-start; 
+  /* MODIFICATION: Increased gap */
+  gap: 0.75rem;
   opacity: 0;
   max-height: 0;
   overflow: hidden;
@@ -3572,13 +3545,17 @@ if(backToTop){ // Add check
   color: #1A741A;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.95rem;
+  /* MODIFICATION: Increased font size and padding */
+  font-size: 1.1rem;
   position: relative;
-  padding: 0.3rem 0.9rem;
+  padding: 0.5rem 1.2rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
   white-space: nowrap;
+  /* MODIFICATION: Make links full width */
+  width: 100%;
+  box-sizing: border-box; 
 }
 
 .bottom-navbar nav a::after {
