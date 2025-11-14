@@ -274,22 +274,35 @@
         /* --- OLD NAV HIDDEN BY OVERRIDES --- */
         
         /* New Header (Request 1) */
+        
+        /* New glassy top header */
         .new-main-header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background-color: var(--white);
-            box-shadow: var(--shadow-md);
             z-index: 1100; /* Above content, below mobile menus */
-            transition: transform 0.3s ease-out;
             padding: 0.75rem 1rem;
             display: flex;
             justify-content: center;
             align-items: center;
+            background: linear-gradient(
+                135deg,
+                rgba(255,255,255,0.16),
+                rgba(255,255,255,0.04)
+            );
+            backdrop-filter: blur(18px) saturate(1.6);
+            -webkit-backdrop-filter: blur(18px) saturate(1.6);
+            border-bottom: 1px solid rgba(255,255,255,0.75);
+            box-shadow: 0 18px 40px rgba(15,23,42,0.18);
+            transition:
+                transform 0.28s ease,
+                background 0.35s ease,
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
         }
         .new-main-header.hidden {
-            transform: translateY(-100%);
+            transform: translateY(-110%);
         }
         .new-main-header .new-header-logo-link {
             display: flex;
@@ -303,6 +316,7 @@
             width: 50px;
             border-radius: 50%;
             object-fit: cover;
+            box-shadow: 0 8px 20px rgba(15,23,42,0.35);
         }
         .new-main-header h1 {
             font-size: 1.5rem;
@@ -314,11 +328,17 @@
                 /* Mobile already has bottom padding, top padding is needed */
                 padding-top: 77px;
             }
+            .new-main-header {
+                padding: 0.6rem 1rem;
+                border-bottom-left-radius: 18px;
+                border-bottom-right-radius: 18px;
+            }
             .new-main-header h1 {
                 font-size: 1.2rem;
             }
         }
         /* End New Header */
+
         
         
         /* --- OLD NAV STYLES --- */
@@ -2313,6 +2333,76 @@ body {
 }
 
 
+
+        /* --- Glassy Notifications Override --- */
+        .notifications-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            max-width: 900px;
+            margin-inline: auto;
+        }
+
+        .info-cards-section#notifications-section .info-cards-container {
+            justify-content: center;
+        }
+
+        .info-card.notification-card {
+            background: linear-gradient(
+                135deg,
+                rgba(255,255,255,0.92),
+                rgba(255,255,255,0.76)
+            );
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.9);
+            box-shadow: 0 18px 45px rgba(15,23,42,0.12);
+            backdrop-filter: blur(16px) saturate(1.35);
+            -webkit-backdrop-filter: blur(16px) saturate(1.35);
+            text-align: right;
+        }
+
+        .notification-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .notification-card p {
+            font-size: 0.9rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .notification-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem 0.75rem;
+            font-size: 0.78rem;
+            opacity: 0.8;
+        }
+
+        .notification-level-badge {
+            padding: 0.15rem 0.55rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.72rem;
+            background: rgba(26,116,26,0.09);
+            color: #1A741A;
+        }
+
+        @media (min-width: 992px) {
+            .notifications-section .notification-card {
+                align-items: flex-start;
+                text-align: right;
+                min-height: 160px;
+            }
+        }
 </style>
     
     <!-- START: NEW NAVIGATION OVERRIDE RULES -->
@@ -3282,26 +3372,34 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.15 });
 document.querySelectorAll('.animated-section').forEach(sec => observer.observe(sec));
 
-// Hide/show dock on scroll
+// Hide/show dock + header on scroll (mobile)
 let lastScroll = 0;
 const bottomNav = document.getElementById('bottomNav');
-// MOD: Get new header
-const newHeader = document.getElementById('new-main-header'); 
+const newHeader = document.getElementById('new-main-header');
 
 window.addEventListener('scroll', () => {
-  // MOD: This scroll listener only runs on mobile (due to media query hides)
-  // So, we just add logic for the new header here.
-  if (!bottomNav) return; 
+  if (!bottomNav && !newHeader) return;
+
   const current = window.scrollY;
-  if (current > lastScroll && current > 100) {
-      if (bottomNav) bottomNav.classList.add('hidden'); // MOD: Added check
-      // if (newHeader) newHeader.classList.add('hidden'); // MOD: REMOVED to allow IntersectionObserver to control header
-  } else {
-      if (bottomNav) bottomNav.classList.remove('hidden'); // MOD: Added check
-      // if (newHeader) newHeader.classList.remove('hidden'); // MOD: REMOVED to allow IntersectionObserver to control header
+  const goingDown = current > lastScroll;
+  const threshold = 80;
+
+  // Only apply this behaviour on mobile / small tablets
+  if (window.innerWidth <= 767) {
+    if (goingDown && current > threshold) {
+      // Scroll down → hide both header + bottom dock for full-screen content
+      if (bottomNav) bottomNav.classList.add('hidden');
+      if (newHeader) newHeader.classList.add('hidden');
+    } else {
+      // Scroll up (or near top) → show them again
+      if (bottomNav) bottomNav.classList.remove('hidden');
+      if (newHeader) newHeader.classList.remove('hidden');
+    }
   }
+
   lastScroll = current <= 0 ? 0 : current;
 });
+
 
 // Menu open/close
 const menuBtn = document.getElementById('menuButton');
@@ -3450,24 +3548,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- NEW HERO OBSERVER LOGIC ---
-    // This logic now controls the top header visibility on ALL screen sizes
-    // and the desktop dock visibility on desktop.
+    // Controls desktop dock + header based on hero visibility (desktop only)
     const heroSection = document.getElementById('home');
     
     if (heroSection && newHeader) { // Check that hero and header exist
         const heroObserver = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
-                // Hero is visible
-                newHeader.classList.remove('hidden');
-                if (window.innerWidth > 767 && desktopNav) {
-                    desktopNav.classList.remove('visible');
+            if (window.innerWidth > 767) {
+                if (entry.isIntersecting) {
+                    // Desktop: hero is visible → show header, hide desktop dock
+                    newHeader.classList.remove('hidden');
+                    if (desktopNav) {
+                        desktopNav.classList.remove('visible');
+                    }
+                } else {
+                    // Desktop: hero is NOT visible → hide header, show desktop dock
+                    newHeader.classList.add('hidden');
+                    if (desktopNav) {
+                        desktopNav.classList.add('visible');
+                    }
                 }
             } else {
-                // Hero is NOT visible
-                newHeader.classList.add('hidden');
-                if (window.innerWidth > 767 && desktopNav) {
-                    desktopNav.classList.add('visible');
-                }
+                // On mobile/tablet: hero visibility does NOT control the header;
+                // scroll logic will handle showing/hiding.
             }
         }, {
             root: null,
