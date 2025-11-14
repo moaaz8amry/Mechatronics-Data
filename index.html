@@ -1400,10 +1400,25 @@ nimation properties added via .animated-section .section-header */
         }
 
         .visitor-counter {
-            font-size: 0.9rem;
-            margin-top: var(--spacing-sm);
-            color: rgba(255, 255, 255, 0.7);
-        }
+    margin-top: var(--spacing-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.18);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.visitor-counter #visitor-count {
+    font-size: 1.1rem;
+    letter-spacing: 0.03em;
+    color: #ffffff;
+}
+
 
         #loading-screen {
             position: fixed;
@@ -2513,38 +2528,57 @@ body {
         }
 
         /* Desktop nav bar modifications */
-        .bottom-navbar {
-            /* MOD: Change position from top to bottom */
-            position: fixed;
-            bottom: 20px; /* ADDED */
-            /* top: 0; */ /* REMOVED */
-            left: 50%;
-            /* MOD: Start hidden at the bottom */
-            transform: translateX(-50%) translateY(150%); /* CHANGED */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            background: rgba(255,255,255,0.4);
-            backdrop-filter: blur(20px) saturate(1.5);
-            box-shadow: 0 -2px 20px rgba(0,0,0,0.15), inset 0 1px rgba(255,255,255,0.6);
-            border-radius: 40px;
-            padding: 0.75rem 1.5rem;
-            /* MOD: Add transform to transition */
-            transition: transform 0.4s cubic-bezier(.2,.9,.3,1), opacity .3s, box-shadow 0.3s ease, padding 0.5s ease;
-            z-index: 1101; /* Higher than new-main-header */
-        }
-        /* MOD: Class to show desktop nav */
-        .bottom-navbar.visible {
-            transform: translateX(-50%) translateY(0); /* Slide in from bottom */ /* CHANGED */
-        }
-
-        .bottom-navbar:hover {
-            padding: 0.75rem 3rem;
-            box-shadow: 0 -3px 30px rgba(0,0,0,0.25), inset 0 2px rgba(255,255,255,0.8);
-        }
         
-        /* --- MODIFICATION: Styles for "Menu" text (Always Visible) --- */
+/* Desktop glossy bottom navbar turned into right-side floating nav */
+.bottom-navbar {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    left: auto;
+    transform: translateY(150%);
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 0.75rem;
+    width: 76px;
+    height: auto;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(18px) saturate(1.5);
+    border-radius: 999px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.26);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    z-index: 1600;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, width 0.35s ease, padding 0.35s ease;
+    opacity: 0;
+}
+
+.bottom-navbar.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Small arrow pointing towards the page (to the left) */
+.bottom-navbar::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent rgba(255, 255, 255, 0.85) transparent transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+.bottom-navbar:hover::before,
+.bottom-navbar.active::before {
+    opacity: 1;
+    transform: translate(-2px, -50%);
+}
+/* --- MODIFICATION: Styles for "Menu" text (Always Visible) --- */
         .bottom-navbar .nav-logo-text {
             color: #1A741A;
             text-decoration: none;
@@ -3318,13 +3352,13 @@ html { scroll-behavior: smooth; }
 
 /* === Back To Top === */
 #backToTop {
-  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) scale(0);
+  position: fixed; bottom: 90px; left: 24px; transform: scale(0);
   width: 52px; height: 52px; border-radius: 50%; border: none;
   background: rgba(255,255,255,0.45); backdrop-filter: blur(10px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  cursor: pointer; z-index: 1600; transition: transform .4s cubic-bezier(.2,.9,.3,1), opacity .3s, left 0.3s ease, right 0.3s ease, bottom 0.3s ease; /* MOD: Added transitions */
+  cursor: pointer; z-index: 1600; transition: transform .4s cubic-bezier(.2,.9,.3,1), box-shadow .3s ease, right 0.3s ease, bottom 0.3s ease; /* MOD: Added transitions */
 }
-#backToTop.visible { transform: translateX(-50%) scale(1); }
+#backToTop.visible { transform: scale(1); }
 #backToTop svg { width: 24px; height: 24px; fill: var(--primary-color); }
 
 /* MOD: Added desktop styles for Back-to-Top arrow */
@@ -3455,59 +3489,72 @@ if(backToTop){ // Add check
 </div>
 
 <style>
-/* MOD: DELETED #intro-logo styles */
-
+/* MOD: DELETED #i/* MOD: Desktop right-side circular app-style nav */
 .bottom-navbar img {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.5s ease;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
 .bottom-navbar img:hover {
-  transform: scale(1.15);
+  transform: scale(1.08);
+}
+
+.bottom-navbar .nav-logo-text {
+  font-size: 0.75rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.55);
 }
 
 .bottom-navbar nav {
   display: flex;
-  gap: 1.2rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
   opacity: 0;
-  max-width: 0;
+  max-height: 0;
   overflow: hidden;
-  transition: all 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  padding-top: 0;
+  transition: opacity 0.4s ease, max-height 0.4s ease;
+  width: 100%;
 }
 
 .bottom-navbar:hover nav,
 .bottom-navbar.active nav {
   opacity: 1;
-  max-width: 500px;
+  max-height: 500px;
 }
 
 .bottom-navbar nav a {
   color: #1A741A;
   text-decoration: none;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   position: relative;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  white-space: nowrap;
 }
 
 .bottom-navbar nav a::after {
   content: '';
   position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(to right, #1A741A, #5A9367);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.3s ease;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(26, 116, 26, 0.35);
+  opacity: 0;
+  transition: box-shadow 0.3s ease, opacity 0.3s ease;
 }
 
 .bottom-navbar nav a:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
+  opacity: 1;
+  box-shadow: 0 0 0 1px rgba(26, 116, 26, 0.25);
 }
 
 .cards-section .cards-grid {
