@@ -3,7 +3,7 @@
 // It forwards the request to a Google Apps Script Web App
 // which actually increments and stores the visitor count.
 
-const GAS_VISITOR_URL = "https://script.google.com/macros/s/AKfycbwciullVXbcU3tuwgGgiY-PCOhe0eCeQrCPejMouX_ryzKrebaZtJObTXlQkcbgb9zrEQ/exec";
+const GAS_VISITOR_URL = "https://script.google.com/macros/s/AKfycby_-d8jTAAQP8k9joGhJWTIue-0V9iDXsBT9SHDC9nLXhjeNHQKsf0gkoNbxlDRhzhD0Q/exec";
 
 exports.handler = async (event, context) => {
   try {
