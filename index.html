@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <!-- META DESCRIPTION ADDED FOR SEO -->
-    <meta name="description" content="موقع لمساعدة طلاب قسم الميكاترونكس في جامعة الزقaziق الأهلية، يوفر موارد دراسية، خطط، حاسبة معدل تراكمي، والمزيد لتسهيل الرحلة التعليمية.">
+    <meta name="description" content="موقع لمساعدة طلاب قسم الميكاترونكس في جامعة الزقازيق الأهلية، يوفر موارد دراسية، خطط، حاسبة معدل تراكمي، والمزيد لتسهيل الرحلة التعليمية.">
     <title>Mechatronics Data</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3742,27 +3742,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 <!-- ================================== -->
-<!-- START: VISITOR COUNTER SCRIPT -->
+<!-- START: VISITOR COUNTER via Netlify -> Google Apps Script -->
 <!-- ================================== -->
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    const VISITOR_COUNTER_API_URL = "/.netlify/functions/visitor-count";
+    const VISITOR_COUNTER_API_URL = "/.netlify/functions/visitor-counter";
     const counterElement = document.getElementById('visitor-count');
     if (!counterElement) return;
 
     try {
-        const response = await fetch(VISITOR_COUNTER_API_URL, {
-            method: 'POST'
-        });
-
+        const response = await fetch(VISITOR_COUNTER_API_URL);
         if (!response.ok) {
             throw new Error("HTTP " + response.status);
         }
 
         const data = await response.json();
+
         if (data && typeof data.count === "number") {
-            // عرض الرقم بشكل منسّق بالعربي
             counterElement.textContent = data.count.toLocaleString("ar-EG");
+        } else if (data && typeof data.visits === "number") {
+            counterElement.textContent = data.visits.toLocaleString("ar-EG");
         } else {
             counterElement.textContent = "—";
         }
@@ -3772,6 +3771,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 </script>
+<!-- END: VISITOR COUNTER via Netlify -> Google Apps Script -->
 
 </body>
 
