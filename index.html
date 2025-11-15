@@ -3999,8 +3999,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const fetchUrl = NOTIFICATIONS_API_BASE + "&deviceId=" + encodeURIComponent(DEVICE_ID);
         const res = await fetch(fetchUrl);
         if (!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();
-        notifications = Array.isArray(data) ? data : [];
+
+        // ناخد الداتا ونظبطها: sort + آخر 10
+        const raw = await res.json();
+        let list = Array.isArray(raw) ? raw.slice() : [];
+
+        list = list
+            .filter(item => item && item.updatedTime)
+            .sort((a, b) => {
+                const ta = Date.parse(a.updatedTime) || 0;
+                const tb = Date.parse(b.updatedTime) || 0;
+                return tb - ta; // الأحدث الأول
+            });
+
+        // ناخد آخر 10 بس
+        notifications = list.slice(0, 10);
 
         const lastSeenBefore = loadLastSeen();
         renderNotifications();
