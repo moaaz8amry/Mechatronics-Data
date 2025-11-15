@@ -882,7 +882,7 @@
     backdrop-filter: blur(18px) saturate(1.5);
     -webkit-backdrop-filter: blur(18px) saturate(1.5);
     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
-    max-height: min(360px, 55vh); /* compact scrollable list: لا نخلي الصفحة طويلة ونخلي السكشن نفسه هو الي يعمل scroll */
+    max-height: 340px;
     overflow-y: auto;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -916,18 +916,6 @@
             margin-bottom: 0.45rem;
         }
 
-        .notification-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .notification-actions .general-button {
-            flex: 1 1 140px;
-        }
-
-
         
         .notification-card-header {
             display: flex;
@@ -941,7 +929,67 @@
             opacity: 0.8;
         }
 
-        .notification-card .general-button {
+        .notification-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .notification-card.notification-new {
+            position: relative;
+            border: 1px solid rgba(56, 189, 248, 0.9);
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35), 0 16px 40px rgba(15, 23, 42, 0.6);
+        }
+
+        .notification-card.notification-new::before {
+            content: "";
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.33);
+        }
+
+        .notifications-toast {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            bottom: 80px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .notifications-toast.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .notifications-toast-inner {
+            border: none;
+            outline: none;
+            background: rgba(15, 23, 42, 0.96);
+            color: #fff;
+            padding: 0.55rem 0.95rem;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .notifications-toast-icon {
+            font-size: 1rem;
+        }
+.notification-card .general-button {
             margin-top: 0.35rem;
         }
 @media (min-width: 992px) {
@@ -3706,19 +3754,20 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- ================================== -->
+<!-- ================================== -->
 <!-- START: UPDATED NOTIFICATION SCRIPT -->
 <!-- ================================== -->
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    // ================================
-    // Per-device notifications (like a phone notification shade)
-    // ================================
-    const NOTIFICATIONS_API_URL = "/.netlify/functions/visitor-counter?type=notifications";
+    const NOTIFICATIONS_API_BASE = "/.netlify/functions/visitor-counter?type=notifications";
     const container = document.getElementById("notifications-list");
     const filterButtons = document.querySelectorAll('.notif-filter');
+    const navNotifLink = document.querySelector('.bottom-nav .nav-item[href="#notifications-section"]');
     if (!container) return;
 
-    // 1) Generate / read a stable device id (per browser on this site)
+    // ================================
+    // Per-device ID (frontend) + last-seen tracking
+    // ================================
     const getDeviceId = () => {
         try {
             const params = new URLSearchParams(window.location.search);
@@ -3728,7 +3777,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return fromUrl;
             }
         } catch (e) {
-            console.warn("URLSearchParams not available, skipping URL-based device id.");
+            // ignore
         }
 
         try {
@@ -3742,68 +3791,129 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             return stored;
         } catch (e) {
-            console.warn("localStorage not available, falling back to anonymous device id.");
             return "anonymous-device";
         }
     };
 
     const DEVICE_ID = getDeviceId();
+    const LAST_SEEN_KEY = "znu_last_seen_notifications_" + DEVICE_ID;
 
-    // 2) Local storage key for dismissed notifications per device
-    const DISMISS_KEY = "znu_dismissed_notifications_" + DEVICE_ID;
-
-    const loadDismissed = () => {
+    const loadLastSeen = () => {
         try {
-            const raw = localStorage.getItem(DISMISS_KEY);
-            return raw ? JSON.parse(raw) : [];
+            const raw = localStorage.getItem(LAST_SEEN_KEY);
+            if (!raw) return 0;
+            const t = Date.parse(raw);
+            return isNaN(t) ? 0 : t;
         } catch (e) {
-            console.warn("Could not read dismissed notifications from localStorage:", e);
-            return [];
+            return 0;
         }
     };
 
-    const saveDismissed = (list) => {
+    const saveLastSeen = (timestampMs) => {
         try {
-            localStorage.setItem(DISMISS_KEY, JSON.stringify(list));
+            if (!timestampMs) return;
+            const iso = new Date(timestampMs).toISOString();
+            localStorage.setItem(LAST_SEEN_KEY, iso);
         } catch (e) {
-            console.warn("Could not save dismissed notifications to localStorage:", e);
+            // ignore
         }
     };
 
-    const getNotificationKey = (item) => {
-        // Try to use a backend id if it exists, otherwise build a stable key
-        if (item.id) return String(item.id);
-        const name = item.name || item.title || "noname";
-        const updated = item.updatedTime || item.modifiedTime || "";
-        const level = item.level || "";
-        return name + "___" + updated + "___" + level;
+    const getMaxUpdatedTime = (items) => {
+        let maxTs = 0;
+        if (!Array.isArray(items)) return 0;
+        items.forEach(file => {
+            if (!file || !file.updatedTime) return;
+            const t = Date.parse(file.updatedTime);
+            if (!isNaN(t) && t > maxTs) maxTs = t;
+        });
+        return maxTs;
     };
 
-    let notifications = []; // data coming from the API
+    // ================================
+    // Notification rendering
+    // ================================
+    let notifications = [];
     let activeLevel = "all";
-    let dismissed = loadDismissed();
+
+    const updateBadge = (newCount) => {
+        if (!navNotifLink) return;
+        let badge = navNotifLink.querySelector('.notif-badge');
+        if (!badge && newCount > 0) {
+            badge = document.createElement('span');
+            badge.className = 'notif-badge';
+            navNotifLink.appendChild(badge);
+        }
+        if (!badge) return;
+        if (newCount > 0) {
+            badge.textContent = newCount > 9 ? "9+" : String(newCount);
+            badge.style.display = "inline-flex";
+        } else {
+            badge.textContent = "";
+            badge.style.display = "none";
+        }
+    };
+
+    const showNewToast = (count) => {
+        if (!count || count <= 0) return;
+        let toast = document.querySelector('.notifications-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'notifications-toast';
+            toast.innerHTML = `
+                <button type="button" class="notifications-toast-inner">
+                    <span class="notifications-toast-icon">🔔</span>
+                    <span class="notifications-toast-text"></span>
+                </button>
+            `;
+            document.body.appendChild(toast);
+
+            const btn = toast.querySelector('.notifications-toast-inner');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    document.querySelector('#notifications-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    toast.classList.remove('visible');
+                });
+            }
+        }
+        const textEl = toast.querySelector('.notifications-toast-text');
+        if (textEl) {
+            if (count === 1) {
+                textEl.textContent = "عندك إشعار جديد";
+            } else if (count === 2) {
+                textEl.textContent = "عندك إشعارين جديدين";
+            } else if (count <= 10) {
+                textEl.textContent = "عندك " + count + " إشعارات جديدة";
+            } else {
+                textEl.textContent = "عندك إشعارات جديدة";
+            }
+        }
+        toast.classList.add('visible');
+        setTimeout(() => {
+            toast.classList.remove('visible');
+        }, 7000);
+    };
 
     const renderNotifications = () => {
         if (!notifications || notifications.length === 0) {
             container.classList.add("single-notification");
             container.innerHTML = `
                 <div class="info-card notification-card">
-                    <h3>مافيش إشعارات لسه</h3>
-                    <p>أول ما يتحط ملفات جديدة هتظهر هنا كإشعارات.</p>
+                    <h3>مافيش إشعارات حالياً</h3>
+                    <p>أول ما نرفع ملفات على Google Drive هتظهر هنا على طول 💚</p>
                 </div>
             `;
+            updateBadge(0);
             return;
         }
 
-        // Filter by level
+        const lastSeen = loadLastSeen();
+
         let filtered = activeLevel === "all"
             ? notifications
             : notifications.filter(item => item.level === activeLevel);
 
-        // Remove locally dismissed notifications for this device only
-        filtered = filtered.filter(item => !dismissed.includes(getNotificationKey(item)));
-
-        if (filtered.length === 0) {
+        if (!filtered || filtered.length === 0) {
             container.classList.add("single-notification");
             container.innerHTML = `
                 <div class="info-card notification-card">
@@ -3811,14 +3921,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p>غيّر الفلتر أو استنى لما نرفع ملفات جديدة لهذا الليفل.</p>
                 </div>
             `;
+            updateBadge(0);
             return;
         }
 
         container.innerHTML = "";
         container.classList.toggle("single-notification", filtered.length === 1);
 
+        let newCount = 0;
+
         filtered.forEach(file => {
-            const date = new Date(file.updatedTime || file.modifiedTime || Date.now());
+            const date = new Date(file.updatedTime);
+            const ts = date.getTime();
             const formatted = date.toLocaleString("ar-EG", {
                 year: "numeric",
                 month: "long",
@@ -3830,12 +3944,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement("div");
             card.className = "info-card notification-card";
 
+            const isNew = lastSeen && !isNaN(ts) && ts > lastSeen;
+            if (isNew) {
+                card.classList.add("notification-new");
+                newCount++;
+            }
+
             let levelLabel = "";
             if (file.level && file.level !== "other") {
-                levelLabel = `مستوى ${file.level}`;
+                levelLabel = "مستوى " + file.level;
             } else {
                 levelLabel = "موارد عامة";
             }
+
+            const safeUrl = file.url || file.link || "#";
 
             card.innerHTML = `
                 <div class="notification-card-header">
@@ -3846,64 +3968,59 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 </div>
                 <div class="notification-actions">
-                    <a href="${file.url || file.link || "#"}" target="_blank" rel="noopener noreferrer" class="general-button notification-open">
+                    <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="general-button notification-open">
                         فتح الملف على Google Drive
                     </a>
-                    <button type="button" class="general-button notification-dismiss">
-                        إخفاء على هذا الجهاز
-                    </button>
                 </div>
             `;
 
-            const dismissBtn = card.querySelector(".notification-dismiss");
-            if (dismissBtn) {
-                dismissBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const key = getNotificationKey(file);
-                    if (!dismissed.includes(key)) {
-                        dismissed.push(key);
-                        saveDismissed(dismissed);
-                    }
-                    // Re-render list without this notification
-                    renderNotifications();
-                });
-            }
-
             container.appendChild(card);
         });
+
+        updateBadge(newCount);
     };
 
-    // Link filter buttons
+    // ربط أزرار الفلتر
     if (filterButtons && filterButtons.length) {
         filterButtons.forEach(btn => {
             btn.addEventListener("click", () => {
                 const level = btn.getAttribute("data-level");
                 if (!level) return;
                 activeLevel = level;
-
                 filterButtons.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
-
                 renderNotifications();
             });
         });
     }
 
-    // Fetch notifications from backend (Google Apps Script via Netlify)
+    // Fetch notifications from backend
     try {
-        // If in the future you want the backend to also know the device,
-        // you can append &deviceId=... here and handle it in Apps Script.
-        const url = NOTIFICATIONS_API_URL; // + "&deviceId=" + encodeURIComponent(DEVICE_ID);
-        const res = await fetch(url);
+        const fetchUrl = NOTIFICATIONS_API_BASE + "&deviceId=" + encodeURIComponent(DEVICE_ID);
+        const res = await fetch(fetchUrl);
         if (!res.ok) throw new Error("HTTP " + res.status);
-
         const data = await res.json();
         notifications = Array.isArray(data) ? data : [];
 
+        const lastSeenBefore = loadLastSeen();
         renderNotifications();
-    } catch (error) {
-        console.error("Error loading notifications:", error);
+
+        const maxTs = getMaxUpdatedTime(notifications);
+        const newCountGlobal = notifications.filter(file => {
+            if (!file || !file.updatedTime) return false;
+            const t = Date.parse(file.updatedTime);
+            return !isNaN(t) && t > lastSeenBefore;
+        }).length;
+
+        if (lastSeenBefore && newCountGlobal > 0) {
+            showNewToast(newCountGlobal);
+        }
+
+        if (maxTs && maxTs > lastSeenBefore) {
+            saveLastSeen(maxTs);
+        }
+    } catch (err) {
+        console.error("Error loading notifications:", err);
         container.classList.add("single-notification");
         container.innerHTML = `
             <div class="info-card notification-card">
@@ -3911,13 +4028,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <p>جرّب تحدث الصفحة لاحقاً، أو اتأكد من إعدادات Google Drive/Apps Script.</p>
             </div>
         `;
+        updateBadge(0);
     }
 });
 </script>
-<!-- ================================== -->
 <!--  END: UPDATED NOTIFICATION SCRIPT  -->
 <!-- ================================== -->
-
 <script>
   // Fix 100vh issues on mobile browsers (Android + iOS)
   (function () {
