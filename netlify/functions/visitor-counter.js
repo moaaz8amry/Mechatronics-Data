@@ -2,7 +2,11 @@
 // Unified Netlify function for:
 //  - Visitor counter  (?type=visitor)
 //  - Notifications    (?type=notifications)
-// It forwards the request to your Google Apps Script Web App.
+// It forwards the request to your Google Apps Script Web App
+// and FOLLOWS 302 redirects from Google.
+
+const https = require("https");
+const { URL } = require("url");
 
 // ⚠️ مهم جدًا: حط هنا لينك الـ Web App بتاعك من Google Script (اللي فيه /exec)
 const GAS_BASE_URL =
@@ -19,12 +23,10 @@ const commonHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-// لو محتاج https في Node (موجود في Netlify)
-const https = require("https");
-const { URL } = require("url");
+// Helper يعمل GET مع دعم للـ redirects
+function fetchFromGAS(urlString, redirectCount = 0) {
+  const MAX_REDIRECTS = 5;
 
-// Helper بسيط يعمل GET للـ GAS URL
-function fetchFromGAS(urlString) {
   return new Promise((resolve, reject) => {
     const url = new URL(urlString);
 
@@ -42,8 +44,28 @@ function fetchFromGAS(urlString) {
       });
 
       res.on("end", () => {
+        const status = res.statusCode || 200;
+
+        // لو جالنا 301/302/303/307/308 ومعاه Location → نكمّل redirect
+        if (
+          [301, 302, 303, 307, 308].includes(status) &&
+          res.headers.location &&
+          redirectCount < MAX_REDIRECTS
+        ) {
+          const nextUrl = new URL(res.headers.location, urlString).toString();
+          console.log(
+            `Redirecting (${status}) from ${urlString} → ${nextUrl} (step ${
+              redirectCount + 1
+            })`
+          );
+          return fetchFromGAS(nextUrl, redirectCount + 1)
+            .then(resolve)
+            .catch(reject);
+        }
+
+        // لو مفيش redirect أو عدينا الحد → نرجّع اللي عندنا
         resolve({
-          statusCode: res.statusCode || 200,
+          statusCode: status,
           body: data,
         });
       });
@@ -81,14 +103,16 @@ exports.handler = async (event, context) => {
     const deviceId = qs.deviceId || qs.mac || qs.macId || "";
 
     // نبني الـ URL بتاع Google Script
-    const url = new URL(GAS_BASE_URL);
-    if (type) url.searchParams.set("type", type);
-    if (deviceId) url.searchParams.set("deviceId", deviceId);
+    const base = new URL(GAS_BASE_URL);
+    if (type) base.searchParams.set("type", type);
+    if (deviceId) base.searchParams.set("deviceId", deviceId);
 
-    // ننده على Google Apps Script
-    const res = await fetchFromGAS(url.toString());
+    const finalUrl = base.toString();
+    console.log("Calling GAS URL:", finalUrl);
+
+    // ننده على Google Apps Script مع دعم redirects
+    const res = await fetchFromGAS(finalUrl);
     let text = res.body || "";
-    const status = res.statusCode;
 
     // نحاول نفهمه JSON لو نقدر
     let responseBody;
@@ -103,8 +127,9 @@ exports.handler = async (event, context) => {
       });
     }
 
+    // مهم: نرجّع 200 للمتصفح حتى لو Google رجّع 302 داخليًا
     return {
-      statusCode: status,
+      statusCode: 200,
       headers: commonHeaders,
       body: responseBody,
     };
