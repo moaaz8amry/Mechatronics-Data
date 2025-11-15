@@ -929,67 +929,7 @@
             opacity: 0.8;
         }
 
-        .notification-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .notification-card.notification-new {
-            position: relative;
-            border: 1px solid rgba(56, 189, 248, 0.9);
-            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35), 0 16px 40px rgba(15, 23, 42, 0.6);
-        }
-
-        .notification-card.notification-new::before {
-            content: "";
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            width: 8px;
-            height: 8px;
-            border-radius: 999px;
-            background: #22d3ee;
-            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.33);
-        }
-
-        .notifications-toast {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            bottom: 80px;
-            z-index: 9999;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.25s ease, transform 0.25s ease;
-        }
-
-        .notifications-toast.visible {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-            pointer-events: auto;
-        }
-
-        .notifications-toast-inner {
-            border: none;
-            outline: none;
-            background: rgba(15, 23, 42, 0.96);
-            color: #fff;
-            padding: 0.55rem 0.95rem;
-            border-radius: 999px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .notifications-toast-icon {
-            font-size: 1rem;
-        }
-.notification-card .general-button {
+        .notification-card .general-button {
             margin-top: 0.35rem;
         }
 @media (min-width: 992px) {
@@ -2550,7 +2490,45 @@ body {
           }
         }
 
-    </style>
+    
+/* Toast for new notifications */
+.notifications-toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  bottom: 80px;
+  z-index: 2000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.notifications-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+.notifications-toast-inner {
+  border: none;
+  outline: none;
+  background: rgba(15, 23, 42, 0.96);
+  color: #fff;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.notifications-toast-inner .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #22d3ee;
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.33);
+}
+</style>
     
     <!-- START: NEW NAVIGATION OVERRIDE RULES -->
     <style id="nav-overrides">
@@ -3728,46 +3706,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Desktop: hero is visible → show header, hide desktop dock
                     newHeader.classList.remove('hidden');
                     if (desktopNav) {
-                        desktopNav.classList.remove('visible');
-                    }
-                } else {
-                    // Desktop: hero is NOT visible → hide header, show desktop dock
-                    newHeader.classList.add('hidden');
-                    if (desktopNav) {
-                        desktopNav.classList.add('visible');
-                    }
-                }
-            } else {
-                // On mobile/tablet: hero visibility does NOT control the header;
-                // scroll logic will handle showing/hiding.
-            }
-        }, {
-            root: null,
-            rootMargin: '0px', // Triggers as soon as it enters/leaves
-            threshold: 0.01 // Trigger on 1% visibility
-        });
-    
-        heroObserver.observe(heroSection);
-    }
-    // --- END NEW LOGIC ---
-});
-</script>
-
-<!-- ================================== -->
-<!-- ================================== -->
-<!-- START: UPDATED NOTIFICATION SCRIPT -->
+                  <!-- START: UPDATED NOTIFICATION SCRIPT -->
 <!-- ================================== -->
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     const NOTIFICATIONS_API_BASE = "/.netlify/functions/visitor-counter?type=notifications";
     const container = document.getElementById("notifications-list");
     const filterButtons = document.querySelectorAll('.notif-filter');
-    const navNotifLink = document.querySelector('.bottom-nav .nav-item[href="#notifications-section"]');
+    const bottomNav = document.getElementById("bottomNav");
+    const notifNavItem = bottomNav ? bottomNav.querySelector('a[href="#notifications-section"]') : null;
+
     if (!container) return;
 
-    // ================================
-    // Per-device ID (frontend) + last-seen tracking
-    // ================================
+    // =============================
+    // Device ID (per browser/device)
+    // =============================
     const getDeviceId = () => {
         try {
             const params = new URLSearchParams(window.location.search);
@@ -3777,20 +3730,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return fromUrl;
             }
         } catch (e) {
-            // ignore
+            console.warn("URLSearchParams not available or localStorage blocked for URL-based device id.");
         }
 
         try {
             let stored = localStorage.getItem("znu_device_id");
             if (!stored) {
-                const randomPart = (window.crypto && window.crypto.randomUUID)
-                    ? window.crypto.randomUUID()
-                    : (Date.now().toString(36) + Math.random().toString(36).slice(2));
-                stored = "dev-" + randomPart;
+                if (window.crypto && window.crypto.randomUUID) {
+                    stored = "dev-" + window.crypto.randomUUID();
+                } else {
+                    stored = "dev-" + Date.now().toString(36) + Math.random().toString(36).slice(2);
+                }
                 localStorage.setItem("znu_device_id", stored);
             }
             return stored;
         } catch (e) {
+            console.warn("localStorage not available, using anonymous device id.");
             return "anonymous-device";
         }
     };
@@ -3798,116 +3753,97 @@ document.addEventListener('DOMContentLoaded', async () => {
     const DEVICE_ID = getDeviceId();
     const LAST_SEEN_KEY = "znu_last_seen_notifications_" + DEVICE_ID;
 
-    const loadLastSeen = () => {
-        try {
-            const raw = localStorage.getItem(LAST_SEEN_KEY);
-            if (!raw) return 0;
-            const t = Date.parse(raw);
-            return isNaN(t) ? 0 : t;
-        } catch (e) {
-            return 0;
-        }
-    };
-
-    const saveLastSeen = (timestampMs) => {
-        try {
-            if (!timestampMs) return;
-            const iso = new Date(timestampMs).toISOString();
-            localStorage.setItem(LAST_SEEN_KEY, iso);
-        } catch (e) {
-            // ignore
-        }
-    };
-
-    const getMaxUpdatedTime = (items) => {
-        let maxTs = 0;
-        if (!Array.isArray(items)) return 0;
-        items.forEach(file => {
-            if (!file || !file.updatedTime) return;
-            const t = Date.parse(file.updatedTime);
-            if (!isNaN(t) && t > maxTs) maxTs = t;
-        });
-        return maxTs;
-    };
-
-    // ================================
-    // Notification rendering
-    // ================================
     let notifications = [];
     let activeLevel = "all";
+    let lastSeenTime = 0;
 
-    const updateBadge = (newCount) => {
-        if (!navNotifLink) return;
-        let badge = navNotifLink.querySelector('.notif-badge');
-        if (!badge && newCount > 0) {
+    // =============================
+    // Badge under bottom nav item
+    // =============================
+    const ensureBadge = () => {
+        if (!notifNavItem) return null;
+        let badge = notifNavItem.querySelector('.notif-badge');
+        if (!badge) {
             badge = document.createElement('span');
             badge.className = 'notif-badge';
-            navNotifLink.appendChild(badge);
+            notifNavItem.appendChild(badge);
         }
+        return badge;
+    };
+
+    const updateBadge = (count) => {
+        const badge = ensureBadge();
         if (!badge) return;
-        if (newCount > 0) {
-            badge.textContent = newCount > 9 ? "9+" : String(newCount);
+        if (count > 0) {
             badge.style.display = "inline-flex";
+            badge.textContent = count > 9 ? "9+" : String(count);
         } else {
-            badge.textContent = "";
             badge.style.display = "none";
+            badge.textContent = "";
         }
     };
 
-    const showNewToast = (count) => {
+    // =============================
+    // Toast for "new notifications"
+    // =============================
+    let toast = null;
+    let toastInner = null;
+
+    const ensureToast = () => {
+        if (toast) return toast;
+        toast = document.createElement("div");
+        toast.className = "notifications-toast";
+        toast.innerHTML = '<button type="button" class="notifications-toast-inner"><span class="dot"></span><span class="label">عندك إشعارات جديدة</span></button>';
+        document.body.appendChild(toast);
+        toastInner = toast.querySelector(".notifications-toast-inner");
+        if (toastInner) {
+            toastInner.addEventListener("click", () => {
+                toast.classList.remove("visible");
+                const section = document.getElementById("notifications-section");
+                if (section && section.scrollIntoView) {
+                    section.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            });
+        }
+        return toast;
+    };
+
+    const showToast = (count) => {
         if (!count || count <= 0) return;
-        let toast = document.querySelector('.notifications-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.className = 'notifications-toast';
-            toast.innerHTML = `
-                <button type="button" class="notifications-toast-inner">
-                    <span class="notifications-toast-icon">🔔</span>
-                    <span class="notifications-toast-text"></span>
-                </button>
-            `;
-            document.body.appendChild(toast);
-
-            const btn = toast.querySelector('.notifications-toast-inner');
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    document.querySelector('#notifications-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    toast.classList.remove('visible');
-                });
-            }
-        }
-        const textEl = toast.querySelector('.notifications-toast-text');
-        if (textEl) {
+        const t = ensureToast();
+        const labelSpan = t.querySelector(".label");
+        if (labelSpan) {
             if (count === 1) {
-                textEl.textContent = "عندك إشعار جديد";
-            } else if (count === 2) {
-                textEl.textContent = "عندك إشعارين جديدين";
-            } else if (count <= 10) {
-                textEl.textContent = "عندك " + count + " إشعارات جديدة";
+                labelSpan.textContent = "عندك إشعار جديد";
             } else {
-                textEl.textContent = "عندك إشعارات جديدة";
+                labelSpan.textContent = "عندك " + count + " إشعارات جديدة";
             }
         }
-        toast.classList.add('visible');
-        setTimeout(() => {
-            toast.classList.remove('visible');
-        }, 7000);
+        requestAnimationFrame(() => {
+            t.classList.add("visible");
+        });
     };
 
+    const hideToast = () => {
+        if (toast) toast.classList.remove("visible");
+    };
+
+    // =============================
+    // Render notifications into list
+    // =============================
     const renderNotifications = () => {
         if (!notifications || notifications.length === 0) {
             container.classList.add("single-notification");
             container.innerHTML = `
                 <div class="info-card notification-card">
-                    <h3>مافيش إشعارات حالياً</h3>
-                    <p>أول ما نرفع ملفات على Google Drive هتظهر هنا على طول 💚</p>
+                    <h3>مافيش إشعارات لسه</h3>
+                    <p>أول ما يتحط ملفات جديدة هتظهر هنا كإشعارات.</p>
                 </div>
             `;
             updateBadge(0);
+            hideToast();
             return;
         }
-
-        const lastSeen = loadLastSeen();
 
         let filtered = activeLevel === "all"
             ? notifications
@@ -3921,19 +3857,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p>غيّر الفلتر أو استنى لما نرفع ملفات جديدة لهذا الليفل.</p>
                 </div>
             `;
-            updateBadge(0);
             return;
         }
 
         container.innerHTML = "";
         container.classList.toggle("single-notification", filtered.length === 1);
 
-        let newCount = 0;
-
         filtered.forEach(file => {
-            const date = new Date(file.updatedTime);
-            const ts = date.getTime();
-            const formatted = date.toLocaleString("ar-EG", {
+            const timeString = file.updatedTime || file.modifiedTime || null;
+            let timestamp = Date.now();
+            if (timeString) {
+                const t = Date.parse(timeString);
+                if (!isNaN(t)) {
+                    timestamp = t;
+                }
+            }
+            const isNew = timestamp > lastSeenTime;
+
+            const dateObj = new Date(timestamp);
+            const formatted = dateObj.toLocaleString("ar-EG", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -3943,11 +3885,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const card = document.createElement("div");
             card.className = "info-card notification-card";
-
-            const isNew = lastSeen && !isNaN(ts) && ts > lastSeen;
             if (isNew) {
                 card.classList.add("notification-new");
-                newCount++;
             }
 
             let levelLabel = "";
@@ -3957,13 +3896,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 levelLabel = "موارد عامة";
             }
 
+            const safeName = file.name || file.title || "ملف بدون اسم";
             const safeUrl = file.url || file.link || "#";
 
             card.innerHTML = `
                 <div class="notification-card-header">
                     <span class="notif-icon" aria-hidden="true">📄</span>
                     <div class="notification-card-text">
-                        <h3>${file.name || file.title || "ملف بدون اسم"}</h3>
+                        <h3>${safeName}</h3>
                         <p class="notification-meta">${levelLabel} • تحديث في: ${formatted}</p>
                     </div>
                 </div>
@@ -3976,64 +3916,132 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             container.appendChild(card);
         });
-
-        updateBadge(newCount);
     };
 
-    // ربط أزرار الفلتر
+    // =============================
+    // Process new vs old notifications
+    // =============================
+    const processNewAndUpdateState = () => {
+        try {
+            const raw = localStorage.getItem(LAST_SEEN_KEY);
+            lastSeenTime = raw ? Date.parse(raw) : 0;
+            if (isNaN(lastSeenTime)) lastSeenTime = 0;
+        } catch (e) {
+            lastSeenTime = 0;
+        }
+
+        let latestTime = lastSeenTime;
+        let newCount = 0;
+
+        notifications.forEach(file => {
+            const timeString = file.updatedTime || file.modifiedTime || null;
+            if (!timeString) return;
+            const t = Date.parse(timeString);
+            if (isNaN(t)) return;
+            if (t > latestTime) latestTime = t;
+            if (t > lastSeenTime) newCount++;
+        });
+
+        if (latestTime > lastSeenTime) {
+            try {
+                localStorage.setItem(LAST_SEEN_KEY, new Date(latestTime).toISOString());
+            } catch (e) {
+                // ignore
+            }
+            lastSeenTime = latestTime;
+        }
+
+        updateBadge(newCount);
+        if (newCount > 0) {
+            showToast(newCount);
+        } else {
+            hideToast();
+        }
+    };
+
+    // =============================
+    // Filters for levels
+    // =============================
     if (filterButtons && filterButtons.length) {
         filterButtons.forEach(btn => {
             btn.addEventListener("click", () => {
-                const level = btn.getAttribute("data-level");
-                if (!level) return;
+                const level = btn.getAttribute("data-level") || "all";
                 activeLevel = level;
+
                 filterButtons.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
+
                 renderNotifications();
             });
         });
     }
 
+    // =============================
     // Fetch notifications from backend
-    try {
-        const fetchUrl = NOTIFICATIONS_API_BASE + "&deviceId=" + encodeURIComponent(DEVICE_ID);
-        const res = await fetch(fetchUrl);
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();
-        notifications = Array.isArray(data) ? data : [];
+    // =============================
+    const loadNotifications = async () => {
+        try {
+            let fetchUrl = NOTIFICATIONS_API_BASE;
+            if (DEVICE_ID) {
+                fetchUrl += "&deviceId=" + encodeURIComponent(DEVICE_ID);
+            }
+            const res = await fetch(fetchUrl);
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+            notifications = Array.isArray(data) ? data : [];
 
-        const lastSeenBefore = loadLastSeen();
-        renderNotifications();
+            // تأكيد إن الترتيب من الباك إند بالأحدث أولاً
+            notifications.sort((a, b) => {
+                const ta = Date.parse(a.updatedTime || a.modifiedTime || 0);
+                const tb = Date.parse(b.updatedTime || b.modifiedTime || 0);
+                return (isNaN(tb) ? 0 : tb) - (isNaN(ta) ? 0 : ta);
+            });
 
-        const maxTs = getMaxUpdatedTime(notifications);
-        const newCountGlobal = notifications.filter(file => {
-            if (!file || !file.updatedTime) return false;
-            const t = Date.parse(file.updatedTime);
-            return !isNaN(t) && t > lastSeenBefore;
-        }).length;
-
-        if (lastSeenBefore && newCountGlobal > 0) {
-            showNewToast(newCountGlobal);
+            processNewAndUpdateState();
+            renderNotifications();
+        } catch (err) {
+            console.error("Error loading notifications:", err);
+            container.classList.add("single-notification");
+            container.innerHTML = `
+                <div class="info-card notification-card">
+                    <h3>ما قدرناش نجيب الإشعارات حالياً</h3>
+                    <p>جرّب تحدث الصفحة لاحقاً، أو اتأكد من إعدادات Google Drive/Apps Script.</p>
+                </div>
+            `;
+            updateBadge(0);
+            hideToast();
         }
+    };
 
-        if (maxTs && maxTs > lastSeenBefore) {
-            saveLastSeen(maxTs);
+    loadNotifications();
+});
+</script>
+<!-- ================================== -->
+t.querySelector('.bottom-nav .nav-item[href="#notifications-section"]');
+        if (infoNavLink && notifCount > 0) {
+            let badge = infoNavLink.querySelector('.notif-badge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'notif-badge';
+                infoNavLink.appendChild(badge);
+            }
+            badge.textContent = notifCount > 9 ? '9+' : notifCount;
         }
     } catch (err) {
         console.error("Error loading notifications:", err);
-        container.classList.add("single-notification");
         container.innerHTML = `
             <div class="info-card notification-card">
                 <h3>ما قدرناش نجيب الإشعارات حالياً</h3>
                 <p>جرّب تحدث الصفحة لاحقاً، أو اتأكد من إعدادات Google Drive/Apps Script.</p>
             </div>
         `;
-        updateBadge(0);
     }
 });
 </script>
+<!-- ================================== -->
 <!--  END: UPDATED NOTIFICATION SCRIPT  -->
 <!-- ================================== -->
+
 <script>
   // Fix 100vh issues on mobile browsers (Android + iOS)
   (function () {
