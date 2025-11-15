@@ -1,7 +1,9 @@
 // netlify/functions/visitor-counter.js
 // Unified Netlify function for:
-//  - Visitor counter  (?type=visitor)
-//  - Notifications    (?type=notifications)
+//  - Visitor counter        (?type=visitor)
+//  - Notifications          (?type=notifications)
+//  - Per-device dismiss     (?type=notif-dismiss)
+//  - Device info / stats    (?type=device-info, ?type=device-stats)
 // It forwards the request to your Google Apps Script Web App
 // and FOLLOWS 302 redirects from Google.
 
@@ -16,7 +18,7 @@ const GAS_BASE_URL =
 // CORS headers
 const commonHeaders = {
   "Content-Type": "application/json; charset=utf-8",
-  // لو حابب تقفل على الدومين بتاعك بس خليه:
+  // لو حابب تقفل على الدومين بتاعك بس خليه مثلاً:
   // "Access-Control-Allow-Origin": "https://znuassistant.netlify.app",
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
@@ -79,7 +81,7 @@ function fetchFromGAS(urlString, redirectCount = 0) {
   });
 }
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   // Preflight CORS
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -91,26 +93,51 @@ exports.handler = async (event, context) => {
 
   try {
     const qs = event.queryStringParameters || {};
+    const method = event.httpMethod || "GET";
 
-    // type: visitor / notifications (default = notifications)
+    // type: visitor / notifications / notif-dismiss / device-info / device-stats ...
     const type =
       qs.type ||
       qs.mode ||
       (qs.visitor ? "visitor" : null) ||
       "notifications";
 
-    // نعدّي الـ deviceId لو جاي من الفرونت إند
-    const deviceId = qs.deviceId || qs.mac || qs.macId || "";
+    // Device ID من الكويري (ونحتفظ بيه حتى لو جاي من البودي)
+    let deviceId = qs.deviceId || qs.mac || qs.macId || "";
+
+    let bodyJson = null;
+    if (method === "POST" && event.body) {
+      try {
+        bodyJson = JSON.parse(event.body);
+      } catch (e) {
+        console.warn("Failed to parse POST body JSON:", e.message);
+      }
+      if (!deviceId && bodyJson && bodyJson.deviceId) {
+        deviceId = bodyJson.deviceId;
+      }
+    }
 
     // نبني الـ URL بتاع Google Script
     const base = new URL(GAS_BASE_URL);
     if (type) base.searchParams.set("type", type);
     if (deviceId) base.searchParams.set("deviceId", deviceId);
 
+    // لو بنعمل dismiss لإشعار معيّن
+    if (type === "notif-dismiss" && bodyJson) {
+      if (bodyJson.notificationId) {
+        base.searchParams.set("notificationId", bodyJson.notificationId);
+      }
+      if (bodyJson.action) {
+        base.searchParams.set("action", bodyJson.action);
+      } else {
+        base.searchParams.set("action", "dismiss");
+      }
+    }
+
     const finalUrl = base.toString();
     console.log("Calling GAS URL:", finalUrl);
 
-    // ننده على Google Apps Script مع دعم redirects
+    // ننده على Google Apps Script مع دعم redirects (GET)
     const res = await fetchFromGAS(finalUrl);
     let text = res.body || "";
 
