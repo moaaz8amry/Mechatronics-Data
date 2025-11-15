@@ -924,6 +924,24 @@
             margin-bottom: 0.5rem;
         }
 
+        .notification-dismiss-btn {
+            margin-inline-start: auto;
+            background: transparent;
+            border: none;
+            color: var(--text-softer);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.15rem 0.35rem;
+            border-radius: 999px;
+            transition: background-color 0.15s ease, transform 0.12s ease, color 0.12s ease;
+        }
+
+        .notification-dismiss-btn:hover {
+            background: rgba(148, 163, 184, 0.18);
+            transform: translateY(-1px);
+            color: var(--accent);
+        }
+
         .notification-card .notification-meta {
             font-size: 0.8rem;
             opacity: 0.8;
@@ -3836,6 +3854,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     let notifications = [];
     let activeLevel = "all";
 
+    const dismissNotification = async (fileId) => {
+        if (!fileId) return;
+        try {
+            await fetch("/.netlify/functions/visitor-counter?type=notif-dismiss", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    deviceId: DEVICE_ID,
+                    notificationId: fileId,
+                    action: "dismiss"
+                })
+            });
+        } catch (e) {
+            console.error("Failed to dismiss notification:", e);
+        }
+    };
+
     const updateBadge = (newCount) => {
         if (!navNotifLink) return;
         let badge = navNotifLink.querySelector('.notif-badge');
@@ -3966,6 +4001,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <h3>${file.name || file.title || "ملف بدون اسم"}</h3>
                         <p class="notification-meta">${levelLabel} • تحديث في: ${formatted}</p>
                     </div>
+                    <button type="button" class="notification-dismiss-btn" data-id="${file.id || file.fileId || ''}" aria-label="إخفاء هذا الإشعار">
+                        ✕
+                    </button>
                 </div>
                 <div class="notification-actions">
                     <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="general-button notification-open">
@@ -3975,6 +4013,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
 
             container.appendChild(card);
+        });
+
+        // Attach dismiss handlers (per-device dismiss)
+        const dismissButtons = container.querySelectorAll(".notification-dismiss-btn");
+        dismissButtons.forEach(btn => {
+            const id = btn.getAttribute("data-id");
+            if (!id) return;
+            btn.addEventListener("click", (ev) => {
+                ev.stopPropagation();
+                ev.preventDefault();
+                // حدّث الليستة في الفرونت إند
+                notifications = notifications.filter(n => n.id !== id);
+                renderNotifications();
+                // حفظ حالة الإلغاء في الباك إند
+                dismissNotification(id);
+            });
         });
 
         updateBadge(newCount);
