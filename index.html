@@ -882,7 +882,7 @@
     backdrop-filter: blur(18px) saturate(1.5);
     -webkit-backdrop-filter: blur(18px) saturate(1.5);
     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
-    max-height: 340px;
+    max-height: min(420px, 65vh); /* more than 6-10 messages, scroll inside section only */
     overflow-y: auto;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -915,6 +915,18 @@
             font-size: 0.9rem;
             margin-bottom: 0.45rem;
         }
+
+        .notification-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .notification-actions .general-button {
+            flex: 1 1 140px;
+        }
+
 
         
         .notification-card-header {
@@ -3698,32 +3710,98 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- ================================== -->
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
+    // ================================
+    // Per-device notifications (like a phone notification shade)
+    // ================================
     const NOTIFICATIONS_API_URL = "/.netlify/functions/visitor-counter?type=notifications";
     const container = document.getElementById("notifications-list");
     const filterButtons = document.querySelectorAll('.notif-filter');
     if (!container) return;
 
-    let notifications = []; // This will store the data from the API
-    let activeLevel = 'all';
+    // 1) Generate / read a stable device id (per browser on this site)
+    const getDeviceId = () => {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const fromUrl = params.get("deviceId") || params.get("mac") || params.get("macId");
+            if (fromUrl) {
+                localStorage.setItem("znu_device_id", fromUrl);
+                return fromUrl;
+            }
+        } catch (e) {
+            console.warn("URLSearchParams not available, skipping URL-based device id.");
+        }
 
-    // --- The detectLevel function is now REMOVED ---
-    // The 'level' property will come directly from the API.
+        try {
+            let stored = localStorage.getItem("znu_device_id");
+            if (!stored) {
+                const randomPart = (window.crypto && window.crypto.randomUUID)
+                    ? window.crypto.randomUUID()
+                    : (Date.now().toString(36) + Math.random().toString(36).slice(2));
+                stored = "dev-" + randomPart;
+                localStorage.setItem("znu_device_id", stored);
+            }
+            return stored;
+        } catch (e) {
+            console.warn("localStorage not available, falling back to anonymous device id.");
+            return "anonymous-device";
+        }
+    };
+
+    const DEVICE_ID = getDeviceId();
+
+    // 2) Local storage key for dismissed notifications per device
+    const DISMISS_KEY = "znu_dismissed_notifications_" + DEVICE_ID;
+
+    const loadDismissed = () => {
+        try {
+            const raw = localStorage.getItem(DISMISS_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            console.warn("Could not read dismissed notifications from localStorage:", e);
+            return [];
+        }
+    };
+
+    const saveDismissed = (list) => {
+        try {
+            localStorage.setItem(DISMISS_KEY, JSON.stringify(list));
+        } catch (e) {
+            console.warn("Could not save dismissed notifications to localStorage:", e);
+        }
+    };
+
+    const getNotificationKey = (item) => {
+        // Try to use a backend id if it exists, otherwise build a stable key
+        if (item.id) return String(item.id);
+        const name = item.name || item.title || "noname";
+        const updated = item.updatedTime || item.modifiedTime || "";
+        const level = item.level || "";
+        return name + "___" + updated + "___" + level;
+    };
+
+    let notifications = []; // data coming from the API
+    let activeLevel = "all";
+    let dismissed = loadDismissed();
 
     const renderNotifications = () => {
         if (!notifications || notifications.length === 0) {
             container.classList.add("single-notification");
             container.innerHTML = `
                 <div class="info-card notification-card">
-                    <h3>مافيش إشعارات حالياً</h3>
-                    <p>أول ما نرفع ملفات على Google Drive هتظهر هنا على طول 💚</p>
+                    <h3>مافيش إشعارات لسه</h3>
+                    <p>أول ما يتحط ملفات جديدة هتظهر هنا كإشعارات.</p>
                 </div>
             `;
             return;
         }
 
-        const filtered = activeLevel === 'all'
+        // Filter by level
+        let filtered = activeLevel === "all"
             ? notifications
-            : notifications.filter(item => item.level === activeLevel); // This logic remains the same
+            : notifications.filter(item => item.level === activeLevel);
+
+        // Remove locally dismissed notifications for this device only
+        filtered = filtered.filter(item => !dismissed.includes(getNotificationKey(item)));
 
         if (filtered.length === 0) {
             container.classList.add("single-notification");
@@ -3736,11 +3814,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        container.innerHTML = '';
+        container.innerHTML = "";
         container.classList.toggle("single-notification", filtered.length === 1);
 
         filtered.forEach(file => {
-            const date = new Date(file.updatedTime);
+            const date = new Date(file.updatedTime || file.modifiedTime || Date.now());
             const formatted = date.toLocaleString("ar-EG", {
                 year: "numeric",
                 month: "long",
@@ -3752,26 +3830,45 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement("div");
             card.className = "info-card notification-card";
 
-            let levelLabel = '';
-            // The file.level property now comes directly from the API
-            if (file.level && file.level !== 'other') {
+            let levelLabel = "";
+            if (file.level && file.level !== "other") {
                 levelLabel = `مستوى ${file.level}`;
             } else {
-                levelLabel = 'موارد عامة';
+                levelLabel = "موارد عامة";
             }
 
             card.innerHTML = `
                 <div class="notification-card-header">
                     <span class="notif-icon" aria-hidden="true">📄</span>
                     <div class="notification-card-text">
-                        <h3>${file.name}</h3>
+                        <h3>${file.name || file.title || "ملف بدون اسم"}</h3>
                         <p class="notification-meta">${levelLabel} • تحديث في: ${formatted}</p>
                     </div>
                 </div>
-                <a href="${file.url}" target="_blank" rel="noopener noreferrer" class="general-button">
-                    فتح الملف على Google Drive
-                </a>
+                <div class="notification-actions">
+                    <a href="${file.url || file.link || "#"}" target="_blank" rel="noopener noreferrer" class="general-button notification-open">
+                        فتح الملف على Google Drive
+                    </a>
+                    <button type="button" class="general-button notification-dismiss">
+                        إخفاء على هذا الجهاز
+                    </button>
+                </div>
             `;
+
+            const dismissBtn = card.querySelector(".notification-dismiss");
+            if (dismissBtn) {
+                dismissBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const key = getNotificationKey(file);
+                    if (!dismissed.includes(key)) {
+                        dismissed.push(key);
+                        saveDismissed(dismissed);
+                    }
+                    // Re-render list without this notification
+                    renderNotifications();
+                });
+            }
 
             container.appendChild(card);
         });
@@ -3780,50 +3877,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Link filter buttons
     if (filterButtons && filterButtons.length) {
         filterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const level = btn.getAttribute('data-level');
+            btn.addEventListener("click", () => {
+                const level = btn.getAttribute("data-level");
                 if (!level) return;
                 activeLevel = level;
 
-                filterButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+                filterButtons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
 
                 renderNotifications();
             });
         });
     }
 
-    // Fetch data
+    // Fetch notifications from backend (Google Apps Script via Netlify)
     try {
-        const res = await fetch(NOTIFICATIONS_API_URL);
+        // If in the future you want the backend to also know the device,
+        // you can append &deviceId=... here and handle it in Apps Script.
+        const url = NOTIFICATIONS_API_URL; // + "&deviceId=" + encodeURIComponent(DEVICE_ID);
+        const res = await fetch(url);
         if (!res.ok) throw new Error("HTTP " + res.status);
 
         const data = await res.json();
-
-        // --- MODIFIED: Data now includes the 'level' property ---
-        if (Array.isArray(data)) {
-            notifications = data; // Simply assign the data
-        } else {
-            notifications = [];
-        }
-        // --- END MODIFICATION ---
+        notifications = Array.isArray(data) ? data : [];
 
         renderNotifications();
-
-        // --- Badge logic remains the same ---
-        const notifCount = notifications.length;
-        const infoNavLink = document.querySelector('.bottom-nav .nav-item[href="#notifications-section"]');
-        if (infoNavLink && notifCount > 0) {
-            let badge = infoNavLink.querySelector('.notif-badge');
-            if (!badge) {
-                badge = document.createElement('span');
-                badge.className = 'notif-badge';
-                infoNavLink.appendChild(badge);
-            }
-            badge.textContent = notifCount > 9 ? '9+' : notifCount;
-        }
-    } catch (err) {
-        console.error("Error loading notifications:", err);
+    } catch (error) {
+        console.error("Error loading notifications:", error);
+        container.classList.add("single-notification");
         container.innerHTML = `
             <div class="info-card notification-card">
                 <h3>ما قدرناش نجيب الإشعارات حالياً</h3>
