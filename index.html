@@ -841,27 +841,6 @@
             box-shadow: var(--shadow-sm);
             font-size: 1.3rem;
         }
-        /* Pulse animation for notifications icon when there are unseen items */
-        .notifications-header .notif-icon.notif-pulse {
-            animation: notif-pulse 1.1s ease-in-out infinite;
-            transform-origin: center;
-        }
-
-        @keyframes notif-pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: var(--shadow-sm);
-            }
-            50% {
-                transform: scale(1.16);
-                box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.35);
-            }
-            100% {
-                transform: scale(1);
-                box-shadow: var(--shadow-sm);
-            }
-        }
-
 
         .notifications-filters {
             display: flex;
@@ -928,31 +907,6 @@
 .notification-card {
     text-align: right;
 }
-        /* Slide-in animation for notification cards */
-        .notification-card {
-            opacity: 0;
-            transform: translateY(14px);
-            transition: opacity 0.28s ease-out, transform 0.28s ease-out;
-        }
-
-        .notification-card.notification-enter {
-            opacity: 1;
-            transform: translateY(0);
-            animation: notification-slide-in 0.35s ease-out both;
-            animation-delay: calc(var(--notif-index, 0) * 45ms);
-        }
-
-        @keyframes notification-slide-in {
-            0% {
-                opacity: 0;
-                transform: translateY(18px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
 .notification-card h3 {
             font-size: 1.05rem;
             margin-bottom: 0.35rem;
@@ -3094,25 +3048,25 @@ body {
         // --- Scroll Animations ---
         const animatedSections = document.querySelectorAll('.animated-section');
 
-// Section fade-in on enter (desktop + mobile) with reduced-motion support
-const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-if (prefersReducedMotion) {
-        // لو المستخدم مفعّل تقليل الحركة، نخلي كل حاجة ظاهرة بدون أنيميشن
-        animatedSections.forEach(section => section.classList.add('is-visible'));
-} else if (animatedSections.length) {
-        const sectionObserver = new IntersectionObserver((entries, observer) => {
+        // --- MODIFICATION START: Section fade-in and fade-out ---
+        // Observer for general section fade-in and fade-out
+        const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
-                    // بعد أول مرة تظهر فيها السيكشن، مش محتاجين نراقبها تاني
-                    observer.unobserve(entry.target);
+                } else {
+                    // Add this else block to fade out
+                    entry.target.classList.remove('is-visible');
                 }
             });
-        }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+        }, { root: null, rootMargin: '0px', threshold: 0.1 }); // Trigger at 10% visibility
+        // --- MODIFICATION END ---
 
-        animatedSections.forEach(section => sectionObserver.observe(section));
-}
+        // --- MODIFICATION START: Simplified observer attachment ---
+        animatedSections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+        // --- MODIFICATION END ---
 
 
         // --- General Page Logic ---
@@ -3927,16 +3881,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             navNotifLink.appendChild(badge);
         }
         if (!badge) return;
-
-        const headerIcon = document.querySelector('.notifications-header .notif-icon');
         if (newCount > 0) {
             badge.textContent = newCount > 9 ? "9+" : String(newCount);
             badge.style.display = "inline-flex";
-            if (headerIcon) headerIcon.classList.add('notif-pulse');
         } else {
             badge.textContent = "";
             badge.style.display = "none";
-            if (headerIcon) headerIcon.classList.remove('notif-pulse');
         }
     };
 
@@ -4028,8 +3978,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             const card = document.createElement("div");
-            card.className = "info-card notification-card notification-enter";
-            card.style.setProperty("--notif-index", String(index));
+            card.className = "info-card notification-card";
 
             const isNew = lastSeen && !isNaN(ts) && ts > lastSeen;
             if (isNew) {
@@ -4111,11 +4060,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let list = Array.isArray(raw) ? raw.slice() : [];
 
         list = list
-            .filter(item => item && (item.updatedTime || item.modifiedTime || item.lastUpdated || item.timestamp))
-            .map(item => {
-                const rawTime = item.updatedTime || item.modifiedTime || item.lastUpdated || item.timestamp;
-                return { ...item, updatedTime: rawTime };
-            })
+            .filter(item => item && item.updatedTime)
             .sort((a, b) => {
                 const ta = Date.parse(a.updatedTime) || 0;
                 const tb = Date.parse(b.updatedTime) || 0;
