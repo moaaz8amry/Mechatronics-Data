@@ -1,14 +1,15 @@
 // netlify/functions/visitor-counter.js
-// Simplified Netlify function (Node 18+) using built‑in fetch
+// Netlify function (Node 18+) using built-in fetch + timeout
 //  - Visitor counter        (?type=visitor)
 //  - Notifications          (?type=notifications)
 //  - Per-device dismiss     (?type=notif-dismiss)
 //  - Device info / stats    (?type=device-info)
 //  - Device stats dashboard (?type=device-stats)
 //
-// It forwards the request to your Google Apps Script Web App.
-// Make sure your site uses Node 18+ runtime on Netlify.
+// يتصل بـ Google Apps Script Web App ويرجع JSON للفرونت.
 
+// ⚠️ IMPORTANT:
+// حدّث اللينك ده بالـ Web App URL بتاع Google Apps Script عندك
 const GAS_BASE_URL =
   process.env.GAS_BASE_URL ||
   "https://script.google.com/macros/s/AKfycbxbpGnkXH_dDJO8QUYGujQ5C4-5NFamOpi8bsqG7vWRtTbP1R5AU_bPb4aiAMeevMdzaQ/exec";
@@ -20,6 +21,7 @@ const commonHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
+// ترتيب الـ Levels
 const LEVEL_ORDER = {
   "000": 0,
   "100": 1,
@@ -58,6 +60,7 @@ exports.handler = async (event) => {
 
     let deviceId = qs.deviceId || qs.mac || qs.macId || "";
 
+    // لو POST (مثلاً notif-dismiss) نقرأ البودي
     let bodyJson = null;
     if (method === "POST" && event.body) {
       try {
@@ -70,10 +73,12 @@ exports.handler = async (event) => {
       }
     }
 
+    // نبني لينك Google Apps Script
     const base = new URL(GAS_BASE_URL);
     if (type) base.searchParams.set("type", type);
     if (deviceId) base.searchParams.set("deviceId", deviceId);
 
+    // notif-dismiss → نبعث notificationId و action
     if (type === "notif-dismiss" && bodyJson) {
       if (bodyJson.notificationId) {
         base.searchParams.set("notificationId", bodyJson.notificationId);
@@ -84,15 +89,55 @@ exports.handler = async (event) => {
     const finalUrl = base.toString();
     console.log("Calling GAS URL:", finalUrl);
 
-    // Built‑in fetch (Node 18+) automatically follows redirects
-    const res = await fetch(finalUrl, { method: "GET" });
+    // ====== fetch + timeout عشان مانقعش في 504 ======
+    const controller = new AbortController();
+    const timeoutMs = 8000; // 8 ثواني
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-    const text = await res.text();
+    let res;
+    let text;
+
+    try {
+      res = await fetch(finalUrl, {
+        method: "GET",
+        signal: controller.signal,
+      });
+      text = await res.text();
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      // لو أخدت timeout من Google Script
+      if (error.name === "AbortError") {
+        console.error("GAS request timed out after", timeoutMs, "ms");
+        return {
+          statusCode: 502,
+          headers: commonHeaders,
+          body: JSON.stringify({
+            error: true,
+            message: "Timed out while contacting Google Apps Script.",
+          }),
+        };
+      }
+
+      console.error("Error while contacting GAS:", error);
+      return {
+        statusCode: 502,
+        headers: commonHeaders,
+        body: JSON.stringify({
+          error: true,
+          message: "Error while contacting Google Apps Script.",
+          errorMessage: error.message,
+        }),
+      };
+    }
+
+    clearTimeout(timeoutId);
+
     let responseBody;
-
     try {
       let parsed = text ? JSON.parse(text) : [];
 
+      // لو Notifications و Array → نرتب حسب level ثم الوقت
       if (type === "notifications" && Array.isArray(parsed)) {
         parsed = parsed
           .filter((item) => item && item.updatedTime)
@@ -105,10 +150,12 @@ exports.handler = async (event) => {
               Date.parse(a.updatedTime || a.modifiedTime || a.lastUpdated) || 0;
             const tb =
               Date.parse(b.updatedTime || b.modifiedTime || b.lastUpdated) || 0;
-            return tb - ta;
+            return tb - ta; // الأحدث الأول داخل نفس الليفل
           });
       }
 
+      // لو type = visitor → parsed بيبقى object زي { count: 12250 }
+      // وساعتها بنرجعه زي ما هو من غير أي لعب
       responseBody = JSON.stringify(parsed);
     } catch (e) {
       console.error("Failed to parse GAS response as JSON:", e, "raw:", text);
@@ -118,7 +165,7 @@ exports.handler = async (event) => {
       });
     }
 
-    // نرجّع 200 دايمًا للفرونت؛ الفرونت يعرف يتصرف لو الداتا بايظة
+    // نرجّع 200 للفرونت؛ هو هيقرر يتصرف إزاي حسب الداتا
     return {
       statusCode: 200,
       headers: commonHeaders,
