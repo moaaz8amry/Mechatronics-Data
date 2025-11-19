@@ -3849,7 +3849,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         return maxTs;
     };
 
-    // ================================
+    
+    // ترتيب الـ Levels (000, 100, 200, 300, 400, other)
+    const LEVEL_ORDER = {
+        "000": 0,
+        "100": 1,
+        "200": 2,
+        "300": 3,
+        "400": 4,
+        "other": 5
+    };
+
+    const getLevelRank = (level) => {
+        if (!level) return LEVEL_ORDER["other"];
+        return Object.prototype.hasOwnProperty.call(LEVEL_ORDER, level)
+            ? LEVEL_ORDER[level]
+            : LEVEL_ORDER["other"];
+    };
+
+// ================================
     // Notification rendering
     // ================================
     let notifications = [];
@@ -4053,18 +4071,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const fetchUrl = NOTIFICATIONS_API_BASE + "&deviceId=" + encodeURIComponent(DEVICE_ID);
         const res = await fetch(fetchUrl);
-        if (!res.ok) throw new Error("HTTP " + res.status);
 
-        // ناخد الداتا ونظبطها: sort + آخر 10
-        const raw = await res.json();
+        let raw;
+        try {
+            // حتى لو الـ status مش 200 نحاول نقرأ JSON قدر الإمكان
+            raw = await res.json();
+        } catch (parseErr) {
+            console.error("Failed to parse notifications JSON:", parseErr);
+            throw new Error("INVALID_NOTIFICATIONS_JSON");
+        }
+
+        if (!res.ok) {
+            console.warn("Backend returned non-200 status for notifications:", res.status, raw);
+            // هنكمّل على قد ما نقدر لو الاستجابة شكلها Array
+        }
+
         let list = Array.isArray(raw) ? raw.slice() : [];
 
         list = list
             .filter(item => item && item.updatedTime)
             .sort((a, b) => {
+                // ترتيب حسب الـ level أولاً ثم أحدث وقت
+                const la = getLevelRank(a.level);
+                const lb = getLevelRank(b.level);
+                if (la !== lb) return la - lb;
+
                 const ta = Date.parse(a.updatedTime) || 0;
                 const tb = Date.parse(b.updatedTime) || 0;
-                return tb - ta; // الأحدث الأول
+                return tb - ta; // الأحدث الأول داخل نفس الليفل
             });
 
         // ناخد آخر 10 بس
