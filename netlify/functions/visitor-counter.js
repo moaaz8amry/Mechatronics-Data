@@ -1,31 +1,25 @@
 // netlify/functions/visitor-counter.js
-// Unified Netlify function for:
+// Simplified Netlify function (Node 18+) using built‑in fetch
 //  - Visitor counter        (?type=visitor)
 //  - Notifications          (?type=notifications)
 //  - Per-device dismiss     (?type=notif-dismiss)
-//  - Device info / stats    (?type=device-info, ?type=device-stats)
-// It forwards the request to your Google Apps Script Web App
-// and FOLLOWS 302 redirects from Google.
+//  - Device info / stats    (?type=device-info)
+//  - Device stats dashboard (?type=device-stats)
+//
+// It forwards the request to your Google Apps Script Web App.
+// Make sure your site uses Node 18+ runtime on Netlify.
 
-const https = require("https");
-const { URL } = require("url");
-
-// ⚠️ مهم جدًا: حط هنا لينك الـ Web App بتاعك من Google Script (اللي فيه /exec)
 const GAS_BASE_URL =
   process.env.GAS_BASE_URL ||
   "https://script.google.com/macros/s/AKfycbxbpGnkXH_dDJO8QUYGujQ5C4-5NFamOpi8bsqG7vWRtTbP1R5AU_bPb4aiAMeevMdzaQ/exec";
 
-// CORS headers
 const commonHeaders = {
   "Content-Type": "application/json; charset=utf-8",
-  // لو حابب تقفل على الدومين بتاعك بس خليه مثلاً:
-  // "Access-Control-Allow-Origin": "https://znuassistant.netlify.app",
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-// ترتيب ال Levels لما نيجي نعمل sort هنا (اختياري)
 const LEVEL_ORDER = {
   "000": 0,
   "100": 1,
@@ -42,65 +36,8 @@ function getLevelRank(level) {
     : LEVEL_ORDER.other;
 }
 
-
-// Helper يعمل GET مع دعم للـ redirects
-function fetchFromGAS(urlString, redirectCount = 0) {
-  const MAX_REDIRECTS = 5;
-
-  return new Promise((resolve, reject) => {
-    const url = new URL(urlString);
-
-    const options = {
-      method: "GET",
-      hostname: url.hostname,
-      path: url.pathname + url.search,
-    };
-
-    const req = https.request(options, (res) => {
-      let data = "";
-
-      res.on("data", (chunk) => {
-        data += chunk;
-      });
-
-      res.on("end", () => {
-        const status = res.statusCode || 200;
-
-        // لو جالنا 301/302/303/307/308 ومعاه Location → نكمّل redirect
-        if (
-          [301, 302, 303, 307, 308].includes(status) &&
-          res.headers.location &&
-          redirectCount < MAX_REDIRECTS
-        ) {
-          const nextUrl = new URL(res.headers.location, urlString).toString();
-          console.log(
-            `Redirecting (${status}) from ${urlString} → ${nextUrl} (step ${
-              redirectCount + 1
-            })`
-          );
-          return fetchFromGAS(nextUrl, redirectCount + 1)
-            .then(resolve)
-            .catch(reject);
-        }
-
-        // لو مفيش redirect أو عدينا الحد → نرجّع اللي عندنا
-        resolve({
-          statusCode: status,
-          body: data,
-        });
-      });
-    });
-
-    req.on("error", (err) => {
-      reject(err);
-    });
-
-    req.end();
-  });
-}
-
 exports.handler = async (event) => {
-  // Preflight CORS
+  // CORS preflight
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 204,
@@ -113,14 +50,12 @@ exports.handler = async (event) => {
     const qs = event.queryStringParameters || {};
     const method = event.httpMethod || "GET";
 
-    // type: visitor / notifications / notif-dismiss / device-info / device-stats ...
     const type =
       qs.type ||
       qs.mode ||
       (qs.visitor ? "visitor" : null) ||
       "notifications";
 
-    // Device ID من الكويري (ونحتفظ بيه حتى لو جاي من البودي)
     let deviceId = qs.deviceId || qs.mac || qs.macId || "";
 
     let bodyJson = null;
@@ -135,37 +70,29 @@ exports.handler = async (event) => {
       }
     }
 
-    // نبني الـ URL بتاع Google Script
     const base = new URL(GAS_BASE_URL);
     if (type) base.searchParams.set("type", type);
     if (deviceId) base.searchParams.set("deviceId", deviceId);
 
-    // لو بنعمل dismiss لإشعار معيّن
     if (type === "notif-dismiss" && bodyJson) {
       if (bodyJson.notificationId) {
         base.searchParams.set("notificationId", bodyJson.notificationId);
       }
-      if (bodyJson.action) {
-        base.searchParams.set("action", bodyJson.action);
-      } else {
-        base.searchParams.set("action", "dismiss");
-      }
+      base.searchParams.set("action", bodyJson.action || "dismiss");
     }
 
     const finalUrl = base.toString();
     console.log("Calling GAS URL:", finalUrl);
 
-    // ننده على Google Apps Script مع دعم redirects (GET)
-    const res = await fetchFromGAS(finalUrl);
-    let text = res.body || "";
+    // Built‑in fetch (Node 18+) automatically follows redirects
+    const res = await fetch(finalUrl, { method: "GET" });
 
-    // نحاول نفهمه JSON لو نقدر
+    const text = await res.text();
     let responseBody;
-    try {
-      let parsed = JSON.parse(text);
 
-      // لو نوع الطلب notifications وراجعلنا Array
-      // نرتّب حسب level ثم أحدث updatedTime
+    try {
+      let parsed = text ? JSON.parse(text) : [];
+
       if (type === "notifications" && Array.isArray(parsed)) {
         parsed = parsed
           .filter((item) => item && item.updatedTime)
@@ -178,20 +105,20 @@ exports.handler = async (event) => {
               Date.parse(a.updatedTime || a.modifiedTime || a.lastUpdated) || 0;
             const tb =
               Date.parse(b.updatedTime || b.modifiedTime || b.lastUpdated) || 0;
-            return tb - ta; // الأحدث الأول داخل نفس الليفل
+            return tb - ta;
           });
       }
 
       responseBody = JSON.stringify(parsed);
     } catch (e) {
-      // لو مش JSON (مثلاً error HTML من جوجل) نرجّعه جوّه object
+      console.error("Failed to parse GAS response as JSON:", e, "raw:", text);
       responseBody = JSON.stringify({
-        raw: text,
         note: "Response from GAS was not valid JSON.",
+        raw: text,
       });
     }
 
-    // مهم: نرجّع 200 للمتصفح حتى لو Google رجّع 302 داخليًا
+    // نرجّع 200 دايمًا للفرونت؛ الفرونت يعرف يتصرف لو الداتا بايظة
     return {
       statusCode: 200,
       headers: commonHeaders,
