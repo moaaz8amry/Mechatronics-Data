@@ -13,7 +13,7 @@ const { URL } = require("url");
 // ⚠️ مهم جدًا: حط هنا لينك الـ Web App بتاعك من Google Script (اللي فيه /exec)
 const GAS_BASE_URL =
   process.env.GAS_BASE_URL ||
-  "https://script.google.com/macros/s/AKfycbwu8bDDGvD7d7fJmYz_2kMzGCMMZL64gEVebstG2ZdSuN3nfp9ssmSE4cDip22z9sz_/exec";
+  "https://script.google.com/macros/s/AKfycbxbpGnkXH_dDJO8QUYGujQ5C4-5NFamOpi8bsqG7vWRtTbP1R5AU_bPb4aiAMeevMdzaQ/exec";
 
 // CORS headers
 const commonHeaders = {
@@ -24,6 +24,24 @@ const commonHeaders = {
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
+
+// ترتيب ال Levels لما نيجي نعمل sort هنا (اختياري)
+const LEVEL_ORDER = {
+  "000": 0,
+  "100": 1,
+  "200": 2,
+  "300": 3,
+  "400": 4,
+  other: 5,
+};
+
+function getLevelRank(level) {
+  if (!level) return LEVEL_ORDER.other;
+  return Object.prototype.hasOwnProperty.call(LEVEL_ORDER, level)
+    ? LEVEL_ORDER[level]
+    : LEVEL_ORDER.other;
+}
+
 
 // Helper يعمل GET مع دعم للـ redirects
 function fetchFromGAS(urlString, redirectCount = 0) {
@@ -144,7 +162,26 @@ exports.handler = async (event) => {
     // نحاول نفهمه JSON لو نقدر
     let responseBody;
     try {
-      const parsed = JSON.parse(text);
+      let parsed = JSON.parse(text);
+
+      // لو نوع الطلب notifications وراجعلنا Array
+      // نرتّب حسب level ثم أحدث updatedTime
+      if (type === "notifications" && Array.isArray(parsed)) {
+        parsed = parsed
+          .filter((item) => item && item.updatedTime)
+          .sort((a, b) => {
+            const la = getLevelRank(a.level);
+            const lb = getLevelRank(b.level);
+            if (la !== lb) return la - lb;
+
+            const ta =
+              Date.parse(a.updatedTime || a.modifiedTime || a.lastUpdated) || 0;
+            const tb =
+              Date.parse(b.updatedTime || b.modifiedTime || b.lastUpdated) || 0;
+            return tb - ta; // الأحدث الأول داخل نفس الليفل
+          });
+      }
+
       responseBody = JSON.stringify(parsed);
     } catch (e) {
       // لو مش JSON (مثلاً error HTML من جوجل) نرجّعه جوّه object
