@@ -10,7 +10,7 @@
 const https = require("https");
 const { URL } = require("url");
 
-// ⚠️ مهم جدًا: حط هنا لينك الـ Web App بتاعك من Google Script (اللي فيه /exec)
+
 const GAS_BASE_URL =
   process.env.GAS_BASE_URL ||
   "https://script.google.com/macros/s/AKfycbwu8bDDGvD7d7fJmYz_2kMzGCMMZL64gEVebstG2ZdSuN3nfp9ssmSE4cDip22z9sz_/exec";
@@ -23,6 +23,9 @@ const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
+  // شوية هيدرز بسيطة تخلي الديباجينج أسهل
+  "Cache-Control": "no-store",
+  "X-Proxy-Source": "netlify-visitor-counter",
 };
 
 // Helper يعمل GET مع دعم للـ redirects
@@ -144,7 +147,34 @@ exports.handler = async (event) => {
     // نحاول نفهمه JSON لو نقدر
     let responseBody;
     try {
-      const parsed = JSON.parse(text);
+      let parsed = JSON.parse(text);
+
+      // تحسين للـ sorting بتاع الإشعارات من الناحية دي (الباك إند)
+      if (type === "notifications" && Array.isArray(parsed)) {
+        parsed = parsed
+          .filter(
+            (item) =>
+              item &&
+              (item.updatedTime ||
+                item.modifiedTime ||
+                item.lastUpdated ||
+                item.timestamp)
+          )
+          .map((item) => {
+            const rawTime =
+              item.updatedTime ||
+              item.modifiedTime ||
+              item.lastUpdated ||
+              item.timestamp;
+            return { ...item, updatedTime: rawTime };
+          })
+          .sort((a, b) => {
+            const ta = Date.parse(a.updatedTime) || 0;
+            const tb = Date.parse(b.updatedTime) || 0;
+            return tb - ta; // الأحدث الأول
+          });
+      }
+
       responseBody = JSON.stringify(parsed);
     } catch (e) {
       // لو مش JSON (مثلاً error HTML من جوجل) نرجّعه جوّه object
