@@ -4072,12 +4072,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const fetchUrl = NOTIFICATIONS_API_BASE + "&deviceId=" + encodeURIComponent(DEVICE_ID);
         const res = await fetch(fetchUrl);
 
+        // نقرأ الاستجابة كنص أولاً، عشان لو فاضية ما يبوّظش res.json()
+        const text = await res.text();
         let raw;
         try {
-            // حتى لو الـ status مش 200 نحاول نقرأ JSON قدر الإمكان
-            raw = await res.json();
+            if (!text) {
+                raw = [];
+            } else {
+                raw = JSON.parse(text);
+            }
         } catch (parseErr) {
-            console.error("Failed to parse notifications JSON:", parseErr);
+            console.error("Failed to parse notifications JSON:", parseErr, "raw text:", text);
             throw new Error("INVALID_NOTIFICATIONS_JSON");
         }
 
@@ -4132,10 +4137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
         updateBadge(0);
     }
-});
-</script>
-<!--  END: UPDATED NOTIFICATION SCRIPT  -->
-<!-- ================================== -->
+});============================== -->
 <script>
   // Fix 100vh issues on mobile browsers (Android + iOS)
   (function () {
