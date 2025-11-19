@@ -4180,6 +4180,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     const counterElement = document.getElementById('visitor-count');
     if (!counterElement) return;
 
+    // أنيميشن بسيط يخلي عدّاد الزوار يطلع تدريجي بدل ما الرقم يتغيّر فجأة
+    const animateCounter = (element, targetValue) => {
+        const duration = 650; // ms
+        const start = performance.now();
+        const startValue = (() => {
+            const raw = (element.textContent || "").replace(/[^0-9]/g, "");
+            const num = parseInt(raw, 10);
+            return isNaN(num) ? 0 : num;
+        })();
+        const delta = targetValue - startValue;
+        if (!delta) {
+            element.textContent = targetValue.toLocaleString("ar-EG");
+            return;
+        }
+
+        const step = (now) => {
+            const t = Math.min(1, (now - start) / duration);
+            // easing cubic for smoothness
+            const eased = 1 - Math.pow(1 - t, 3);
+            const current = Math.round(startValue + delta * eased);
+            element.textContent = current.toLocaleString("ar-EG");
+            if (t < 1) {
+                requestAnimationFrame(step);
+            }
+        };
+        requestAnimationFrame(step);
+    };
+
     try {
         const response = await fetch(VISITOR_COUNTER_API_URL);
         if (!response.ok) {
@@ -4189,9 +4217,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
 
         if (data && typeof data.count === "number") {
-            counterElement.textContent = data.count.toLocaleString("ar-EG");
+            animateCounter(counterElement, data.count);
         } else if (data && typeof data.visits === "number") {
-            counterElement.textContent = data.visits.toLocaleString("ar-EG");
+            animateCounter(counterElement, data.visits);
         } else {
             counterElement.textContent = "—";
         }
