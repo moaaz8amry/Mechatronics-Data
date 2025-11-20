@@ -2569,7 +2569,22 @@ body {
           }
         }
 
-    </style>
+    
+        .visitor-counter-animated {
+            animation: visitorCounterIntro 0.7s ease-out;
+        }
+
+        @keyframes visitorCounterIntro {
+            from {
+                transform: translateY(10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+</style>
     
     <!-- START: NEW NAVIGATION OVERRIDE RULES -->
     <style id="nav-overrides">
@@ -3949,6 +3964,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const renderNotifications = () => {
+        // نخلي الليستة دايمًا في وضع scrollable،
+        // ونستخدم single-notification بس في حالات الرسالة الواحدة (مفيش بيانات / مفيش إشعارات لهذا الليفل / خطأ).
+        const container = document.getElementById("notifications-list");
+        if (!container) return;
+        container.classList.remove("single-notification");
+
         if (!notifications || notifications.length === 0) {
             container.classList.add("single-notification");
             container.innerHTML = `
@@ -3980,7 +4001,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         container.innerHTML = "";
-        container.classList.toggle("single-notification", filtered.length === 1);
 
         let newCount = 0;
 
@@ -4159,30 +4179,60 @@ document.addEventListener('DOMContentLoaded', async () => {
 <!-- START: VISITOR COUNTER via Netlify -> Google Apps Script -->
 <!-- ================================== -->
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     const VISITOR_COUNTER_API_URL = "/.netlify/functions/visitor-counter?type=visitor";
     const counterElement = document.getElementById('visitor-count');
     if (!counterElement) return;
 
-    try {
-        const response = await fetch(VISITOR_COUNTER_API_URL);
-        if (!response.ok) {
-            throw new Error("HTTP " + response.status);
-        }
+    // Placeholder لحد ما الـ API يرد
+    counterElement.textContent = "—";
 
-        const data = await response.json();
+    const wrapper = counterElement.closest('.visitor-counter');
+    if (wrapper) {
+        wrapper.classList.add('visitor-counter-animated');
+    }
 
-        if (data && typeof data.count === "number") {
-            counterElement.textContent = data.count.toLocaleString("ar-EG");
-        } else if (data && typeof data.visits === "number") {
-            counterElement.textContent = data.visits.toLocaleString("ar-EG");
-        } else {
+    const animateCount = (from, to, duration = 1200) => {
+        const start = performance.now();
+        const step = (now) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const current = Math.floor(from + (to - from) * progress);
+            counterElement.textContent = current.toLocaleString("ar-EG");
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            }
+        };
+        requestAnimationFrame(step);
+    };
+
+    const loadVisitorCount = async () => {
+        try {
+            const response = await fetch(VISITOR_COUNTER_API_URL);
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+
+            const data = await response.json();
+            let value = null;
+
+            if (data && typeof data.count === "number") {
+                value = data.count;
+            } else if (data && typeof data.visits === "number") {
+                value = data.visits;
+            }
+
+            if (typeof value === "number") {
+                animateCount(0, value);
+            } else {
+                counterElement.textContent = "—";
+            }
+        } catch (error) {
+            console.error("Error updating visitor counter:", error);
             counterElement.textContent = "—";
         }
-    } catch (error) {
-        console.error("Error updating visitor counter:", error);
-        counterElement.textContent = "—";
-    }
+    };
+
+    loadVisitorCount();
 });
 </script>
 <!-- END: VISITOR COUNTER via Netlify -> Google Apps Script -->
@@ -4190,3 +4240,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 </body>
 
 </html>
+
