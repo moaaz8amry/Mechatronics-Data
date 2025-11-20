@@ -883,7 +883,7 @@
     backdrop-filter: blur(18px) saturate(1.5);
     -webkit-backdrop-filter: blur(18px) saturate(1.5);
     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
-    max-height: 340px;
+    max-height: 360px;
     overflow-y: auto;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -2551,7 +2551,25 @@ body {
         }
 
         @media (min-width: 992px) {
+            
+        @media (max-width: 767px) {
+            .notifications-list {
+                max-height: 55vh;
+                padding: var(--spacing-sm);
+                gap: var(--spacing-sm);
+            }
+
             .notifications-section .notification-card {
+                min-height: 0;
+            }
+
+            .notifications-section .notification-card .info-card {
+                padding-top: 0.9rem;
+                padding-bottom: 0.9rem;
+            }
+        }
+
+.notifications-section .notification-card {
                 align-items: flex-start;
                 text-align: right;
                 min-height: 160px;
@@ -4240,4 +4258,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </body>
 
 </html>
-
