@@ -12,7 +12,7 @@
 // حدّث اللينك ده بالـ Web App URL بتاع Google Apps Script عندك
 const GAS_BASE_URL =
   process.env.GAS_BASE_URL ||
-  "https://script.google.com/macros/s/AKfycbxbpGnkXH_dDJO8QUYGujQ5C4-5NFamOpi8bsqG7vWRtTbP1R5AU_bPb4aiAMeevMdzaQ/exec";
+  "https://script.google.com/macros/s/AKfycbx2DKePNUxupPKqSn9et5-PHpLvmMFkVcalJpm4xlJhc1ivXQjBKQI3iR7kI3fyJeO8gA/exec";
 
 const commonHeaders = {
   "Content-Type": "application/json; charset=utf-8",
