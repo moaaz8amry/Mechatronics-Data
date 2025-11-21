@@ -4024,47 +4024,7 @@ const showNewToast = (count) => {
     }, 5000);
 };
 
-const showNewToast = (count) => {
-        if (!count || count <= 0) return;
-        let toast = document.querySelector('.notifications-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.className = 'notifications-toast';
-            toast.innerHTML = `
-                <button type="button" class="notifications-toast-inner">
-                    <span class="notifications-toast-icon">🔔</span>
-                    <span class="notifications-toast-text"></span>
-                </button>
-            `;
-            document.body.appendChild(toast);
-
-            const btn = toast.querySelector('.notifications-toast-inner');
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    document.querySelector('#notifications-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    toast.classList.remove('visible');
-                });
-            }
-        }
-        const textEl = toast.querySelector('.notifications-toast-text');
-        if (textEl) {
-            if (count === 1) {
-                textEl.textContent = "عندك إشعار جديد";
-            } else if (count === 2) {
-                textEl.textContent = "عندك إشعارين جديدين";
-            } else if (count <= 10) {
-                textEl.textContent = "عندك " + count + " إشعارات جديدة";
-            } else {
-                textEl.textContent = "عندك إشعارات جديدة";
-            }
-        }
-        toast.classList.add('visible');
-        setTimeout(() => {
-            toast.classList.remove('visible');
-        }, 7000);
-    };
-
-    const renderNotifications = () => {
+const renderNotifications = () => {
         // نخلي الليستة دايمًا في وضع scrollable،
         // ونستخدم single-notification بس في حالات الرسالة الواحدة (مفيش بيانات / مفيش إشعارات لهذا الليفل / خطأ).
         const container = document.getElementById("notifications-list");
