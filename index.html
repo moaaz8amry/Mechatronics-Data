@@ -2910,11 +2910,15 @@ body {
 <style>
 /* Glossy & Blurry Toast */
 .notifications-toast-inner {
-    background: rgba(255,255,255,0.15) !important;
-    backdrop-filter: blur(12px) saturate(1.8);
-    -webkit-backdrop-filter: blur(12px) saturate(1.8);
-    border: 1px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.18) !important;
+    backdrop-filter: blur(14px) saturate(2);
+    -webkit-backdrop-filter: blur(14px) saturate(2);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 999px !important;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
 }
+
 </style>
 </head>
     <body>
@@ -4428,14 +4432,34 @@ function clearMenuRedDot() {
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", () => {
     const origShowNewToast = window.showNewToast;
-    window.showNewToast = function(msg){
-        if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
-        origShowNewToast(msg);
+    function playNotificationSound() {
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.value = 880; // حدة بسيطة
+            gain.gain.setValueAtTime(0.0, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+        } catch (e) {
+            console.warn("Audio notification failed:", e);
+        }
     }
-});
-</script>
+    window.showNewToast = function(msg) {
+        if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+        playNotificationSound();
+        origShowNewToast(msg);
+    };
+});script>
 </body>
 
 </html>
