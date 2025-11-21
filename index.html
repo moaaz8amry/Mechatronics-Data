@@ -974,40 +974,57 @@
         }
 
         .notifications-toast {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            bottom: 80px;
-            z-index: 9999;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.25s ease, transform 0.25s ease;
-        }
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    bottom: 80px;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
 
-        .notifications-toast.visible {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-            pointer-events: auto;
-        }
+.notifications-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+}
 
-        .notifications-toast-inner {
-            border: none;
-            outline: none;
-            background: rgba(15, 23, 42, 0.96);
-            color: #fff;
-            padding: 0.55rem 0.95rem;
-            border-radius: 999px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
+/* الحالة المصغرة بعد 5 ثواني: تتحول لأيقونة صغيرة جنب المنيو */
+.notifications-toast.minimized {
+    left: auto;
+    right: 20px;
+    bottom: 95px;
+    transform: translateX(0) translateY(0);
+}
 
-        .notifications-toast-icon {
-            font-size: 1rem;
-        }
+.notifications-toast-inner {
+    border: none;
+    outline: none;
+    background: rgba(15, 23, 42, 0.96);
+    color: #fff;
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.notifications-toast.minimized .notifications-toast-inner {
+    padding: 0.45rem;
+    border-radius: 999px;
+}
+
+.notifications-toast.minimized .notifications-toast-text {
+    display: none;
+}
+
+.notifications-toast-icon {
+    font-size: 1rem;
+}
 .notification-card .general-button {
             margin-top: 0.35rem;
         }
@@ -2602,7 +2619,24 @@ body {
                 opacity: 1;
             }
         }
-</style>
+
+.notif-badge {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-inline-start: 0.4rem;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+    </style>
     
     <!-- START: NEW NAVIGATION OVERRIDE RULES -->
     <style id="nav-overrides">
@@ -3815,6 +3849,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById("notifications-list");
     const filterButtons = document.querySelectorAll('.notif-filter');
     const navNotifLink = document.querySelector('.bottom-nav .nav-item[href="#notifications-section"]');
+    const desktopNotifLink = document.querySelector('#bottomNavbar nav a[href="#notifications-section"]');
     if (!container) return;
 
     // ================================
@@ -3924,12 +3959,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const updateBadge = (newCount) => {
-        if (!navNotifLink) return;
-        let badge = navNotifLink.querySelector('.notif-badge');
+    const updateForLink = (link) => {
+        if (!link) return;
+        let badge = link.querySelector('.notif-badge');
         if (!badge && newCount > 0) {
             badge = document.createElement('span');
             badge.className = 'notif-badge';
-            navNotifLink.appendChild(badge);
+            link.appendChild(badge);
         }
         if (!badge) return;
         if (newCount > 0) {
@@ -3941,7 +3977,54 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    const showNewToast = (count) => {
+    updateForLink(navNotifLink);
+    updateForLink(desktopNotifLink);
+};
+
+let toastTimer = null;
+const showNewToast = (count) => {
+    if (!count || count <= 0) return;
+    let toast = document.querySelector('.notifications-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'notifications-toast';
+        toast.innerHTML = `
+            <button type="button" class="notifications-toast-inner">
+                <span class="notifications-toast-icon">🔔</span>
+                <span class="notifications-toast-text"></span>
+            </button>
+        `;
+        document.body.appendChild(toast);
+
+        const btn = toast.querySelector('.notifications-toast-inner');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                document.querySelector('#notifications-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                toast.classList.remove('visible');
+                toast.classList.remove('minimized');
+            });
+        }
+    }
+    const textEl = toast.querySelector('.notifications-toast-text');
+    if (textEl) {
+        textEl.textContent = "تم رفع ملفات جديدة علي الموقع !";
+    }
+
+    // كل مرة ييجي إشعار جديد، نرجّع التوست للحجم الكبير في النص
+    toast.classList.remove('minimized');
+    toast.classList.add('visible');
+
+    if (toastTimer) {
+        clearTimeout(toastTimer);
+    }
+
+    // بعد 5 ثواني تصغر وتتحول لأيقونة جنب المنيو
+    toastTimer = setTimeout(() => {
+        toast.classList.add('minimized');
+    }, 5000);
+};
+
+const showNewToast = (count) => {
         if (!count || count <= 0) return;
         let toast = document.querySelector('.notifications-toast');
         if (!toast) {
