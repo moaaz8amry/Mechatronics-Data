@@ -2808,7 +2808,51 @@ body {
         }
     </style>
 
-    </head>
+    <style>
+/* NEW TOAST & RED DOT */
+.notifications-toast {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) translateY(40px);
+    bottom: 85px;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease, transform .35s ease;
+}
+.notifications-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+}
+.notifications-toast.minimized {
+    left: auto;
+    right: 25px;
+    bottom: 110px;
+    transform: scale(.9);
+}
+.notifications-toast.minimized .notifications-toast-inner {
+    padding: 8px;
+    border-radius: 50%;
+}
+.notifications-toast.minimized .notifications-toast-text {
+    display: none;
+}
+.menu-notify-dot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: red;
+    border-radius: 50%;
+    top: -4px;
+    right: -4px;
+    box-shadow: 0 0 8px rgba(255,0,0,0.7);
+    display: none;
+}
+.menu-notify-dot.active {
+    display: block;
+}
+</style></head>
     <body>
         <div id="loading-screen">
             <img src="logo.png" alt="Loading Logo"> <!-- MOD: logo.png -->
@@ -4298,6 +4342,26 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <!-- END: VISITOR COUNTER via Netlify -> Google Apps Script -->
 
+
+<script>
+function showNewToast(message = "تم رفع ملفات جديدة على الموقع!") {
+    const toast = document.querySelector(".notifications-toast");
+    const textSpan = toast.querySelector(".notifications-toast-text");
+    textSpan.textContent = message;
+    toast.classList.add("visible");
+    setTimeout(() => {
+        toast.classList.add("minimized");
+    }, 5000);
+}
+function showMenuRedDot() {
+    const dot = document.getElementById("menuNotifyDot");
+    if (dot) dot.classList.add("active");
+}
+function clearMenuRedDot() {
+    const dot = document.getElementById("menuNotifyDot");
+    if (dot) dot.classList.remove("active");
+}
+</script>
 </body>
 
 </html>
