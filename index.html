@@ -2907,6 +2907,15 @@ body {
     }
 }
 </style>
+<style>
+/* Glossy & Blurry Toast */
+.notifications-toast-inner {
+    background: rgba(255,255,255,0.15) !important;
+    backdrop-filter: blur(12px) saturate(1.8);
+    -webkit-backdrop-filter: blur(12px) saturate(1.8);
+    border: 1px solid rgba(255,255,255,0.35);
+}
+</style>
 </head>
     <body>
         <div id="loading-screen">
@@ -4416,6 +4425,16 @@ function clearMenuRedDot() {
     const dot = document.getElementById("menuNotifyDot");
     if (dot) dot.classList.remove("active");
 }
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+    const origShowNewToast = window.showNewToast;
+    window.showNewToast = function(msg){
+        if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+        origShowNewToast(msg);
+    }
+});
 </script>
 </body>
 
