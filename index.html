@@ -2852,7 +2852,62 @@ body {
 .menu-notify-dot.active {
     display: block;
 }
-</style></head>
+</style><style>
+/* === OVERRIDES: Toast bell position + animations === */
+.notifications-toast.visible:not(.minimized) .notifications-toast-inner {
+    animation: toastPop 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.notifications-toast.minimized {
+    right: 40px;   /* داخل يمين شوية */
+    bottom: 155px; /* فوق شوية */
+    transform: scale(0.95);
+}
+
+.notifications-toast.minimized .notifications-toast-inner {
+    animation: bellPulse 1.8s ease-in-out infinite;
+}
+
+/* نخلي الآيكون نفسها مزبوطة في النص */
+.notifications-toast-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* دخول التوست أول ما الرسالة تظهر */
+@keyframes toastPop {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.03);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* نبضة بسيطة للجرس وهو مصغر */
+@keyframes bellPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    }
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.45);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.0);
+    }
+}
+</style>
+</head>
     <body>
         <div id="loading-screen">
             <img src="logo.png" alt="Loading Logo"> <!-- MOD: logo.png -->
